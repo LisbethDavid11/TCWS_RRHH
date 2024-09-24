@@ -5,8 +5,11 @@ import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,15 +19,17 @@ import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -34,22 +39,23 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.properties.TextAlignment;
 import com.toedter.calendar.JDateChooser;
 
 import clases.permiso_ausencia_laboral;
+import clases.validaciones;
 import conexion.conexion;
 import consultas.consultas_permiso_ausencia_laboral;
-import principal.menu_principal;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import clases.validaciones;
-import javax.swing.UIManager;
-
-
-
+import reportes.encabezado_documentos;
 
 
 public class permiso_ausencia_laboral_nuevo extends JFrame {
@@ -356,9 +362,23 @@ public class permiso_ausencia_laboral_nuevo extends JFrame {
         panel_datos.add(txtnombres_recibe);
         
         btncomprobante = new JButton("Comprobante");
-        btncomprobante.setFont(new Font("Tahoma", Font.BOLD, 11));
-        btncomprobante.setBackground(SystemColor.menu);
-        btncomprobante.setBounds(332, 432, 111, 35);
+        btncomprobante.setToolTipText("Generar comprobante");
+        btncomprobante.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+                int numeroPermiso = Integer.parseInt(txtnumero_permiso.getText());
+
+                // Verificar si el permiso está guardado en la base de datos
+                if (!permisoGuardadoEnBaseDeDatos(numeroPermiso)) {
+                    JOptionPane.showMessageDialog(null, "Debe guardar el permiso antes de generar el comprobante", 
+                                                  "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                generarPDF();
+            }
+        });
+        btncomprobante.setFont(new Font("Tahoma", Font.BOLD, 8));
+        btncomprobante.setBackground(UIManager.getColor("Button.highlight"));
+        btncomprobante.setBounds(340, 434, 103, 25);
         panel_datos.add(btncomprobante);
         
         txamotivo = new JTextArea();
@@ -503,11 +523,10 @@ public class permiso_ausencia_laboral_nuevo extends JFrame {
 		});
 		
 		//JSpinners
-		// Añade ChangeListener para recalcular el tiempo transcurrido cuando ambas horas sean válidas
 		ChangeListener listener = new ChangeListener() {
 		    @Override
 		    public void stateChanged(ChangeEvent e) {
-		        calcularHorasTranscurridas(); // Recalcular cada vez que se cambien los valores
+		        calcularHorasTranscurridas(); 
 		    }
 		};
 
@@ -515,13 +534,9 @@ public class permiso_ausencia_laboral_nuevo extends JFrame {
 		spinnerHoraInicio.addChangeListener(listener);
 		spinnerHoraFin.addChangeListener(listener);
 		
-		//////////////////////////////////////////////////////////////////////////////////////
-        
-        //LocalDate fechaActual = LocalDate.now();
-        //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy");
         
 		txtFecha.setText(formatoFecha.format(fechaActual));
-        inicializarFormulario(); // Cargar el número de permiso automáticamente
+        inicializarFormulario(); 
         
        
 	}//fin class
@@ -719,11 +734,11 @@ public class permiso_ausencia_laboral_nuevo extends JFrame {
 	                    JOptionPane.showMessageDialog(null, "El permiso por ausencia laboral se ha registrado correctamente",
 	                            "Registro guardado", JOptionPane.INFORMATION_MESSAGE);
 
-	                    permiso_ausencia_laboral_tabla tabla = new permiso_ausencia_laboral_tabla();
+	                    /*permiso_ausencia_laboral_tabla tabla = new permiso_ausencia_laboral_tabla();
 	                    tabla.setLocationRelativeTo(null);
 	                    tabla.setVisible(true);
 	                    tabla.construirTabla();
-	                    dispose();
+	                    dispose();*/
 	                } else {
 	                    JOptionPane.showMessageDialog(null, "Error, permiso por ausencia laboral no guardado", "Error", JOptionPane.ERROR_MESSAGE);
 	                }
@@ -870,8 +885,146 @@ public class permiso_ausencia_laboral_nuevo extends JFrame {
 	            JOptionPane.showMessageDialog(null, "Error al actualizar el permiso: " + e.getMessage());
 	        }
 	    }
+	    
+	    
+	 // Método para verificar si el permiso está guardado en la base de datos
+	    private boolean permisoGuardadoEnBaseDeDatos(int numeroPermiso) {
+	        boolean existe = false;
+	        try {
+	            Connection conn = new conexion().conectar();
+	            String sql = "SELECT COUNT(*) FROM permisos_ausencia_laboral WHERE id_permisos = ?";
+	            PreparedStatement pst = conn.prepareStatement(sql);
+	            pst.setInt(1, numeroPermiso);
+	            ResultSet rs = pst.executeQuery();
 
-	
+	            if (rs.next()) {
+	                existe = rs.getInt(1) > 0;
+	            }
+
+	            rs.close();
+	            pst.close();
+	            conn.close();
+	        } catch (SQLException ex) {
+	            ex.printStackTrace();
+	        }
+	        return existe;
+	    }
+	    
+	   
+	    
+	    private void generarPDF() {
+	        // Obtener el nombre y apellido del empleado
+	        String nombreEmpleado = cbxnombres.getSelectedItem().toString();
+	        String apellidosEmpleado = txtapellidos.getText();
+	        String nombreArchivo = "Constancia_Permiso_" + nombreEmpleado.replaceAll("\\s+", "_") + "_" + apellidosEmpleado.replaceAll("\\s+", "_") + ".pdf";
+
+	        // Crear el JFileChooser para guardar el archivo
+	        JFileChooser fileChooser = new JFileChooser();
+	        fileChooser.setDialogTitle("Guardar constancia de permiso por ausencia laboral");
+
+	        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos PDF", "pdf");
+	        fileChooser.setFileFilter(filter);
+
+	        // Nombre predeterminado del archivo
+	        fileChooser.setSelectedFile(new File(nombreArchivo));
+
+	        boolean archivoValido = false;
+	        File fileToSave = null;
+
+	        // Bucle para mantener el JFileChooser activo hasta que se seleccione un archivo válido
+	        while (!archivoValido) {
+	            int userSelection = fileChooser.showSaveDialog(this);
+
+	            if (userSelection == JFileChooser.APPROVE_OPTION) {
+	                fileToSave = fileChooser.getSelectedFile();
+	                String rutaArchivo = fileToSave.getAbsolutePath();
+	                
+	                if (!rutaArchivo.toLowerCase().endsWith(".pdf")) {
+	                    rutaArchivo += ".pdf";
+	                    fileToSave = new File(rutaArchivo);
+	                }
+
+	                // Verificar si el archivo ya existe
+	                if (fileToSave.exists()) {
+	                    JOptionPane.showMessageDialog(null,
+	                        "El archivo ya existe. Por favor, elige un nombre de archivo diferente.",
+	                        "Archivo existente",
+	                        JOptionPane.WARNING_MESSAGE);
+	                } else {
+	                    
+	                    archivoValido = true;
+	                }
+	            } else {
+	                // Si el usuario cancela, salimos del método
+	                JOptionPane.showMessageDialog(null, "Generación del comprobante cancelada");
+	                return; 
+	            }
+	        }
+
+	        // Intentar crear el PDF con la ruta válida seleccionada
+	        try {
+	            // Crear el escritor del PDF con la ruta válida
+	            PdfWriter writer = new PdfWriter(fileToSave.getAbsolutePath());
+	            PdfDocument pdf = new PdfDocument(writer);
+	            Document document = new Document(pdf);
+
+	            // Agregar encabezado del documento
+	            encabezado_documentos encabezado = new encabezado_documentos();
+	            encabezado.agregarEncabezado(document);  // Invocación del método para agregar el encabezado
+
+	            // Título del documento
+	            document.add(new Paragraph("Constancia de permiso por ausencia laboral")
+	                .setBold().setFontSize(16).setTextAlignment(TextAlignment.CENTER));
+	            document.add(new Paragraph("\n"));
+
+	            // Obtener los demás datos del empleado y otros
+	            String identidadEmpleado = txtidentidad.getText();
+	            String cargoEmpleado = txtcargo.getText();
+	            String areaEmpleado = txtarea.getText();
+	            String motivoAusencia = txamotivo.getText();
+	            String fechaDesde = ((JTextField) date_desde.getDateEditor().getUiComponent()).getText();
+	            String fechaHasta = ((JTextField) date_hasta.getDateEditor().getUiComponent()).getText();
+	            String totalDias = txttotal_dias.getText();
+	            String totalHoras = txttotal_horas.getText();
+	            String nombreRecibe = txtnombres_recibe.getText();
+
+	            LocalDate fechaActual = LocalDate.now();
+	            int diaActual = fechaActual.getDayOfMonth();
+	            String mesActual = fechaActual.getMonth().getDisplayName(TextStyle.FULL, new Locale("es", "ES")); // Nombre del mes en español
+	            int añoActual = fechaActual.getYear();
+
+	            // Cuerpo del documento
+	            String textoCuerpo = "Yo Marco Murillo como suscrito Administrador del instituto TCWS & TCWHS le autorizo ausentarse del establecimiento al empleado(a): "
+	                + nombreEmpleado + " " + apellidosEmpleado + ", con identidad No. " + identidadEmpleado
+	                + ", que labora bajo el cargo de " + cargoEmpleado + " en el área de " + areaEmpleado + ". "
+	                + "\nComenzando desde la fecha " + fechaDesde + " por un término de " + totalDias + " días y "
+	                + totalHoras + " horas, tiempo en el cual se solicitó permiso por: " + motivoAusencia + ".\n\n\n"
+	                + "En constancia de lo anterior, se firma esta autorización a los " + diaActual + " días del mes de "
+	                + mesActual.toLowerCase() + " del año " + añoActual + ".\n\n\n\n"
+	                + nombreRecibe + "\n_________________________________\nFirma de recibido";
+
+	            document.add(new Paragraph(textoCuerpo)
+	                .setFontSize(12)
+	                .setTextAlignment(TextAlignment.LEFT));
+
+	            document.close();
+
+	            JOptionPane.showMessageDialog(null, "Comprobante guardado con éxito en: \n" + fileToSave.getAbsolutePath(), 
+	            		"Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+	            // Abrir la tabla de permisos de ausencia laboral
+	            permiso_ausencia_laboral_tabla tabla = new permiso_ausencia_laboral_tabla();
+	            tabla.setLocationRelativeTo(null);
+	            tabla.setVisible(true);
+	            tabla.construirTabla();
+	            dispose();
+
+	        } catch (Exception ex) {
+	            ex.printStackTrace();
+	            JOptionPane.showMessageDialog(null, "Error al guardar el comprobante: " + ex.getMessage(), 
+	            		"Error", JOptionPane.ERROR_MESSAGE);
+	        }
+	    }
 
 
 }//end

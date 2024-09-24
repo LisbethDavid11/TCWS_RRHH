@@ -1,23 +1,22 @@
 package ventanas;
 
-import javax.swing.JFrame;
-import java.awt.Window.Type;
 import java.awt.Color;
-import javax.swing.JPanel;
+import java.awt.Font;
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
-import java.awt.Font;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 import principal.menu_principal;
 
-import javax.swing.JTextArea;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-
+@SuppressWarnings("serial")
 public class derechos_autor extends JFrame{
 	public derechos_autor() {
 		

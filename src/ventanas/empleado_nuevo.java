@@ -32,18 +32,18 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.toedter.calendar.JDateChooser;
 
 import clases.empleado;
-import consultas.consultas_empleado;
-import principal.menu_principal;
 import clases.validaciones;
-import javax.swing.UIManager;
+import consultas.consultas_empleado;
 
 
+@SuppressWarnings("serial")
 public class empleado_nuevo extends JFrame{
 	public JTextField txtidentidad;
 	public JTextField txtnombres;
@@ -58,8 +58,11 @@ public class empleado_nuevo extends JFrame{
 	public JRadioButton buttonotro;
 	public ButtonGroup grupoSexo;
 	
+	@SuppressWarnings("rawtypes")
 	public JComboBox cbxcargo;
+	@SuppressWarnings("rawtypes")
 	public JComboBox cbxestado_civil;
+	@SuppressWarnings("rawtypes")
 	public JComboBox cbxarea;
 	
 	public JDateChooser fecha_nacimiento;
@@ -86,6 +89,7 @@ public class empleado_nuevo extends JFrame{
 	
 	
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public empleado_nuevo() {
 		getContentPane().setBackground(new Color(255, 255, 255));
 		setType(Type.UTILITY);
@@ -429,7 +433,7 @@ public class empleado_nuevo extends JFrame{
 		cbxarea.setToolTipText("Seleccione");
 		cbxarea.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		cbxarea.setBackground(Color.WHITE);
-		cbxarea.setBounds(630, 403, 251, 33);
+		cbxarea.setBounds(630, 414, 251, 33);
 		cbxarea.setSelectedIndex(-1);
 		panel_datos.add(cbxarea);
 		
