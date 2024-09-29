@@ -148,7 +148,7 @@ public class validaciones {
         String[] dominiosPermitidos = { "gmail.com", "outlook.com", "yahoo.com", "yahoo.es", "unah.hn", "unah.edu.hn", "hotmail.com" };
 
         if (!correo.matches(emailRegex) || !esDominioPermitido(correo, dominiosPermitidos)) {
-            JOptionPane.showMessageDialog(null, "Correo electrónico no válido. Debe tener un formato como ejemplo@gmail.com, ejemplo@outlook.com, etc.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            //JOptionPane.showMessageDialog(null, "Correo electrónico no válido. Debe tener un formato como ejemplo@gmail.com, ejemplo@outlook.com, etc.", "Advertencia", JOptionPane.WARNING_MESSAGE);
             textField.requestFocus();
         }
     }

@@ -66,7 +66,7 @@ public class consultas_empleado extends conexion {
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	public boolean actualizar_empleado(empleado empleado, int nuevoIdEmpleado, Date fecha_nacimiento, Date fecha_inicio, Date fecha_renuncia) {
+	/*public boolean actualizar_empleado(empleado empleado, int nuevoIdEmpleado, Date fecha_nacimiento, Date fecha_inicio, Date fecha_renuncia) {
 	    PreparedStatement ps = null;
 	    Connection con = conectar();
 
@@ -124,7 +124,7 @@ public class consultas_empleado extends conexion {
 	            e.printStackTrace();
 	        }
 	    }
-	}
+	}*/
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public boolean eliminar_empleado(int id) {
@@ -138,7 +138,7 @@ public class consultas_empleado extends conexion {
 	        ps.setInt(1, id);
 	        
 	        int rowsDeleted = ps.executeUpdate();
-	        return rowsDeleted > 0;  // Devuelve true si se eliminó al menos un registro
+	        return rowsDeleted > 0;  
 	        
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -155,11 +155,9 @@ public class consultas_empleado extends conexion {
 	}
 	
 	///////////////////////////////////////////////////////////////
-	
-	// Método para obtener los datos de un empleado por su ID
     public empleado obtenerEmpleadoPorId(int idEmpleado) {
         conexion conex = new conexion();
-        empleado empleado = null; // Inicializamos como null, para verificar si no se encuentra ningún empleado.
+        empleado empleado = null;
 
         try {
             String sql = "SELECT * FROM empleados WHERE id_empleado = ?";
@@ -204,74 +202,78 @@ public class consultas_empleado extends conexion {
     
     
     
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public String empleadoExiste(int id_empleado, String identidad_empleado, String nombres_empleado, String apellidos_empleado, 
             Date nacimiento_empleado, String direccion_empleado, String tel_empleado, 
             String correo_empleado, Date inicio_empleado, String cuenta_empleado) {
-PreparedStatement ps = null;
-ResultSet rs = null;
-Connection con = conectar(); // Asumiendo que ya tienes un método conectar()
-
-String sql = "SELECT * FROM empleados WHERE id_empleado = ? OR identidad_empleado = ? OR nombres_empleado = ? OR " +
-"apellidos_empleado = ? OR nacimiento_empleado = ? OR direccion_empleado = ? OR " +
-"tel_empleado = ? OR correo_empleado = ? OR inicio_empleado = ? OR cuenta_empleado = ?";
-
-try {
-ps = con.prepareStatement(sql);
-ps.setInt(1, id_empleado);
-ps.setString(2, identidad_empleado);
-ps.setString(3, nombres_empleado);
-ps.setString(4, apellidos_empleado);
-ps.setDate(5, new java.sql.Date(nacimiento_empleado.getTime())); // Convertir Date a java.sql.Date
-ps.setString(6, direccion_empleado);
-ps.setString(7, tel_empleado);
-ps.setString(8, correo_empleado);
-ps.setDate(9, new java.sql.Date(inicio_empleado.getTime())); // Convertir Date a java.sql.Date
-ps.setString(10, cuenta_empleado);
-
-rs = ps.executeQuery();
-
-// Si hay un resultado, verificar cuál campo está duplicado
-if (rs.next()) {
-if (rs.getInt("id_empleado") == id_empleado) {
-return "ID del empleado";
-} else if (rs.getString("identidad_empleado").equals(identidad_empleado)) {
-return "Identidad";
-} else if (rs.getString("nombres_empleado").equals(nombres_empleado) && rs.getString("apellidos_empleado").equals(apellidos_empleado)) {
-return "Nombre y Apellido";
-} else if (rs.getDate("nacimiento_empleado").equals(new java.sql.Date(nacimiento_empleado.getTime()))) {
-return "Fecha de nacimiento";
-} else if (rs.getString("direccion_empleado").equals(direccion_empleado)) {
-return "Dirección";
-} else if (rs.getString("tel_empleado").equals(tel_empleado)) {
-return "Teléfono";
-} else if (rs.getString("correo_empleado").equals(correo_empleado)) {
-return "Correo electrónico";
-} else if (rs.getDate("inicio_empleado").equals(new java.sql.Date(inicio_empleado.getTime()))) {
-return "Fecha de inicio";
-} else if (rs.getString("cuenta_empleado").equals(cuenta_empleado)) {
-return "Cuenta bancaria";
-}
-}
-return null; // No hay duplicados
-} catch (SQLException e) {
-e.printStackTrace();
-return null;
-} finally {
-try {
-if (rs != null) rs.close();
-if (ps != null) ps.close();
-desconectar(); // Asumiendo que ya tienes un método desconectar()
-} catch (SQLException e) {
-e.printStackTrace();
-}
-}
-}
+    	
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Connection con = conectar(); 
+		
+		String sql = "SELECT * FROM empleados WHERE id_empleado = ? OR identidad_empleado = ? OR nombres_empleado = ? OR " +
+		"apellidos_empleado = ? OR nacimiento_empleado = ? OR direccion_empleado = ? OR " +
+		"tel_empleado = ? OR correo_empleado = ? OR inicio_empleado = ? OR cuenta_empleado = ?";
+		
+		try {
+			ps = con.prepareStatement(sql);
+			ps.setInt(1, id_empleado);
+			ps.setString(2, identidad_empleado);
+			ps.setString(3, nombres_empleado);
+			ps.setString(4, apellidos_empleado);
+			ps.setDate(5, new java.sql.Date(nacimiento_empleado.getTime())); // Convertir Date a java.sql.Date
+			ps.setString(6, direccion_empleado);
+			ps.setString(7, tel_empleado);
+			ps.setString(8, correo_empleado);
+			ps.setDate(9, new java.sql.Date(inicio_empleado.getTime())); // Convertir Date a java.sql.Date
+			ps.setString(10, cuenta_empleado);
+			
+			rs = ps.executeQuery();
+			
+			if (rs.next()) {
+			if (rs.getInt("id_empleado") == id_empleado) {
+				return "ID del empleado";
+				} else if (rs.getString("identidad_empleado").equals(identidad_empleado)) {
+					return "Identidad";
+						} else if (rs.getString("nombres_empleado").equals(nombres_empleado) && rs.getString("apellidos_empleado").equals(apellidos_empleado)) {
+							return "Nombre y Apellido";
+							} else if (rs.getDate("nacimiento_empleado").equals(new java.sql.Date(nacimiento_empleado.getTime()))) {
+								return "Fecha de nacimiento";
+							} else if (rs.getString("direccion_empleado").equals(direccion_empleado)) {
+								return "Dirección";
+							} else if (rs.getString("tel_empleado").equals(tel_empleado)) {
+								return "Teléfono";
+							} else if (rs.getString("correo_empleado").equals(correo_empleado)) {
+								return "Correo electrónico";
+							} else if (rs.getDate("inicio_empleado").equals(new java.sql.Date(inicio_empleado.getTime()))) {
+								return "Fecha de inicio";
+							} else if (rs.getString("cuenta_empleado").equals(cuenta_empleado)) {
+								return "Cuenta bancaria";
+				}
+			}
+		return null; 
+		
+		} catch (SQLException e) {
+		e.printStackTrace();
+		return null;
+		
+		} finally {
+		try {
+		if (rs != null) rs.close();
+		if (ps != null) ps.close();
+		desconectar(); 
+		} catch (SQLException e) {
+		e.printStackTrace();
+				}	
+			}
+		}
+	    
     
-    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public String empleadoExisteParaActualizar(int id, int nuevoIdEmpleado, String identidad_empleado) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        Connection con = conectar(); // Asumiendo que ya tienes un método conectar()
+        Connection con = conectar(); 
 
         String sql = "SELECT * FROM empleados WHERE (identidad_empleado = ? OR id_empleado = ?) AND id != ?";
 
@@ -279,11 +281,10 @@ e.printStackTrace();
             ps = con.prepareStatement(sql);
             ps.setString(1, identidad_empleado);
             ps.setInt(2, nuevoIdEmpleado);
-            ps.setInt(3, id); // Excluir el registro actual de la búsqueda
+            ps.setInt(3, id); // Se excluye el empleado que se está editando
 
             rs = ps.executeQuery();
 
-            // Si hay un resultado, verificar cuál campo está duplicado
             if (rs.next()) {
                 if (rs.getString("identidad_empleado").equals(identidad_empleado)) {
                     return "Identidad";
@@ -291,7 +292,7 @@ e.printStackTrace();
                     return "ID del empleado";
                 }
             }
-            return null; // No hay duplicados
+            return null; 
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -299,12 +300,13 @@ e.printStackTrace();
             try {
                 if (rs != null) rs.close();
                 if (ps != null) ps.close();
-                desconectar(); // Asumiendo que ya tienes un método desconectar()
+                desconectar(); 
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
     }
+
     
     
     public boolean actualizar_empleado(empleado emp, int idOriginal, int nuevoIdEmpleado, Date fechaNacimiento, Date fechaInicio, Date fechaRenuncia) {
@@ -312,7 +314,7 @@ e.printStackTrace();
         PreparedStatement ps = null;
         
         try {
-            con = conectar(); // Asumiendo que tienes un método 'conectar()' que devuelve una conexión
+            con = conectar();
             
             String sql = "UPDATE empleados SET " +
                          "id_empleado=?, identidad_empleado=?, nombres_empleado=?, apellidos_empleado=?, " +
@@ -323,7 +325,6 @@ e.printStackTrace();
             
             ps = con.prepareStatement(sql);
             
-            // Establecer los valores de los parámetros
             int i = 1;
             ps.setInt(i++, nuevoIdEmpleado);
             ps.setString(i++, emp.getIdentidad_empleado());
@@ -341,7 +342,7 @@ e.printStackTrace();
             ps.setDate(i++, fechaRenuncia != null ? new java.sql.Date(fechaRenuncia.getTime()) : null);
             ps.setString(i++, emp.getFotografia_empleado());
             ps.setString(i++, emp.getCuenta_empleado());
-            ps.setInt(i++, idOriginal); // Usar el ID original para la cláusula WHERE
+            ps.setInt(i++, idOriginal); 
             
             int resultado = ps.executeUpdate();
             return resultado > 0;

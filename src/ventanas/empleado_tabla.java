@@ -11,6 +11,8 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -66,7 +68,6 @@ public class empleado_tabla extends JFrame {
     public JScrollPane scrollPane;
     public JButton btnNuevoEmpleado;
     public JButton btnMenu;
-    public JButton btnActualizarEmpleado;
     public JComboBox<String> cbxbusquedaCargo;
     public JComboBox<String> cbxbusquedaarea;
     public JComboBox<String> cbxbusquedasexo;
@@ -219,117 +220,13 @@ public class empleado_tabla extends JFrame {
         panelbotones.setBounds(552, 23, 458, 56);
         contentPane.add(panelbotones);
         panelbotones.setLayout(null);
-
-        btnActualizarEmpleado = new JButton("Actualizar");
-        btnActualizarEmpleado.setBackground(UIManager.getColor("Button.highlight"));
-        btnActualizarEmpleado.setFont(new Font("Tahoma", Font.BOLD, 8));
-        btnActualizarEmpleado.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
-                int filaseleccionada;
-                try {
-                    filaseleccionada = table.getSelectedRow();
-                    if (filaseleccionada == -1) {
-                        JOptionPane.showMessageDialog(null, "¡No se ha seleccionado ninguna fila!", "Advertencia", JOptionPane.WARNING_MESSAGE);
-                    } else {
-                        // Obtener los datos de la fila seleccionada
-                        String id = table.getValueAt(filaseleccionada, 0).toString();
-                        String id_empleado = table.getValueAt(filaseleccionada, 1).toString();
-                        String identidad = table.getValueAt(filaseleccionada, 2).toString();
-                        String nombres = table.getValueAt(filaseleccionada, 3).toString();
-                        String apellidos = table.getValueAt(filaseleccionada, 4).toString();
-                        String sexo = table.getValueAt(filaseleccionada, 5).toString();
-                        
-                        String fecha1 = table.getValueAt(filaseleccionada, 6).toString();
-                        Date nacimiento = dateFormat.parse(fecha1);
-                        
-                        String estadocivil = table.getValueAt(filaseleccionada, 7).toString();
-                        String direccion = table.getValueAt(filaseleccionada, 8).toString();
-                        String telefono = table.getValueAt(filaseleccionada, 9).toString();
-                        String correo = table.getValueAt(filaseleccionada, 10).toString();
-                        String cargo = table.getValueAt(filaseleccionada, 11).toString();
-                        String area = table.getValueAt(filaseleccionada, 12).toString();
-                        
-                        String fecha2 = table.getValueAt(filaseleccionada, 13).toString();
-                        Date inicio = dateFormat.parse(fecha2);
-                        
-                        // Manejo de la fecha de renuncia (puede ser nula)
-                        String fecha3 = table.getValueAt(filaseleccionada, 14) != null ? table.getValueAt(filaseleccionada, 14).toString() : null;
-                        Date renuncia = (fecha3 != null && !fecha3.isEmpty()) ? dateFormat.parse(fecha3) : null;
-                        
-                        String foto = table.getValueAt(filaseleccionada, 15).toString();
-                        String cuenta = table.getValueAt(filaseleccionada, 16).toString();
-
-                        // Abrir la ventana de actualización del empleado
-                        empleado_nuevo actualizar_empleado = new empleado_nuevo();
-                        actualizar_empleado.setLocationRelativeTo(null);
-                        actualizar_empleado.setVisible(true);
-                        actualizar_empleado.btnguardar.setVisible(false);
-                        dispose();
-
-                        // Rellenar los campos en la ventana de actualización
-                        actualizar_empleado.txtid.setText(id);
-                        actualizar_empleado.txtid_empleado.setText(id_empleado);
-                        actualizar_empleado.txtidentidad.setText(identidad);
-                        actualizar_empleado.txtnombres.setText(nombres);
-                        actualizar_empleado.txtapellidos.setText(apellidos);
-
-                        // Selección del sexo
-                        if (sexo.equals("Femenino")) {
-                            actualizar_empleado.buttonfemenino.setSelected(true);
-                        } else if (sexo.equals("Masculino")) {
-                            actualizar_empleado.buttonmasculino.setSelected(true);
-                        } else if (sexo.equals("Otro")) {
-                            actualizar_empleado.buttonotro.setSelected(true);
-                        }
-
-                        // Establecer las fechas y otros campos
-                        actualizar_empleado.fecha_nacimiento.setDate(nacimiento);
-                        actualizar_empleado.cbxestado_civil.setSelectedItem(estadocivil);
-                        actualizar_empleado.txadireccion.setText(direccion);
-                        actualizar_empleado.txttel.setText(telefono);
-                        actualizar_empleado.txtcorreo.setText(correo);
-                        actualizar_empleado.cbxcargo.setSelectedItem(cargo);
-                        actualizar_empleado.cbxarea.setSelectedItem(area);
-                        actualizar_empleado.fecha_inicio.setDate(inicio);
-
-                        // Establecer la fecha de renuncia solo si no es nula
-                        if (renuncia != null) {
-                            actualizar_empleado.fecha_renuncia.setDate(renuncia);
-                        } else {
-                            actualizar_empleado.fecha_renuncia.setDate(null); // Si no hay renuncia, dejar en blanco
-                        }
-
-                        // Establecer la fotografía
-                        ImageIcon icono_fotografia = new ImageIcon(foto);
-                        actualizar_empleado.lblfoto.setIcon(new ImageIcon(icono_fotografia.getImage().getScaledInstance(
-                                actualizar_empleado.lblfoto.getWidth(), actualizar_empleado.lblfoto.getHeight(), Image.SCALE_SMOOTH)));
-                        actualizar_empleado.txtruta.setText(foto);
-                        actualizar_empleado.txtcuenta.setText(cuenta);
-                    }
-
-                } catch (HeadlessException ex) {
-                    JOptionPane.showMessageDialog(null, "Error: " + ex + "\n Inténtelo nuevamente",
-                            " .::Error En la Operación::.", JOptionPane.ERROR_MESSAGE);
-                } catch (ParseException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        });
-
-
-        btnActualizarEmpleado.setIcon(null);
-        btnActualizarEmpleado.setToolTipText("Actualizar registro");
-        btnActualizarEmpleado.setBounds(295, 17, 75, 23);
-        panelbotones.add(btnActualizarEmpleado);
        
 
         btnMenu = new JButton("Menú");
         btnMenu.setBackground(UIManager.getColor("Button.highlight"));
-        btnMenu.setFont(new Font("Tahoma", Font.BOLD, 8));
+        btnMenu.setFont(new Font("Tahoma", Font.BOLD, 10));
         btnMenu.setToolTipText("Menú principal");
-        btnMenu.setBounds(10, 17, 75, 23);
+        btnMenu.setBounds(10, 17, 90, 23);
         panelbotones.add(btnMenu);
         btnMenu.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -342,8 +239,8 @@ public class empleado_tabla extends JFrame {
 
         btnNuevoEmpleado = new JButton("Nuevo");
         btnNuevoEmpleado.setBackground(UIManager.getColor("Button.highlight"));
-        btnNuevoEmpleado.setFont(new Font("Tahoma", Font.BOLD, 8));
-        btnNuevoEmpleado.setBounds(370, 17, 75, 23);
+        btnNuevoEmpleado.setFont(new Font("Tahoma", Font.BOLD, 10));
+        btnNuevoEmpleado.setBounds(358, 17, 90, 23);
         panelbotones.add(btnNuevoEmpleado);
         btnNuevoEmpleado.setIcon(null);
         btnNuevoEmpleado.setToolTipText("Nuevo empleado");
@@ -353,29 +250,18 @@ public class empleado_tabla extends JFrame {
                 nuevo.setVisible(true);
                 nuevo.setLocationRelativeTo(null);
                 nuevo.btnactualizar.setVisible(false);
+                nuevo.txtidOriginal.setVisible(false);
+                nuevo.chxeditar.setVisible(false);
                 dispose();
             }
         });
         
         btneliminar = new JButton("Eliminar");
         btneliminar.setBackground(UIManager.getColor("Button.highlight"));
-        btneliminar.setFont(new Font("Tahoma", Font.BOLD, 8));
+        btneliminar.setFont(new Font("Tahoma", Font.BOLD, 10));
         btneliminar.setToolTipText("Eliminar registro");
-        btneliminar.setBounds(144, 17, 75, 23);
+        btneliminar.setBounds(263, 17, 90, 23);
         panelbotones.add(btneliminar);
-        
-        JButton btn_ver = new JButton("Ver");
-        btn_ver.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		verEmpleadoSeleccionado();
-        		
-        	}
-        });
-        btn_ver.setToolTipText("Eliminar registro");
-        btn_ver.setFont(new Font("Tahoma", Font.BOLD, 8));
-        btn_ver.setBackground(UIManager.getColor("Button.highlight"));
-        btn_ver.setBounds(220, 17, 75, 23);
-        panelbotones.add(btn_ver);
         btneliminar.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         	    int filaSeleccionada;
@@ -383,12 +269,12 @@ public class empleado_tabla extends JFrame {
         	      
         	        filaSeleccionada = table.getSelectedRow();
         	        if (filaSeleccionada == -1) {
-        	            JOptionPane.showMessageDialog(null, "¡No se ha seleccionado ninguna fila!", "Advertencia", JOptionPane.WARNING_MESSAGE);
-        	        } else {
+        	        		JOptionPane.showMessageDialog(null, "¡No se ha seleccionado ninguna fila!", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                        } else {
         	            
         	            int confirmacion = JOptionPane.showConfirmDialog(null, 
         	                    "¿Está seguro de que desea eliminar el registro seleccionado?\nEsto también lo eliminará permanentemente de la base de datos.", 
-        	                    "Confirmar eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        	                    "Confirmar eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
         	            
         	            if (confirmacion == JOptionPane.YES_OPTION) {
         	                
@@ -404,7 +290,7 @@ public class empleado_tabla extends JFrame {
         	                    
         	                    JOptionPane.showMessageDialog(null, "Error al eliminar el registro de la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
         	                }
-        	            } // Si el usuario elige "No", no se realiza ninguna acción
+        	            } 
         	        }
         	    } catch (HeadlessException ex) {
         	        JOptionPane.showMessageDialog(null, "Error: " + ex + "\nInténtelo nuevamente", "Error en la operación", JOptionPane.ERROR_MESSAGE);
@@ -414,7 +300,7 @@ public class empleado_tabla extends JFrame {
         });
 
         
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+       ////////////////////////////////////////////////////////////////////////////////////////
         // Configurar ActionListener para los JComboBox
         cbxbusquedaCargo.addActionListener(new ActionListener() {
             @Override
@@ -458,56 +344,138 @@ public class empleado_tabla extends JFrame {
                 }
             }
         });
+        
     }//class
 
-   
-
-    // Inicialización de la tabla y TableRowSorter
+  
+    
     public void construirTabla() {
         String titulos[] = { "No", "Id", "Identidad", "Nombres", "Apellidos", "Sexo", "Fecha nacimiento", "Estado civil", "Dirección", "Teléfono", "Correo", "Cargo", "Área", "Fecha inicio", "Fecha renuncia", "Fotografía", "No.cuenta" };
         String informacion[][] = obtenerMatriz();
-        DefaultTableModel modeloTabla = new DefaultTableModel(informacion, titulos);
+        
+        // Crear el modelo de tabla no editable
+        DefaultTableModel modeloTabla = new DefaultTableModel(informacion, titulos) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Todas las celdas no serán editables
+            }
+        };
+        
         table = new JTable(modeloTabla);
         scrollPane.setViewportView(table);
-
-        trsfiltroCodigo = new TableRowSorter<>(table.getModel()); // Inicializamos el sorter
-        table.setRowSorter(trsfiltroCodigo); // Asignamos el sorter a la tabla
+        
+        trsfiltroCodigo = new TableRowSorter<>(table.getModel()); 
+        table.setRowSorter(trsfiltroCodigo); 
         table.getColumnModel().getColumn(0).setPreferredWidth(30);
         table.getColumnModel().getColumn(1).setPreferredWidth(40);
+
+        
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy"); // Ajustar el formato según el que estés utilizando
+
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) { // Si se hace doble clic en una fila de la tabla
+	                	
+	                	
+                    int filaSeleccionada = table.getSelectedRow();
+                    if (filaSeleccionada != -1) { // Si hay una fila seleccionada
+                        int fila = table.convertRowIndexToModel(filaSeleccionada); // Convertir al modelo si la tabla tiene ordenamiento
+
+                        
+                        try {
+                            // Obtener los datos de la fila seleccionada
+                            String idOriginalStr = String.valueOf(table.getModel().getValueAt(fila, 0));  // El idOriginal es la clave primaria
+                            String idEmpleado = String.valueOf(table.getModel().getValueAt(fila, 1));  // El idEmpleado se mantiene como String
+                            String identidad = String.valueOf(table.getModel().getValueAt(fila, 2));
+                            String nombres = String.valueOf(table.getModel().getValueAt(fila, 3));
+                            String apellidos = String.valueOf(table.getModel().getValueAt(fila, 4));
+                            String sexo = String.valueOf(table.getModel().getValueAt(fila, 5));
+
+                            // Convertir las fechas de String a Date utilizando SimpleDateFormat
+                            Date fechaNacimiento = null;
+                            Date fechaInicio = null;
+                            Date fechaRenuncia = null;
+                            try {
+                                fechaNacimiento = dateFormat.parse(String.valueOf(table.getModel().getValueAt(fila, 6)));
+                                fechaInicio = dateFormat.parse(String.valueOf(table.getModel().getValueAt(fila, 13)));
+                                String fechaRenunciaStr = String.valueOf(table.getModel().getValueAt(fila, 14));
+                                if (!fechaRenunciaStr.isEmpty() && !fechaRenunciaStr.equals("null")) {
+                                    fechaRenuncia = dateFormat.parse(fechaRenunciaStr);
+                                }
+                            } catch (ParseException ex) {
+                                JOptionPane.showMessageDialog(null, "Error al procesar las fechas: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                                return;
+                            }
+
+                            String estadoCivil = String.valueOf(table.getModel().getValueAt(fila, 7));
+                            String direccion = String.valueOf(table.getModel().getValueAt(fila, 8));
+                            String telefono = String.valueOf(table.getModel().getValueAt(fila, 9));  // Teléfono como String
+                            String correo = String.valueOf(table.getModel().getValueAt(fila, 10));
+                            String cargo = String.valueOf(table.getModel().getValueAt(fila, 11));
+                            String area = String.valueOf(table.getModel().getValueAt(fila, 12));
+                            String fotografia = String.valueOf(table.getModel().getValueAt(fila, 15));
+                            String cuenta = String.valueOf(table.getModel().getValueAt(fila, 16));  // Cuenta bancaria como String
+
+                            // Crear una instancia de la ventana "empleado_nuevo"
+                            empleado_nuevo ventanaNuevo = new empleado_nuevo();
+
+                            // Llamar al método ver_empleado con los datos
+                            ventanaNuevo.ver_empleado(idEmpleado, identidad, nombres, apellidos, sexo, fechaNacimiento, estadoCivil,
+                                    direccion, telefono, correo, cargo, area, fechaInicio, fechaRenuncia, fotografia, cuenta);
+
+                            // Aquí establecemos el valor del idOriginal en el JTextField llamado txtidOriginal
+                            ventanaNuevo.txtidOriginal.setText(idOriginalStr);  // idOriginal es la clave primaria INT
+
+                            ventanaNuevo.setLocationRelativeTo(null);
+                            ventanaNuevo.btnguardar.setVisible(false); // Ocultar el botón de guardar ya que es una vista de edición
+                            ventanaNuevo.btnactualizar.setVisible(false);
+                            ventanaNuevo.btnlimpiar.setVisible(false);
+                            dispose();  // Cerrar la ventana actual
+                        } catch (Exception ex) {
+                            JOptionPane.showMessageDialog(null, "Error al procesar los datos: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+            }
+        });
+
+
+
+
+        
     }
+    
+    
+    
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
     
 
  // Método que aplica los filtros combinados de los tres JComboBox
     private void aplicarFiltros() {
-        // Obtener los valores seleccionados en los JComboBox
         String filtroCargo = (String) cbxbusquedaCargo.getSelectedItem();
         String filtroArea = (String) cbxbusquedaarea.getSelectedItem();
         String filtroSexo = (String) cbxbusquedasexo.getSelectedItem();
 
-        // Crear una lista de RowFilter con tipos explícitos
         List<RowFilter<Object, Object>> filtros = new ArrayList<>();
 
-        // Agregar filtro de Cargo si no está en blanco
         if (filtroCargo != null && !filtroCargo.trim().isEmpty()) {
-            filtros.add(RowFilter.regexFilter("(?i)" + filtroCargo, 11)); // Columna 10 es "Cargo"
+            filtros.add(RowFilter.regexFilter("(?i)" + filtroCargo, 11)); 
         }
 
-        // Agregar filtro de Área si no está en blanco
         if (filtroArea != null && !filtroArea.trim().isEmpty()) {
-            filtros.add(RowFilter.regexFilter("(?i)" + filtroArea, 12)); // Columna 11 es "Área"
+            filtros.add(RowFilter.regexFilter("(?i)" + filtroArea, 12)); 
         }
 
-        // Agregar filtro de Sexo si no está en blanco
         if (filtroSexo != null && !filtroSexo.trim().isEmpty()) {
-            filtros.add(RowFilter.regexFilter("(?i)" + filtroSexo, 5)); // Columna 4 es "Sexo"
+            filtros.add(RowFilter.regexFilter("(?i)" + filtroSexo, 5));
         }
 
-        // Si no hay filtros activos, mostramos todos los registros
         if (filtros.isEmpty()) {
             trsfiltroCodigo.setRowFilter(null); // Mostrar todos los registros si no hay filtros
         } else {
-            // Aplicar los filtros combinados si hay al menos un filtro activo
+        	
             RowFilter<Object, Object> combinedFilter = RowFilter.andFilter(filtros);
             trsfiltroCodigo.setRowFilter(combinedFilter);
         }
@@ -515,16 +483,10 @@ public class empleado_tabla extends JFrame {
     /////////////////////////////////////////////////////////////////////////////////////////////////
     
 
-    
-    
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-    
-
     public static String[][] obtenerMatriz() {
         ArrayList<empleado> miLista = buscarUsuariosConMatriz();
         String matrizInfo[][] = new String[miLista.size()][17];
 
-        // Formato de fecha deseado: dd-MM-yy
         SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yy");
 
         for (int i = 0; i < miLista.size(); i++) {
@@ -535,9 +497,8 @@ public class empleado_tabla extends JFrame {
             matrizInfo[i][4] = miLista.get(i).getApellidos_empleado() + "";
             matrizInfo[i][5] = miLista.get(i).getSexo_empleado() + "";
 
-            // Formatear la fecha de nacimiento
             Date nacimiento = miLista.get(i).getNacimiento_empleado();
-            matrizInfo[i][6] = outputFormat.format(nacimiento); // Fecha de nacimiento
+            matrizInfo[i][6] = outputFormat.format(nacimiento); 
 
             matrizInfo[i][7] = miLista.get(i).getCivil_empleado() + "";
             matrizInfo[i][8] = miLista.get(i).getDireccion_empleado() + "";
@@ -546,16 +507,14 @@ public class empleado_tabla extends JFrame {
             matrizInfo[i][11] = miLista.get(i).getCargo_empleado() + "";
             matrizInfo[i][12] = miLista.get(i).getArea_empleado() + "";
 
-            // Formatear la fecha de inicio
             Date inicio = miLista.get(i).getInicio_empleado();
-            matrizInfo[i][13] = outputFormat.format(inicio); // Fecha de inicio
+            matrizInfo[i][13] = outputFormat.format(inicio); 
 
-            // Verificar si hay fecha de renuncia
             Date renuncia = miLista.get(i).getRenuncia_empleado();
             if (renuncia != null) {
-                matrizInfo[i][14] = outputFormat.format(renuncia); // Fecha de renuncia
+                matrizInfo[i][14] = outputFormat.format(renuncia); 
             } else {
-                matrizInfo[i][14] = ""; // Sin fecha de renuncia
+                matrizInfo[i][14] = ""; 
             }
 
             matrizInfo[i][15] = miLista.get(i).getFotografia_empleado() + "";
@@ -605,7 +564,8 @@ public class empleado_tabla extends JFrame {
 
     public void filtro() {
         filtroCodigo = txtb.getText();
-        trsfiltroCodigo.setRowFilter(RowFilter.regexFilter("(?i)" + filtroCodigo, 1, 2, 3, 6, 8));
+        //trsfiltroCodigo.setRowFilter(RowFilter.regexFilter("(?i)" + filtroCodigo, 1, 2, 3, 6, 8));
+        trsfiltroCodigo.setRowFilter(RowFilter.regexFilter("(?i)" + filtroCodigo, 2, 3, 4, 7, 9));
     }
     
     private void cerrar_ventana() {
@@ -613,64 +573,6 @@ public class empleado_tabla extends JFrame {
 				JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
 			System.exit(0);
 	}
-    
-    
-    //Ver empleado
-    public void verEmpleadoSeleccionado() {
-      
-        int filaSeleccionada = table.getSelectedRow();
-        if (filaSeleccionada != -1) {
-           
-            int idEmpleadoSeleccionado = Integer.parseInt(table.getValueAt(filaSeleccionada, 1).toString());
-
-            empleado_ver empleadoVer = new empleado_ver();
-            empleadoVer.setVisible(true);
-            empleadoVer.setLocationRelativeTo(null);
-
-            consultas_empleado consulta = new consultas_empleado();
-            empleado clase = consulta.obtenerEmpleadoPorId(idEmpleadoSeleccionado);
-
-            if (clase != null) {
-            	empleadoVer.txtidtabla.setText(String.valueOf(clase.getId()));
-                empleadoVer.txtid_ver.setText(String.valueOf(clase.getId_empleado()));
-                empleadoVer.txtidentidad_ver.setText(clase.getIdentidad_empleado());
-                empleadoVer.txtnombres_ver.setText(clase.getNombres_empleado());
-                empleadoVer.txtapellidos_ver.setText(clase.getApellidos_empleado());
-                empleadoVer.txtnacimiento_ver.setText(new SimpleDateFormat("dd-MM-yy").format(clase.getNacimiento_empleado()));
-                empleadoVer.txttelefono_ver.setText(clase.getTel_empleado());
-                empleadoVer.txtsexo_ver.setText(clase.getSexo_empleado());
-                empleadoVer.txtcivil_ver.setText(clase.getCivil_empleado());
-                empleadoVer.txadireccion_ver.setText(clase.getDireccion_empleado());
-                empleadoVer.txtcorreo_ver.setText(clase.getCorreo_empleado());
-                empleadoVer.txtcuenta_ver.setText(clase.getCuenta_empleado());
-                empleadoVer.txtarea_ver.setText(clase.getArea_empleado());
-                empleadoVer.txtcargo_ver.setText(clase.getCargo_empleado());
-                empleadoVer.txtinicio_ver.setText(new SimpleDateFormat("dd-MM-yy").format(clase.getInicio_empleado()));
-
-                // Fecha de renuncia puede ser nula
-                if (clase.getRenuncia_empleado() != null) {
-                    empleadoVer.txtrenuncia_ver.setText(new SimpleDateFormat("dd-MM-yy").format(clase.getRenuncia_empleado()));
-                } else {
-                    empleadoVer.txtrenuncia_ver.setText("N/A");
-                }
-
-                // Cargar la fotografía si está disponible
-                String rutaFoto = clase.getFotografia_empleado();
-                if (rutaFoto != null && !rutaFoto.isEmpty()) {
-                    ImageIcon imagen = new ImageIcon(rutaFoto);
-                    empleadoVer.txtruta_ver.setText(rutaFoto);
-                    empleadoVer.lblfoto_ver.setIcon(new ImageIcon(imagen.getImage().getScaledInstance(empleadoVer.lblfoto_ver.getWidth(),
-                            empleadoVer.lblfoto_ver.getHeight(), Image.SCALE_SMOOTH)));
-                }
-
-            } else {
-                JOptionPane.showMessageDialog(null, "No se pudo encontrar el empleado con el ID seleccionado", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Debe seleccionar un empleado para ver sus datos", "Error", JOptionPane.ERROR_MESSAGE);
-            
-        }
-    }
     
     
 

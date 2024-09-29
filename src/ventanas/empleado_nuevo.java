@@ -12,6 +12,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.net.MalformedURLException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
@@ -40,7 +43,9 @@ import com.toedter.calendar.JDateChooser;
 
 import clases.empleado;
 import clases.validaciones;
+import conexion.conexion;
 import consultas.consultas_empleado;
+import javax.swing.JCheckBox;
 
 
 @SuppressWarnings("serial")
@@ -84,6 +89,8 @@ public class empleado_nuevo extends JFrame{
 	public JPanel panel_datos;
 	ImageIcon icono_fotografia = new ImageIcon("src/imagenes/camara.png");
 	public JTextField txtid;
+	public JCheckBox chxeditar;
+	public JTextField txtidOriginal;
 	
 
 	
@@ -342,7 +349,7 @@ public class empleado_nuevo extends JFrame{
 		
 		JLabel lblid = new JLabel("Id empleado");
 		lblid.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblid.setBounds(31, 26, 251, 25);
+		lblid.setBounds(31, 26, 166, 25);
 		panel_datos.add(lblid);
 		
 		txtid_empleado = new JTextField();
@@ -433,7 +440,7 @@ public class empleado_nuevo extends JFrame{
 		cbxarea.setToolTipText("Seleccione");
 		cbxarea.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		cbxarea.setBackground(Color.WHITE);
-		cbxarea.setBounds(630, 414, 251, 33);
+		cbxarea.setBounds(630, 403, 251, 33);
 		cbxarea.setSelectedIndex(-1);
 		panel_datos.add(cbxarea);
 		
@@ -470,6 +477,13 @@ public class empleado_nuevo extends JFrame{
 		cbxestado_civil.setSelectedIndex(-1);
 		cbxestado_civil.setBackground(Color.WHITE);
 		
+		txtidOriginal = new JTextField();
+		txtidOriginal.setEditable(false);
+		txtidOriginal.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		txtidOriginal.setColumns(10);
+		txtidOriginal.setBounds(963, 10, 12, 13);
+		panel_datos.add(txtidOriginal);
+		
 		JPanel panel_titulo_1 = new JPanel();
 		panel_titulo_1.setLayout(null);
 		panel_titulo_1.setBackground(SystemColor.menu);
@@ -477,11 +491,11 @@ public class empleado_nuevo extends JFrame{
 		getContentPane().add(panel_titulo_1);
 		
 		btnguardar = new JButton("Guardar");
-		btnguardar.setBounds(415, 17, 75, 23);
+		btnguardar.setBounds(415, 18, 90, 23);
 		panel_titulo_1.add(btnguardar);
 		btnguardar.setToolTipText("Guardar registro");
 		btnguardar.setIcon(null);
-		btnguardar.setFont(new Font("Tahoma", Font.BOLD, 8));
+		btnguardar.setFont(new Font("Tahoma", Font.BOLD, 10));
 		btnguardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				guardar_empleado();
@@ -491,29 +505,24 @@ public class empleado_nuevo extends JFrame{
 		
 		 btnlimpiar = new JButton("Limpiar");
 		 btnlimpiar.setToolTipText("Limpiar los campos");
-		 btnlimpiar.setBounds(216, 17, 75, 23);
+		 btnlimpiar.setBounds(320, 18, 90, 23);
 		 panel_titulo_1.add(btnlimpiar);
 		 btnlimpiar.addActionListener(new ActionListener() {
 		 	public void actionPerformed(ActionEvent e) {
 		 		limpiar();
 		 	}
 		 });
-		 btnlimpiar.setFont(new Font("Tahoma", Font.BOLD, 8));
+		 btnlimpiar.setFont(new Font("Tahoma", Font.BOLD, 10));
 		 btnlimpiar.setBackground(UIManager.getColor("Button.highlight"));
 		 
 		 btnactualizar = new JButton("Actualizar");
 		 btnactualizar.setSelectedIcon(null);
 		 btnactualizar.setIcon(null);
 		 btnactualizar.setToolTipText("Actualizar registro");
-		 btnactualizar.setBounds(314, 17, 75, 23);
+		 btnactualizar.setBounds(415, 17, 90, 23);
 		 panel_titulo_1.add(btnactualizar);
-		 btnactualizar.addActionListener(new ActionListener() {
-		 	public void actionPerformed(ActionEvent e) {
-		 		actualizar_empleado();
-		 		
-		 	}
-		 });
-		 btnactualizar.setFont(new Font("Tahoma", Font.BOLD, 8));
+
+		 btnactualizar.setFont(new Font("Tahoma", Font.BOLD, 10));
 		 btnactualizar.setBackground(UIManager.getColor("Button.highlight"));
 		 
 		 btnregresar = new JButton("Regresar");
@@ -528,9 +537,30 @@ public class empleado_nuevo extends JFrame{
 		 });
 		 btnregresar.setBackground(UIManager.getColor("Button.highlight"));
 		 btnregresar.setToolTipText("Regresar a la tabla");
-		 btnregresar.setFont(new Font("Tahoma", Font.BOLD, 8));
-		 btnregresar.setBounds(10, 17, 75, 23);
+		 btnregresar.setFont(new Font("Tahoma", Font.BOLD, 10));
+		 btnregresar.setBounds(10, 17, 90, 23);
 		 panel_titulo_1.add(btnregresar);
+		 
+		 chxeditar = new JCheckBox("Editar registro");
+		 chxeditar.setBounds(131, 19, 132, 21);
+		 panel_titulo_1.add(chxeditar);
+		 chxeditar.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		 chxeditar.addActionListener(new ActionListener() {
+		     @Override
+		     public void actionPerformed(ActionEvent e) {
+		         if (chxeditar.isSelected()) {
+		        	 
+		             habilitarCampos(true); 
+		             btnactualizar.setVisible(true); 
+		             btnlimpiar.setVisible(true);
+		         } else {
+		        	 
+		             habilitarCampos(false); 
+		             btnactualizar.setVisible(false);
+		             btnlimpiar.setVisible(false);
+		         }
+		     }
+		 });
 		
 		JLabel lbltitulo = new JLabel("DATOS DEL EMPLEADO");
 		lbltitulo.setBounds(27, 31, 459, 33);
@@ -554,6 +584,112 @@ public class empleado_nuevo extends JFrame{
 				cerrar_ventana();
 			}
 			});
+		
+		
+		btnactualizar.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        try {
+		            // Verificar que el campo 'Id empleado' no esté vacío
+		            String idEmpleadoStr = txtid_empleado.getText().trim();
+		            if (idEmpleadoStr.isEmpty()) {
+		                JOptionPane.showMessageDialog(null, "Error: El campo 'Id empleado' no puede estar vacío.");
+		                return;
+		            }
+
+		            // Verificar que el campo de texto para el ID original no esté vacío
+		            String idOriginalStr = txtidOriginal.getText().trim();
+		            if (idOriginalStr.isEmpty()) {
+		                JOptionPane.showMessageDialog(null, "Error: El campo 'ID original' no puede estar vacío.");
+		                return;
+		            }
+
+		            // Convertir los IDs a enteros
+		            int idOriginal = Integer.parseInt(idOriginalStr); 
+		            int idEmpleado = Integer.parseInt(idEmpleadoStr);
+
+		            // Verificar que el campo 'Número de cuenta bancaria' no esté vacío
+		            String cuentaEmpleado = txtcuenta.getText().trim();
+		            if (cuentaEmpleado.isEmpty()) {
+		                JOptionPane.showMessageDialog(null, "El campo 'Número de cuenta bancaria' no puede estar vacío.");
+		                return;
+		            }
+
+		            // Verificar que el campo 'Número de teléfono' no esté vacío
+		            String telefonoEmpleado = txttel.getText().trim();
+		            if (telefonoEmpleado.isEmpty()) {
+		                JOptionPane.showMessageDialog(null, "El campo 'Número de teléfono' no puede estar vacío.");
+		                return;
+		            }
+
+		            // Verificar que el campo 'Identidad' no esté vacío
+		            String identidadEmpleado = txtidentidad.getText().trim();
+		            if (identidadEmpleado.isEmpty()) {
+		                JOptionPane.showMessageDialog(null, "El campo 'Número de identidad' no puede estar vacío.");
+		                return;
+		            }
+
+		            // Validar que uno de los botones de sexo esté seleccionado
+		            String sexoEmpleado = "";
+		            if (buttonmasculino.isSelected()) {
+		                sexoEmpleado = "Masculino";
+		            } else if (buttonfemenino.isSelected()) {
+		                sexoEmpleado = "Femenino";
+		            } else if (buttonotro.isSelected()) {
+		                sexoEmpleado = "Otro";
+		            } else {
+		                JOptionPane.showMessageDialog(null, "Debe seleccionar un sexo para el empleado.");
+		                return;
+		            }
+
+		            // Crear el objeto empleado con los datos
+		            empleado empleadoActualizado = new empleado();
+		            empleadoActualizado.setId_empleado(idEmpleado);
+		            empleadoActualizado.setIdentidad_empleado(identidadEmpleado);
+		            empleadoActualizado.setNombres_empleado(txtnombres.getText().trim());
+		            empleadoActualizado.setApellidos_empleado(txtapellidos.getText().trim());
+		            empleadoActualizado.setSexo_empleado(sexoEmpleado);  // Asignamos el sexo correctamente
+		            empleadoActualizado.setNacimiento_empleado(fecha_nacimiento.getDate());
+		            empleadoActualizado.setCivil_empleado(cbxestado_civil.getSelectedItem().toString());
+		            empleadoActualizado.setDireccion_empleado(txadireccion.getText().trim());
+		            empleadoActualizado.setTel_empleado(telefonoEmpleado);
+		            empleadoActualizado.setCorreo_empleado(txtcorreo.getText().trim());
+		            empleadoActualizado.setCargo_empleado(cbxcargo.getSelectedItem().toString());
+		            empleadoActualizado.setArea_empleado(cbxarea.getSelectedItem().toString());
+		            empleadoActualizado.setInicio_empleado(fecha_inicio.getDate());
+		            empleadoActualizado.setRenuncia_empleado(fecha_renuncia.getDate());
+		            empleadoActualizado.setFotografia_empleado(txtruta.getText().trim());
+		            empleadoActualizado.setCuenta_empleado(cuentaEmpleado);
+
+		            // Llamar al método de actualización de la base de datos
+		            consultas_empleado consulta = new consultas_empleado();
+		            if (consulta.actualizar_empleado(empleadoActualizado, idOriginal, 
+		                    empleadoActualizado.getId_empleado(), empleadoActualizado.getNacimiento_empleado(), 
+		                    empleadoActualizado.getInicio_empleado(), empleadoActualizado.getRenuncia_empleado())) {
+		                JOptionPane.showMessageDialog(null, "Registro actualizado correctamente.");
+		                
+		                empleado_tabla tabla = new empleado_tabla();
+		                tabla.setVisible(true);
+		                tabla.setLocationRelativeTo(null);
+		                tabla.construirTabla();
+		                dispose();
+		                
+		                
+		            } else {
+		                JOptionPane.showMessageDialog(null, "Error al actualizar el registro.", "Error", JOptionPane.ERROR_MESSAGE);
+		            }
+		        } catch (NumberFormatException ex) {
+		            JOptionPane.showMessageDialog(null, "Error: ID de empleado no válido o vacío. Detalles: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		        } catch (Exception ex) {
+		            JOptionPane.showMessageDialog(null, "Ocurrió un error inesperado: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		            ex.printStackTrace();
+		        }
+		    }
+		});
+
+
+
+
 	
         	
 	}///////////////////FIN CLASS/////////////////////
@@ -580,18 +716,16 @@ public class empleado_nuevo extends JFrame{
 		        txtcuenta.getText().equals("") || cbxestado_civil.getSelectedItem().equals("") || 
 		        cbxarea.getSelectedItem().equals("") || cbxcargo.getSelectedItem().equals("")) {
 
-		        JOptionPane.showMessageDialog(null, "Datos vacíos. Por favor, complete todos los campos para registrar al empleado.");
+		        JOptionPane.showMessageDialog(null, "Datos vacíos. Por favor, complete todos los campos para registrar al empleado", "", JOptionPane.ERROR_MESSAGE);
 		    } else {
 		        empleado clase = new empleado();
 		        consultas_empleado consulta = new consultas_empleado();
 
-		        // Asignar valores a la clase empleado
 		        clase.setId_empleado(Integer.parseInt(txtid_empleado.getText()));
 		        clase.setIdentidad_empleado(txtidentidad.getText());
 		        clase.setNombres_empleado(txtnombres.getText());
 		        clase.setApellidos_empleado(txtapellidos.getText());
 
-		        // Sexo del empleado
 		        if (buttonmasculino.isSelected()) {
 		            clase.setSexo_empleado("Masculino");
 		        } else if (buttonfemenino.isSelected()) {
@@ -618,7 +752,6 @@ public class empleado_nuevo extends JFrame{
 		        clase.setFotografia_empleado(txtruta.getText());
 		        clase.setCuenta_empleado(txtcuenta.getText());
 
-		        // Verificar si ya existe un empleado con los mismos datos
 		        String campoDuplicado = consulta.empleadoExiste(
 		            clase.getId_empleado(), 
 		            clase.getIdentidad_empleado(), 
@@ -649,10 +782,6 @@ public class empleado_nuevo extends JFrame{
 		    }
 		}
 
-
-
-
-	
 		public void limpiar() {
 			txtid_empleado.setText("");
 			txtidentidad.setText("");
@@ -671,13 +800,217 @@ public class empleado_nuevo extends JFrame{
 			fecha_inicio.setDate(null);
 			fecha_renuncia.setDate(null);
 			txtruta.setText("");
-			txtcuenta.setText("");
+			txtcuenta.setText("0");
 			lblfoto.setIcon(new ImageIcon(icono_fotografia.getImage().getScaledInstance(lblfoto.getWidth(),
 					lblfoto.getHeight(), Image.SCALE_SMOOTH)));
 
 	
 		}
 	
+		/*public boolean actualizar_empleado(empleado emp, int idOriginal, int nuevoIdEmpleado, Date fechaNacimiento, Date fechaInicio, Date fechaRenuncia) {
+			Connection con = null;
+		    PreparedStatement ps = null;
+		    
+		    try {
+		        conexion conex = new conexion(); 
+		        con = conex.conectar(); 
+		        
+		        String sql = "UPDATE empleados SET " +
+		                     "id_empleado=?, identidad_empleado=?, nombres_empleado=?, apellidos_empleado=?, " +
+		                     "sexo_empleado=?, nacimiento_empleado=?, civil_empleado=?, direccion_empleado=?, " +
+		                     "tel_empleado=?, correo_empleado=?, cargo_empleado=?, area_empleado=?, " +
+		                     "inicio_empleado=?, renuncia_empleado=?, fotografia_empleado=?, cuenta_empleado=? " +
+		                     "WHERE id=?";
+		        
+		        ps = con.prepareStatement(sql);
+		        int i = 1;
+		        ps.setInt(i++, nuevoIdEmpleado); 
+		        ps.setString(i++, emp.getIdentidad_empleado());
+		        ps.setString(i++, emp.getNombres_empleado());
+		        ps.setString(i++, emp.getApellidos_empleado());
+		        ps.setString(i++, emp.getSexo_empleado());
+		        ps.setDate(i++, new java.sql.Date(fechaNacimiento.getTime()));
+		        ps.setString(i++, emp.getCivil_empleado());
+		        ps.setString(i++, emp.getDireccion_empleado());
+		        ps.setString(i++, emp.getTel_empleado());
+		        ps.setString(i++, emp.getCorreo_empleado());
+		        ps.setString(i++, emp.getCargo_empleado());
+		        ps.setString(i++, emp.getArea_empleado());
+		        ps.setDate(i++, new java.sql.Date(fechaInicio.getTime()));
+		        ps.setDate(i++, fechaRenuncia != null ? new java.sql.Date(fechaRenuncia.getTime()) : null);
+		        ps.setString(i++, emp.getFotografia_empleado());
+		        ps.setString(i++, emp.getCuenta_empleado());
+		        ps.setInt(i++, idOriginal);  
+
+		        int resultado = ps.executeUpdate();
+		        return resultado > 0; 
+		    } catch (SQLException e) {
+		        System.out.println("Error al actualizar empleado: " + e.getMessage());
+		        e.printStackTrace();
+		        return false;
+		    } finally {
+		        try {
+		            if (ps != null) ps.close();
+		            if (con != null) con.close();
+		        } catch (SQLException e) {
+		            System.out.println("Error al cerrar la conexión: " + e.getMessage());
+		            e.printStackTrace();
+		        }
+		    }
+		}*/
+		
+		
+		public void ver_empleado(String idEmpleado, String identidad, String nombres, String apellidos, String sexo, Date fechaNacimiento,
+                String estadoCivil, String direccion, String telefono, String correo, String cargo, String area, 
+                Date fechaInicio, Date fechaRenuncia, String fotografia, String cuenta) {
+
+			// Cargar los datos en los campos correspondientes
+			txtid_empleado.setText(idEmpleado);
+			txtidentidad.setText(identidad);
+			txtnombres.setText(nombres);
+			txtapellidos.setText(apellidos);
+			txtcuenta.setText(cuenta);
+			txtruta.setText(fotografia);  // Colocar la ruta de la fotografía en el JTextField
+			
+			// Seleccionar el radio button según el sexo
+			if (sexo.equalsIgnoreCase("Masculino")) {
+				buttonmasculino.setSelected(true);
+			} else if (sexo.equalsIgnoreCase("Femenino")) {
+				buttonfemenino.setSelected(true);
+			} else {
+				buttonotro.setSelected(true);
+			}
+			
+			fecha_nacimiento.setDate(fechaNacimiento);
+			cbxestado_civil.setSelectedItem(estadoCivil);
+			txadireccion.setText(direccion);
+			txttel.setText(telefono);
+			txtcorreo.setText(correo);
+			cbxcargo.setSelectedItem(cargo);
+			cbxarea.setSelectedItem(area);
+			fecha_inicio.setDate(fechaInicio);
+			fecha_renuncia.setDate(fechaRenuncia);
+			
+			// Cargar la fotografía si está disponible
+			if (fotografia != null && !fotografia.isEmpty()) {
+				ImageIcon icon = new ImageIcon(fotografia);
+				Image img = icon.getImage().getScaledInstance(lblfoto.getWidth(), lblfoto.getHeight(), Image.SCALE_SMOOTH);
+				lblfoto.setIcon(new ImageIcon(img));
+			} else {
+				lblfoto.setIcon(new ImageIcon(icono_fotografia.getImage().getScaledInstance(lblfoto.getWidth(),
+						lblfoto.getHeight(), Image.SCALE_SMOOTH)));
+			}
+			
+			// Deshabilitar todos los campos
+			txtid_empleado.setEditable(false);
+			txtidentidad.setEditable(false);
+			txtnombres.setEditable(false);
+			txtapellidos.setEditable(false);
+			buttonmasculino.setEnabled(false);
+			buttonfemenino.setEnabled(false);
+			buttonotro.setEnabled(false);
+			fecha_nacimiento.setEnabled(false);
+			cbxestado_civil.setEnabled(false);
+			txadireccion.setEditable(false);
+			txttel.setEditable(false);
+			txtcorreo.setEditable(false);
+			cbxcargo.setEnabled(false);
+			cbxarea.setEnabled(false);
+			fecha_inicio.setEnabled(false);
+			fecha_renuncia.setEnabled(false);
+			txtcuenta.setEditable(false);
+			txtruta.setEditable(false);
+			
+			// Ocultar los botones de "Seleccionar foto" y "Eliminar foto"
+			btnseleccionar_foto.setVisible(false);
+			btneliminar_foto.setVisible(false);
+			
+			// Cambiar el color de la fuente a negro para todos los componentes
+			txtid_empleado.setForeground(Color.BLACK);
+			txtidentidad.setForeground(Color.BLACK);
+			txtnombres.setForeground(Color.BLACK);
+			txtapellidos.setForeground(Color.BLACK);
+			buttonmasculino.setForeground(Color.BLACK);
+			buttonfemenino.setForeground(Color.BLACK);
+			buttonotro.setForeground(Color.BLACK);
+			fecha_nacimiento.setForeground(Color.BLACK);
+			cbxestado_civil.setForeground(Color.BLACK);
+			txadireccion.setForeground(Color.BLACK);
+			txttel.setForeground(Color.BLACK);
+			txtcorreo.setForeground(Color.BLACK);
+			cbxcargo.setForeground(Color.BLACK);
+			cbxarea.setForeground(Color.BLACK);
+			fecha_inicio.setForeground(Color.BLACK);
+			fecha_renuncia.setForeground(Color.BLACK);
+			txtcuenta.setForeground(Color.BLACK);
+			txtruta.setForeground(Color.BLACK);  // Ruta de la fotografía
+			lblfoto.setForeground(Color.BLACK);
+			
+			// Mostrar la ventana
+			setVisible(true);
+		}
+		
+		
+		// Método para habilitar o deshabilitar los campos del formulario
+		private void habilitarCampos(boolean habilitar) {
+		    // TextFields
+		    txtid_empleado.setEditable(habilitar);
+		    txtidentidad.setEditable(habilitar);
+		    txtnombres.setEditable(habilitar);
+		    txtapellidos.setEditable(habilitar);
+		    txttel.setEditable(habilitar);
+		    txtcorreo.setEditable(habilitar);
+		    txtcuenta.setEditable(habilitar);
+
+		    // TextArea (Dirección)
+		    txadireccion.setEditable(habilitar); // Solo permitir edición si habilitar es true
+		    txadireccion.setEnabled(habilitar);  // Desactiva la interacción si es false
+
+		    // ComboBoxes y botones de radio (Estado civil y sexo)
+		    cbxestado_civil.setEnabled(habilitar);
+		    buttonmasculino.setEnabled(habilitar);
+		    buttonfemenino.setEnabled(habilitar);
+		    buttonotro.setEnabled(habilitar);
+
+		    // JDateChoosers (Fechas de nacimiento, inicio y renuncia)
+		    fecha_nacimiento.setEnabled(habilitar);
+		    fecha_inicio.setEnabled(habilitar);
+		    fecha_renuncia.setEnabled(habilitar);
+
+		    // ComboBoxes para cargo y área
+		    cbxcargo.setEnabled(habilitar);
+		    cbxarea.setEnabled(habilitar);
+
+		    // Botones para seleccionar y eliminar foto
+		    btnseleccionar_foto.setVisible(habilitar);  // Mostrar botón de selección de foto solo si está habilitado
+		    btneliminar_foto.setVisible(habilitar);     // Mostrar botón de eliminar foto solo si está habilitado
+
+		    // Adicionalmente, si deseas cambiar el color de los componentes cuando se habilitan o deshabilitan:
+		    Color colorTexto = habilitar ? Color.BLACK : Color.GRAY;  // Cambia el color según el estado
+
+		    txtid_empleado.setForeground(colorTexto);
+		    txtidentidad.setForeground(colorTexto);
+		    txtnombres.setForeground(colorTexto);
+		    txtapellidos.setForeground(colorTexto);
+		    txttel.setForeground(colorTexto);
+		    txtcorreo.setForeground(colorTexto);
+		    txtcuenta.setForeground(colorTexto);
+		    txadireccion.setForeground(colorTexto);  // Cambia el color del texto en el JTextArea
+		}
+
+		
+		private boolean validarCampos() {
+		    if (txtid_empleado.getText().isEmpty() || txtidentidad.getText().isEmpty() || 
+		        txtnombres.getText().isEmpty() || txtapellidos.getText().isEmpty() || 
+		        txttel.getText().isEmpty() || txtcorreo.getText().isEmpty() || 
+		        txadireccion.getText().isEmpty() || cbxestado_civil.getSelectedIndex() == -1 || 
+		        cbxcargo.getSelectedIndex() == -1 || cbxarea.getSelectedIndex() == -1) {
+		        return false;  // Hay campos vacíos
+		    }
+		    return true;  // Todos los campos están llenos
+		}
+		
+		
 		public void actualizar_empleado() {
 		    Date fechaNacimiento = fecha_nacimiento.getDate();
 		    Date fechaInicio = fecha_inicio.getDate();
@@ -697,11 +1030,28 @@ public class empleado_nuevo extends JFrame{
 		    }
 
 		    try {
-		        int idOriginal = Integer.parseInt(txtid.getText()); // Este es el ID original del empleado en la base de datos
+		        // Verificar que el campo txtid no esté vacío
+		        if (txtid.getText().isEmpty()) {
+		            JOptionPane.showMessageDialog(null, "Error: ID del empleado no puede estar vacío.");
+		            return;
+		        }
+
+		        int idOriginal = Integer.parseInt(txtid.getText().trim()); // Convertir idOriginal
+
 		        if (idOriginal == 0) {
 		            JOptionPane.showMessageDialog(null, "Error: ID del empleado no válido.");
 		            return;
 		        }
+
+		        // Verificar que el campo id_empleado contenga un número válido
+		        String nuevoIdEmpleadoStr = txtid_empleado.getText().trim();
+		        if (nuevoIdEmpleadoStr.isEmpty()) {
+		            JOptionPane.showMessageDialog(null, "Error: El campo 'Id empleado' no puede estar vacío.");
+		            return;
+		        }
+		        int nuevoIdEmpleado = Integer.parseInt(nuevoIdEmpleadoStr); // Convertir idEmpleado
+
+		        String nuevaIdentidad = txtidentidad.getText().trim();
 
 		        empleado clase = new empleado();
 		        consultas_empleado consulta = new consultas_empleado();
@@ -714,10 +1064,6 @@ public class empleado_nuevo extends JFrame{
 		            return;
 		        }
 
-		        // Obtener el nuevo ID del empleado del campo de texto
-		        int nuevoIdEmpleado = Integer.parseInt(txtid_empleado.getText());
-		        String nuevaIdentidad = txtidentidad.getText();
-		        
 		        boolean idModificado = nuevoIdEmpleado != empleadoOriginal.getId_empleado();
 		        boolean identidadModificada = !nuevaIdentidad.equals(empleadoOriginal.getIdentidad_empleado());
 
@@ -734,8 +1080,8 @@ public class empleado_nuevo extends JFrame{
 		        clase.setId(idOriginal); // Usamos el ID original para la actualización
 		        clase.setId_empleado(nuevoIdEmpleado);
 		        clase.setIdentidad_empleado(nuevaIdentidad);
-		        clase.setNombres_empleado(txtnombres.getText());
-		        clase.setApellidos_empleado(txtapellidos.getText());
+		        clase.setNombres_empleado(txtnombres.getText().trim());
+		        clase.setApellidos_empleado(txtapellidos.getText().trim());
 
 		        if (buttonmasculino.isSelected()) {
 		            clase.setSexo_empleado("Masculino");
@@ -747,15 +1093,15 @@ public class empleado_nuevo extends JFrame{
 
 		        clase.setNacimiento_empleado(fechaNacimiento);
 		        clase.setCivil_empleado(cbxestado_civil.getSelectedItem().toString());
-		        clase.setDireccion_empleado(txadireccion.getText());
-		        clase.setTel_empleado(txttel.getText());
-		        clase.setCorreo_empleado(txtcorreo.getText());
+		        clase.setDireccion_empleado(txadireccion.getText().trim());
+		        clase.setTel_empleado(txttel.getText().trim());
+		        clase.setCorreo_empleado(txtcorreo.getText().trim());
 		        clase.setCargo_empleado(cbxcargo.getSelectedItem().toString());
 		        clase.setArea_empleado(cbxarea.getSelectedItem().toString());
 		        clase.setInicio_empleado(fechaInicio);
 		        clase.setRenuncia_empleado(fechaRenuncia);
-		        clase.setFotografia_empleado(txtruta.getText());
-		        clase.setCuenta_empleado(txtcuenta.getText());
+		        clase.setFotografia_empleado(txtruta.getText().trim());
+		        clase.setCuenta_empleado(txtcuenta.getText().trim());
 
 		        // Llamada al método de actualización
 		        if (consulta.actualizar_empleado(clase, idOriginal, nuevoIdEmpleado, fechaNacimiento, fechaInicio, fechaRenuncia)) {
@@ -776,11 +1122,4 @@ public class empleado_nuevo extends JFrame{
 		        e.printStackTrace();
 		    }
 		}
-		
-		
-		
-
-
-
-
-}
+}//end
