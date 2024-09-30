@@ -100,12 +100,6 @@ public class permiso_AL_tabla extends JFrame {
 			});
 		
 		
-
-		
-
-		
-		
-		
 		JPanel panel_tabla = new JPanel();
 		panel_tabla.setLayout(null);
 		panel_tabla.setBackground(SystemColor.menu);
@@ -116,9 +110,8 @@ public class permiso_AL_tabla extends JFrame {
 		scrollPane.setBounds(10, 10, 970, 420);
 		panel_tabla.add(scrollPane);
 		
-		// En el constructor o algún método de inicialización
-				table = new JTable();
-				scrollPane.setViewportView(table); // Asignar la tabla al scrollPane
+		table = new JTable();
+		scrollPane.setViewportView(table); 
 		
 		JPanel panelbusqueda = new JPanel();
 		panelbusqueda.setLayout(null);
@@ -227,7 +220,7 @@ public class permiso_AL_tabla extends JFrame {
 			}
 		});
 		btnregresar.setFont(new Font("Tahoma", Font.BOLD, 10));
-		btnregresar.setToolTipText("Menú principal");
+		btnregresar.setToolTipText("Regresar al menú principal");
 		btnregresar.setBounds(10, 17, 90, 23);
 		panelbotones.add(btnregresar);
 		
@@ -243,7 +236,7 @@ public class permiso_AL_tabla extends JFrame {
 			}
 		});
 		btnnuevo.setFont(new Font("Tahoma", Font.BOLD, 10));
-		btnnuevo.setToolTipText("Nuevo empleado");
+		btnnuevo.setToolTipText("Nuevo registro");
 		btnnuevo.setBounds(363, 17, 90, 23);
 		panelbotones.add(btnnuevo);
 		
@@ -288,7 +281,7 @@ public class permiso_AL_tabla extends JFrame {
 		btneliminar.setBounds(263, 17, 90, 23);
 		panelbotones.add(btneliminar);
 		
-		JLabel lblPermisosAusenciaLaboral = new JLabel("PERMISOS AUSENCIA LABORAL ");
+		JLabel lblPermisosAusenciaLaboral = new JLabel("PERMISOS POR AUSENCIA LABORAL ");
 		lblPermisosAusenciaLaboral.setHorizontalAlignment(SwingConstants.LEFT);
 		lblPermisosAusenciaLaboral.setFont(new Font("Segoe UI", Font.BOLD, 26));
 		lblPermisosAusenciaLaboral.setBounds(25, 30, 514, 26);
@@ -298,12 +291,12 @@ public class permiso_AL_tabla extends JFrame {
 		cal.set(2015, Calendar.JANUARY, 1); // Inicio en enero 2015
 		hasta_buscar.setMinSelectableDate(cal.getTime());
 
-		cal.setTime(new Date()); // Fecha actual
-		cal.add(Calendar.YEAR, 1); // Añadir un año al actual
+		cal.setTime(new Date()); 
+		cal.add(Calendar.YEAR, 1); 
 		hasta_buscar.setMaxSelectableDate(cal.getTime());
 		
 		
-			// Configurar ActionListener para los JComboBox
+		
 	        cbxbusquedaCargo.addActionListener(new ActionListener() {
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
@@ -320,7 +313,7 @@ public class permiso_AL_tabla extends JFrame {
 	
 	        
 	
-	        // Configuración del placeholder
+	   
 	        txtbuscar.setText(placeHolderText);
 	        txtbuscar.setForeground(Color.GRAY);
 	        
@@ -365,11 +358,7 @@ public class permiso_AL_tabla extends JFrame {
 	        hasta_buscar.getDateEditor().addPropertyChangeListener("date", evt -> aplicarFiltros());
 
 	        
-	     
-	       
-	        
-	        
-		
+	   
 		
 	}//class
 	
@@ -402,9 +391,9 @@ public class permiso_AL_tabla extends JFrame {
 		    table.setModel(modeloTabla);
 		    TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(modeloTabla);
 		    table.setRowSorter(sorter);
-		    table.getColumnModel().getColumn(0).setPreferredWidth(30);  // Columna "No"
-		    table.getColumnModel().getColumn(1).setPreferredWidth(30);  // Columna "Id"
-		    table.getColumnModel().getColumn(15).setPreferredWidth(30); // Columna "Días"
+		    table.getColumnModel().getColumn(0).setPreferredWidth(30); 
+		    table.getColumnModel().getColumn(1).setPreferredWidth(30);  
+		    table.getColumnModel().getColumn(15).setPreferredWidth(30); 
 
 		    scrollPane.setViewportView(table);
 
@@ -414,10 +403,10 @@ public class permiso_AL_tabla extends JFrame {
 		            if (e.getClickCount() == 2) { 
 		                int filaSeleccionada = table.getSelectedRow();
 		                if (filaSeleccionada != -1) {
-		                    int fila = table.convertRowIndexToModel(filaSeleccionada); // Convertir al modelo si tiene ordenamiento
+		                    int fila = table.convertRowIndexToModel(filaSeleccionada); 
 		                    
-		                    String idPermiso = String.valueOf(table.getModel().getValueAt(fila, 0));  // El No (ID visual de la tabla)
-		                    String idEmpleado = String.valueOf(table.getModel().getValueAt(fila, 1)); // El Id de empleado
+		                    String idPermiso = String.valueOf(table.getModel().getValueAt(fila, 0)); 
+		                    String idEmpleado = String.valueOf(table.getModel().getValueAt(fila, 1)); 
 		                    String nombres = String.valueOf(table.getModel().getValueAt(fila, 2));
 		                    String apellidos = String.valueOf(table.getModel().getValueAt(fila, 3));
 		                    String identidad = String.valueOf(table.getModel().getValueAt(fila, 4));
@@ -432,12 +421,12 @@ public class permiso_AL_tabla extends JFrame {
 		                    String nombresRecibe = String.valueOf(table.getModel().getValueAt(fila, 16));
 		                    String fechaRecibe = String.valueOf(table.getModel().getValueAt(fila, 17));
 
-		                    String desdeHora = String.valueOf(table.getModel().getValueAt(fila, 9)); // Hora inicio
-		                    String hastaHora = String.valueOf(table.getModel().getValueAt(fila, 10)); // Hora fin
+		                    String desdeHora = String.valueOf(table.getModel().getValueAt(fila, 9)); 
+		                    String hastaHora = String.valueOf(table.getModel().getValueAt(fila, 10)); 
 
 		                    permiso_AL_nuevo ventanaPermiso = new permiso_AL_nuevo();
 
-		                    ventanaPermiso.txtnumero_permiso.setText(idPermiso);  // Mostrar el ID en txtnumero_permiso
+		                    ventanaPermiso.txtnumero_permiso.setText(idPermiso);  
 		                    ventanaPermiso.cbxnombres.setSelectedItem(nombres);
 		                    ventanaPermiso.txtapellidos.setText(apellidos);
 		                    ventanaPermiso.txtidentidad.setText(identidad);
@@ -528,7 +517,7 @@ public class permiso_AL_tabla extends JFrame {
 		    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm"); 
 		    
 		    for (int i = 0; i < miLista.size(); i++) {
-		        permiso_ausencia_laboral permiso = miLista.get(i); // Objeto permiso_ausencia_laboral
+		        permiso_ausencia_laboral permiso = miLista.get(i); 
 
 		        matrizInfo[i][0] = String.valueOf(permiso.getId_permisos());
 		        matrizInfo[i][1] = String.valueOf(permiso.getId_empleado());
@@ -548,16 +537,16 @@ public class permiso_AL_tabla extends JFrame {
 		        calendar.setTime(permiso.getTotal_horas());
 		        LocalTime totalHoras = LocalTime.of(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
 
-		        matrizInfo[i][9] = desdeHora.format(timeFormatter); // Hora de inicio formateada
-		        matrizInfo[i][10] = hastaHora.format(timeFormatter); // Hora de fin formateada
-		        matrizInfo[i][11] = totalHoras.format(timeFormatter); // Total de horas formateada
+		        matrizInfo[i][9] = desdeHora.format(timeFormatter); 
+		        matrizInfo[i][10] = hastaHora.format(timeFormatter); 
+		        matrizInfo[i][11] = totalHoras.format(timeFormatter); 
 
 		        matrizInfo[i][12] = permiso.getMotivo_ausencia();
-		        matrizInfo[i][13] = dateFormat.format(permiso.getDesde_fecha()); // Fecha desde (formateada)
-		        matrizInfo[i][14] = dateFormat.format(permiso.getHasta_fecha()); // Fecha hasta (formateada)
-		        matrizInfo[i][15] = String.valueOf(permiso.getTotal_fecha()); // Total de días
-		        matrizInfo[i][16] = permiso.getNombres_recibe(); // Recibido por
-		        matrizInfo[i][17] = dateFormat.format(permiso.getFecha_recibe()); // Fecha de elaboración (formateada)
+		        matrizInfo[i][13] = dateFormat.format(permiso.getDesde_fecha()); 
+		        matrizInfo[i][14] = dateFormat.format(permiso.getHasta_fecha()); 
+		        matrizInfo[i][15] = String.valueOf(permiso.getTotal_fecha()); 
+		        matrizInfo[i][16] = permiso.getNombres_recibe(); 
+		        matrizInfo[i][17] = dateFormat.format(permiso.getFecha_recibe()); 
 		    }
 
 		    return matrizInfo;
@@ -622,17 +611,14 @@ public class permiso_AL_tabla extends JFrame {
 		    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
 		    List<RowFilter<Object, Object>> filtros = new ArrayList<>();
 
-		    // Filtro de Cargo si no está en blanco
 		    if (filtroCargo != null && !filtroCargo.trim().isEmpty()) {
 		        filtros.add(RowFilter.regexFilter("(?i)" + filtroCargo, 7)); // Columna 7 es "Cargo"
 		    }
 
-		    // Filtro de Área si no está en blanco
 		    if (filtroArea != null && !filtroArea.trim().isEmpty()) {
 		        filtros.add(RowFilter.regexFilter("(?i)" + filtroArea, 8)); // Columna 8 es "Área"
 		    }
 
-		    // Filtro de fechas si ambas están seleccionadas (y no están vacías)
 		    if (fechaDesde != null && fechaHasta != null) {
 		        filtros.add(new RowFilter<Object, Object>() {
 		            @Override
@@ -641,7 +627,6 @@ public class permiso_AL_tabla extends JFrame {
 		                    String fechaRecibidoStr = entry.getStringValue(17); // Columna 17 es "Fecha recibido"
 		                    Date fechaRecibido = dateFormat.parse(fechaRecibidoStr);
 		                    
-		                    // Verificar que la fecha está dentro del rango seleccionado
 		                    return (fechaRecibido.equals(fechaDesde) || fechaRecibido.after(fechaDesde)) 
 		                        && (fechaRecibido.equals(fechaHasta) || fechaRecibido.before(fechaHasta));
 		                } catch (ParseException e) {
@@ -650,12 +635,11 @@ public class permiso_AL_tabla extends JFrame {
 		            }
 		        });
 		    }
-
-		    // Si no hay filtros activos, mostrar todos los registros
+		    
 		    if (filtros.isEmpty()) {
 		        trsfiltroCodigo.setRowFilter(null);  // Quitar todos los filtros
 		    } else {
-		        // Combinar todos los filtros activos
+		    	
 		        RowFilter<Object, Object> combinedFilter = RowFilter.andFilter(filtros);
 		        trsfiltroCodigo.setRowFilter(combinedFilter);
 		    }
@@ -670,17 +654,14 @@ public class permiso_AL_tabla extends JFrame {
             
             List<RowFilter<Object, Object>> filtros = new ArrayList<>();
 
-            // Filtro de Cargo
             if (filtroCargo != null && !filtroCargo.trim().isEmpty()) {
                 filtros.add(RowFilter.regexFilter("(?i)" + filtroCargo, 6)); // Columna 6 es "Cargo"
             }
-
-            // Filtro de Área
+            
             if (filtroArea != null && !filtroArea.trim().isEmpty()) {
                 filtros.add(RowFilter.regexFilter("(?i)" + filtroArea, 7)); // Columna 7 es "Área"
             }
 
-            // Filtro por fecha seleccionada
             if (fechaSeleccionada != null) {
                 String fechaFiltro = new SimpleDateFormat("dd-MM-yy").format(fechaSeleccionada);
                 filtros.add(RowFilter.regexFilter(fechaFiltro, 12, 13, 16)); // Columnas 12, 13, 16 son fechas
@@ -709,12 +690,10 @@ public class permiso_AL_tabla extends JFrame {
                 ventanaPermiso.cbxnombres.removeAllItems(); 
                 ventanaPermiso.cbxnombres.addItem(""); // Añadir un ítem vacío al inicio
 
-                // Añadir nombres de empleados al JComboBox
                 while (rs.next()) {
                     ventanaPermiso.cbxnombres.addItem(rs.getString("nombres_empleado"));
                 }
 
-                // Cerrar las conexiones
                 rs.close();
                 pst.close();
                 conn.close();
@@ -726,10 +705,6 @@ public class permiso_AL_tabla extends JFrame {
             ventanaPermiso.setLocationRelativeTo(null);
             ventanaPermiso.setVisible(true);
         }
-
-
-
-
 
 
 }

@@ -827,88 +827,7 @@ public class permiso_AL_nuevo extends JFrame {
 	      
 	        
 	    }
-	    
-	    /*public void actualizar_permiso_laboral() {
-	        try {
-	            
-	            Date horaInicioDate = (Date) spinnerHoraInicio.getValue();
-	            Date horaFinDate = (Date) spinnerHoraFin.getValue();
-	            Calendar calendarHoraInicio = Calendar.getInstance();
-	            
-	            calendarHoraInicio.setTime(horaInicioDate);
-	            Time horaInicioTime = new Time(calendarHoraInicio.get(Calendar.HOUR_OF_DAY), calendarHoraInicio.get(Calendar.MINUTE), 0);
-
-	            Calendar calendarHoraFin = Calendar.getInstance();
-	            calendarHoraFin.setTime(horaFinDate);
-	            Time horaFinTime = new Time(calendarHoraFin.get(Calendar.HOUR_OF_DAY), calendarHoraFin.get(Calendar.MINUTE), 0);
-
-	            
-	            Date fechaSeleccionada3 = date_desde.getDate(); // Fecha desde
-	            Date fechaSeleccionada4 = date_hasta.getDate();  // Fecha hasta
-
-	            // Obtener la fecha actual desde txtFecha (ya está en formato dd-MM-yy)
-	            String fechaActualTexto = txtFecha.getText();
-	            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd-MM-yy");
-	            Date fechaUtil = formatoFecha.parse(fechaActualTexto);
-	            java.sql.Date fechaSQL = new java.sql.Date(fechaUtil.getTime());
-
-	           
-	            if (cbxnombres.getSelectedItem().equals("") || txtapellidos.getText().equals("") ||
-	                txtidentidad.getText().equals("") || txtid.getText().equals("") ||
-	                txttel.getText().equals("") || txtcorreo.getText().equals("") ||
-	                txtcargo.getText().equals("") || txtarea.getText().equals("") ||
-	                txttotal_horas.getText().equals("") || txamotivo.getText().equals("") ||
-	                fechaSeleccionada3 == null || fechaSeleccionada4 == null ||
-	                txttotal_dias.getText().equals("") || txtnombres_recibe.getText().equals("")) {
-
-	                JOptionPane.showMessageDialog(null, "¡Datos vacíos, por favor, para actualizar el permiso llene todos los campos!",
-	                        "Advertencia", JOptionPane.WARNING_MESSAGE);
-
-	            } else {
-	                permiso_ausencia_laboral clase = new permiso_ausencia_laboral();
-	                consultas_permiso_ausencia_laboral consulta = new consultas_permiso_ausencia_laboral();
-
-	                clase.setId_permisos(Integer.parseInt(txtnumero_permiso.getText()));
-	                clase.setNombres_empleado(cbxnombres.getSelectedItem().toString());
-	                clase.setApellidos_empleado(txtapellidos.getText().toString());
-	                clase.setIdentidad_empleado(txtidentidad.getText().toString());
-	                clase.setId_empleado(Integer.parseInt(txtid.getText()));
-	                clase.setTel_empleado(txttel.getText().toString());
-	                clase.setCorreo_empleado(txtcorreo.getText().toString());
-	                clase.setCargo_empleado(txtcargo.getText().toString());
-	                clase.setArea_empleado(txtarea.getText().toString());
-	                clase.setDesde_hora(horaInicioTime); // Almacenar la hora de inicio
-	                clase.setHasta_hora(horaFinTime);    // Almacenar la hora de fin
-	                
-	                String[] tiempo = txttotal_horas.getText().split(":");
-	                int horas = Integer.parseInt(tiempo[0]);
-	                int minutos = Integer.parseInt(tiempo[1]);
-	                Time totalHoras = new Time(horas, minutos, 0); // Crear objeto Time con horas y minutos
-	                clase.setTotal_horas(totalHoras); // Almacenar el total de horas como TIME
-
-	                clase.setMotivo_ausencia(txamotivo.getText().toString());
-	                clase.setDesde_fecha(fechaSeleccionada3);
-	                clase.setHasta_fecha(fechaSeleccionada4);
-	                clase.setTotal_fecha(Integer.parseInt(txttotal_dias.getText()));
-	                clase.setNombres_recibe(txtnombres_recibe.getText().toString());
-	                clase.setFecha_recibe(fechaSQL);
-	                
-	                if (consulta.actualizar_permiso_ausencia_laboral(clase, horaInicioTime, horaFinTime, fechaSeleccionada3, fechaSeleccionada4, fechaSQL)) {
-	                    JOptionPane.showMessageDialog(null, "Permiso por ausencia laboral actualizado correctamente");
-	                    permiso_AL_tabla ver_permiso = new permiso_AL_tabla();
-	                    ver_permiso.setLocationRelativeTo(null);
-	                    ver_permiso.setVisible(true);
-	                    ver_permiso.construirTabla();
-	                    dispose();
-	                } else {
-	                    JOptionPane.showMessageDialog(null, "Error, no se puede actualizar el permiso por ausencia laboral");
-	                }
-	            }
-	        } catch (Exception e) {
-	            JOptionPane.showMessageDialog(null, "Error al actualizar el permiso: " + e.getMessage());
-	        }
-	    }*/
-	    
+	  
 	    
 	    public void actualizar_permiso_laboral() {
 	        try {
@@ -1160,9 +1079,6 @@ public class permiso_AL_nuevo extends JFrame {
 	        txttotal_horas.setEditable(false);
 	        txamotivo.setEditable(false);
 	        txtnombres_recibe.setEditable(false);
-	        //btnguardar.setEnabled(false);  // Desactivar botón de guardar
-	        //btnactualizar.setEnabled(false); // Desactivar botón de actualizar
-	        //btnlimpiar.setEnabled(false); // Desactivar botón de limpiar
 	    }
 
 	    

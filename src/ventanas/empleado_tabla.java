@@ -225,7 +225,7 @@ public class empleado_tabla extends JFrame {
         btnMenu = new JButton("Menú");
         btnMenu.setBackground(UIManager.getColor("Button.highlight"));
         btnMenu.setFont(new Font("Tahoma", Font.BOLD, 10));
-        btnMenu.setToolTipText("Menú principal");
+        btnMenu.setToolTipText("Regresar al menú principal");
         btnMenu.setBounds(10, 17, 90, 23);
         panelbotones.add(btnMenu);
         btnMenu.addActionListener(new ActionListener() {
@@ -243,7 +243,7 @@ public class empleado_tabla extends JFrame {
         btnNuevoEmpleado.setBounds(358, 17, 90, 23);
         panelbotones.add(btnNuevoEmpleado);
         btnNuevoEmpleado.setIcon(null);
-        btnNuevoEmpleado.setToolTipText("Nuevo empleado");
+        btnNuevoEmpleado.setToolTipText("Nuevo registro");
         btnNuevoEmpleado.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 empleado_nuevo nuevo = new empleado_nuevo();
@@ -420,15 +420,13 @@ public class empleado_tabla extends JFrame {
                             // Crear una instancia de la ventana "empleado_nuevo"
                             empleado_nuevo ventanaNuevo = new empleado_nuevo();
 
-                            // Llamar al método ver_empleado con los datos
                             ventanaNuevo.ver_empleado(idEmpleado, identidad, nombres, apellidos, sexo, fechaNacimiento, estadoCivil,
                                     direccion, telefono, correo, cargo, area, fechaInicio, fechaRenuncia, fotografia, cuenta);
 
-                            // Aquí establecemos el valor del idOriginal en el JTextField llamado txtidOriginal
                             ventanaNuevo.txtidOriginal.setText(idOriginalStr);  // idOriginal es la clave primaria INT
 
                             ventanaNuevo.setLocationRelativeTo(null);
-                            ventanaNuevo.btnguardar.setVisible(false); // Ocultar el botón de guardar ya que es una vista de edición
+                            ventanaNuevo.btnguardar.setVisible(false); 
                             ventanaNuevo.btnactualizar.setVisible(false);
                             ventanaNuevo.btnlimpiar.setVisible(false);
                             dispose();  // Cerrar la ventana actual

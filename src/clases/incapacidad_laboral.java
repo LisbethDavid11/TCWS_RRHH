@@ -3,7 +3,7 @@ package clases;
 import java.sql.Time;
 import java.util.Date;
 
-public class incapacidad_temporal {
+public class incapacidad_laboral {
 	int id_incapacidad;
 	int id_empleado;
 	String nombres_empleado;
@@ -17,7 +17,7 @@ public class incapacidad_temporal {
 	String sexo_empleado;
 	int edad_empleado;
 	String riesgo_incapacidad;
-	Date inicio_incapacida;
+	Date inicio_incapacidad;
 	Date fin_incapacidad;
 	int total_dias;
 	String tipo_incapacidad;
@@ -108,11 +108,11 @@ public class incapacidad_temporal {
 	public void setRiesgo_incapacidad(String riesgo_incapacidad) {
 		this.riesgo_incapacidad = riesgo_incapacidad;
 	}
-	public Date getInicio_incapacida() {
-		return inicio_incapacida;
+	public Date getInicio_incapacidad() {
+		return inicio_incapacidad;
 	}
-	public void setInicio_incapacida(Date inicio_incapacida) {
-		this.inicio_incapacida = inicio_incapacida;
+	public void setInicio_incapacidad(Date inicio_incapacida) {
+		this.inicio_incapacidad = inicio_incapacida;
 	}
 	public Date getFin_incapacidad() {
 		return fin_incapacidad;
