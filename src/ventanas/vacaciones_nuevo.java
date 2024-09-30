@@ -1,28 +1,41 @@
 package ventanas;
 
 import java.awt.Color;
-import java.awt.Window.Type;
-
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import java.awt.SystemColor;
-import javax.swing.JTextField;
 import java.awt.Font;
-import javax.swing.JLabel;
-import javax.swing.JComboBox;
-import com.toedter.calendar.JDateChooser;
-import javax.swing.SwingConstants;
-import javax.swing.JTextArea;
-import javax.swing.BorderFactory;
-import javax.swing.JSpinner;
-import javax.swing.SpinnerModel;
+import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.UIManager;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+
+import com.toedter.calendar.JDateChooser;
+
+import conexion.conexion;
+
+
+
 
 public class vacaciones_nuevo extends JFrame {
 	public JTextField txtidentidad;
@@ -42,9 +55,9 @@ public class vacaciones_nuevo extends JFrame {
 	public JTextField txtdias_correspondientes;
 	public JComboBox<String> cbxnombres;
 	public JDateChooser fecha_nacimiento;
-	public JDateChooser fecha_inicio_laboral;
-	public JDateChooser fecha_finalizacion;
 	public JDateChooser fecha_inicio;
+	public JDateChooser fecha_finalizacion_v;
+	public JDateChooser fecha_inicio_v;
 	public JRadioButton radio_si;
 	public JRadioButton radio_no;
 	
@@ -54,6 +67,8 @@ public class vacaciones_nuevo extends JFrame {
 	public JButton btnlimpiar;
 	public JCheckBox chxeditar;
 	public JTextField txtdias_pendientes;
+	
+	LocalDate fechaActual = LocalDate.now();
 	
 	public vacaciones_nuevo() {
 		
@@ -153,15 +168,14 @@ public class vacaciones_nuevo extends JFrame {
         panel_datos.add(txtarea);
         
         cbxnombres = new JComboBox<String>();
-        cbxnombres.setSelectedIndex(-1);
         cbxnombres.setFont(new Font("Tahoma", Font.PLAIN, 14));
         cbxnombres.setBounds(30, 61, 208, 33);
         panel_datos.add(cbxnombres);
         
-        fecha_inicio = new JDateChooser();
-        fecha_inicio.setDateFormatString("dd-MM-yy");
-        fecha_inicio.setBounds(31, 374, 166, 33);
-        panel_datos.add(fecha_inicio);
+        fecha_inicio_v = new JDateChooser();
+        fecha_inicio_v.setDateFormatString("dd-MM-yy");
+        fecha_inicio_v.setBounds(31, 374, 166, 33);
+        panel_datos.add(fecha_inicio_v);
         
         JLabel lbldesde = new JLabel("Fecha de inicio");
         lbldesde.setFont(new Font("Tahoma", Font.BOLD, 15));
@@ -216,10 +230,10 @@ public class vacaciones_nuevo extends JFrame {
         lblDatosDel_2.setBounds(31, 226, 919, 28);
         panel_datos.add(lblDatosDel_2);
         
-        fecha_finalizacion = new JDateChooser();
-        fecha_finalizacion.setDateFormatString("dd-MM-yy");
-        fecha_finalizacion.setBounds(266, 374, 166, 33);
-        panel_datos.add(fecha_finalizacion);
+        fecha_finalizacion_v = new JDateChooser();
+        fecha_finalizacion_v.setDateFormatString("dd-MM-yy");
+        fecha_finalizacion_v.setBounds(266, 374, 166, 33);
+        panel_datos.add(fecha_finalizacion_v);
         
         JLabel lblhoy_es_1 = new JLabel("Hora actual:");
         lblhoy_es_1.setForeground(SystemColor.inactiveCaptionText);
@@ -308,16 +322,17 @@ public class vacaciones_nuevo extends JFrame {
         lblcorreo_electronico_2.setBounds(513, 159, 166, 25);
         panel_datos.add(lblcorreo_electronico_2);
         
-        fecha_inicio_laboral = new JDateChooser();
-        fecha_inicio_laboral.setForeground(Color.BLACK);
-        fecha_inicio_laboral.setEnabled(false);
-        fecha_inicio_laboral.setDateFormatString("dd-MM-yy");
-        fecha_inicio_laboral.setBounds(511, 182, 208, 33);
-        panel_datos.add(fecha_inicio_laboral);
+        fecha_inicio = new JDateChooser();
+        fecha_inicio.setForeground(Color.BLACK);
+        fecha_inicio.setEnabled(false);
+        fecha_inicio.setDateFormatString("dd-MM-yy");
+        fecha_inicio.setBounds(511, 182, 208, 33);
+        panel_datos.add(fecha_inicio);
         
         txtdias_correspondientes = new JTextField();
         txtdias_correspondientes.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txtdias_correspondientes.setEditable(false);
+        //txtdias_correspondientes.setEnabled(false);
         txtdias_correspondientes.setColumns(10);
         txtdias_correspondientes.setBounds(266, 297, 90, 33);
         panel_datos.add(txtdias_correspondientes);
@@ -411,6 +426,29 @@ public class vacaciones_nuevo extends JFrame {
 			});
 		
 		
+		cargarNombresEmpleados();
+		
+		cbxnombres.addActionListener(e -> {
+		    String seleccionado = (String) cbxnombres.getSelectedItem();
+		    
+		    if (seleccionado == null || seleccionado.trim().isEmpty()) {
+		        limpiarCampos();
+		    } else {
+		        llenarCamposEmpleado(seleccionado);
+		    }
+		});
+
+		
+		fecha_finalizacion_v.addPropertyChangeListener(evt -> calcularDiasEntreFechas());
+		fecha_inicio_v.addPropertyChangeListener(evt -> calcularDiasEntreFechas());
+
+
+		asignarFechaActual();
+        asignarHoraActual();
+		
+
+		
+		
 		
 	}//class
 	
@@ -420,4 +458,214 @@ public class vacaciones_nuevo extends JFrame {
 				JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
 			System.exit(0);
 	}
+	
+	public void cargarNombresEmpleados() {
+	    Connection con = null;
+	    try {
+	        con = new conexion().conectar();
+
+	        String sql = "SELECT nombres_empleado FROM empleados";
+	        PreparedStatement ps = con.prepareStatement(sql);
+	        ResultSet rs = ps.executeQuery();
+	        
+	        cbxnombres.removeAllItems();
+	        cbxnombres.addItem("");  // Este será el primer elemento vacío
+
+	        while (rs.next()) {
+	            cbxnombres.addItem(rs.getString("nombres_empleado"));
+	        }
+	        
+	        cbxnombres.setSelectedIndex(-1);
+	        
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        JOptionPane.showMessageDialog(null, "Error al cargar los nombres: " + e.getMessage());
+	    } finally {
+	        if (con != null) {
+	            new conexion().desconectar();
+	        }
+	    }
+	}
+
+	public void llenarCamposEmpleado(String nombreEmpleado) {
+	    Connection con = null;
+	    try {
+	        con = new conexion().conectar();
+
+	        String sql = "SELECT * FROM empleados WHERE nombres_empleado = ?";
+	        PreparedStatement ps = con.prepareStatement(sql);
+	        ps.setString(1, nombreEmpleado);
+	        ResultSet rs = ps.executeQuery();
+	        
+	        if (rs.next()) {
+	            txtapellidos.setText(rs.getString("apellidos_empleado"));
+	            txtidentidad.setText(rs.getString("identidad_empleado"));
+	            txtsexo.setText(rs.getString("sexo_empleado"));
+	            txtid.setText(rs.getString("id_empleado"));
+	            txtcorreo.setText(rs.getString("correo_empleado"));
+	            txttel.setText(rs.getString("tel_empleado"));
+	            txtcargo.setText(rs.getString("cargo_empleado"));
+	            txtarea.setText(rs.getString("area_empleado"));
+	            fecha_inicio.setDate(rs.getDate("inicio_empleado"));
+	            fecha_nacimiento.setDate(rs.getDate("nacimiento_empleado"));
+
+	            calcularEdad(rs.getDate("nacimiento_empleado"));
+	            
+	            int antiguedadMeses = calcularAntiguedad(rs.getDate("inicio_empleado"));
+	            
+	            calcularDiasCorrespondientes(antiguedadMeses);
+	        }
+	    } catch (SQLException e) {
+	        JOptionPane.showMessageDialog(null, "Error al obtener los datos del empleado: " + e.getMessage());
+	    } finally {
+	        if (con != null) {
+	            new conexion().desconectar();
+	        }
+	    }
+	}
+
+	public void calcularEdad(Date fechaNacimiento) {
+	    if (fechaNacimiento instanceof java.sql.Date) {
+	        fechaNacimiento = new Date(fechaNacimiento.getTime()); 
+	    }
+	    
+	    LocalDate nacimiento = fechaNacimiento.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	    LocalDate ahora = LocalDate.now();
+	    Period edad = Period.between(nacimiento, ahora);
+	    txtedad.setText(String.valueOf(edad.getYears()));
+	}
+
+
+
+	public int calcularAntiguedad(Date fechaInicio) {
+	    LocalDate inicio;
+	    if (fechaInicio instanceof java.sql.Date) {
+	        inicio = ((java.sql.Date) fechaInicio).toLocalDate();
+	    } else {
+	        inicio = fechaInicio.toInstant()
+	                .atZone(ZoneId.systemDefault())
+	                .toLocalDate();
+	    }
+	    LocalDate ahora = LocalDate.now();
+
+	    long meses = ChronoUnit.MONTHS.between(inicio, ahora);
+	    int diasCorrespondientes;
+
+	    if (meses < 10) {
+	        diasCorrespondientes = (int) meses;
+	    } else if (meses < 12) {
+	        diasCorrespondientes = 9;
+	    } else if (meses == 12) {
+	        diasCorrespondientes = 10;
+	    } else if (meses < 24) {
+	        diasCorrespondientes = 10 + (int) (meses - 12);
+	    } else if (meses < 36) {
+	        diasCorrespondientes = 12;
+	    } else if (meses < 48) {
+	        diasCorrespondientes = 15;
+	    } else {
+	        diasCorrespondientes = 20;
+	    }
+
+
+	    SwingUtilities.invokeLater(() -> {
+	        txtantiguedad.setText(String.valueOf(meses));
+	        txtdias_correspondientes.setText(String.valueOf(diasCorrespondientes));
+	        
+	    });
+
+	    return (int) meses;
+	}
+
+
+	public void calcularDiasCorrespondientes(int antiguedadMeses) {
+	    int diasCorrespondientes = 0;
+
+	    if (antiguedadMeses >= 48) {
+	        diasCorrespondientes = 20;
+	    } else if (antiguedadMeses >= 36) {
+	        diasCorrespondientes = 15;
+	    } else if (antiguedadMeses >= 24) {
+	        diasCorrespondientes = 12;
+	    } else if (antiguedadMeses >= 12) {
+	        diasCorrespondientes = 10;
+	    }
+
+	    txtdias_correspondientes.setText(String.valueOf(diasCorrespondientes));
+	}
+
+	private void calcularDiasEntreFechas() {
+	    Date fechaInicio = fecha_inicio_v.getDate();  // Obtiene un java.util.Date
+	    Date fechaFin = fecha_finalizacion_v.getDate();  // También un java.util.Date
+
+	    if (fechaInicio != null && fechaFin != null) {
+	        LocalDate localFechaInicio = fechaInicio.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	        LocalDate localFechaFin = fechaFin.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	        long diasEntreFechas = ChronoUnit.DAYS.between(localFechaInicio, localFechaFin);
+
+	        txttotal_dias.setText(String.valueOf(diasEntreFechas));
+
+	        // Calcular los días pendientes (días correspondientes - días tomados)
+	        int diasCorrespondientes = Integer.parseInt(txtdias_correspondientes.getText());
+	        int diasPendientes = diasCorrespondientes - (int) diasEntreFechas;
+
+	        txtdias_pendientes.setText(String.valueOf(diasPendientes));
+
+	    } else {
+	        txttotal_dias.setText("");
+	    }
+	}
+	
+	public void limpiarCampos() {
+	    txtapellidos.setText("");
+	    txtidentidad.setText("");
+	    txtsexo.setText("");
+	    txtid.setText("");
+	    txtcorreo.setText("");
+	    txttel.setText("");
+	    txtcargo.setText("");
+	    txtarea.setText("");
+	    txtedad.setText("");
+	    fecha_inicio.setDate(null);  
+	    fecha_nacimiento.setDate(null);  
+	    fecha_inicio_v.setDate(null);
+	    fecha_finalizacion_v.setDate(null);
+	    txtantiguedad.setText("");
+	    txtdias_correspondientes.setText("");
+	    txttotal_dias.setText("");
+	    txtdias_pendientes.setText("");
+	}
+
+	
+	
+    public void asignarFechaActual() {
+        SwingUtilities.invokeLater(() -> {
+            LocalDate fechaActual = LocalDate.now();
+            DateTimeFormatter formateadorFecha = DateTimeFormatter.ofPattern("dd-MM-yy");
+            String fechaFormateada = fechaActual.format(formateadorFecha);
+            txtfecha_actual.setText(fechaFormateada);
+        });
+    }
+
+    public void asignarHoraActual() {
+        SwingUtilities.invokeLater(() -> {
+            LocalTime horaActual = LocalTime.now();
+            DateTimeFormatter formateadorHora = DateTimeFormatter.ofPattern("HH:mm");
+            String horaFormateada = horaActual.format(formateadorHora);
+            txthora_actual.setText(horaFormateada);
+        });
+    }
+
+
+	
+
+	    
+	    
+	    
+
+
+
+
+	
+	
 }//end
