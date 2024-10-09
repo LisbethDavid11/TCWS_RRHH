@@ -47,6 +47,8 @@ import clases.empleado;
 import conexion.conexion;
 import consultas.consultas_empleado;
 import principal.menu_principal;
+import reportes.reporte_empleados_individual;
+
 import java.awt.SystemColor;
 import javax.swing.UIManager;
 
@@ -262,6 +264,27 @@ public class empleado_tabla extends JFrame {
         btneliminar.setToolTipText("Eliminar registro");
         btneliminar.setBounds(263, 17, 90, 23);
         panelbotones.add(btneliminar);
+        
+        JButton btnImprimir = new JButton("Imprimir");
+        btnImprimir.addActionListener(e -> {
+            int selectedRow = table.getSelectedRow(); 
+            if (selectedRow != -1) {
+                int idEmpleado = Integer.parseInt(table.getValueAt(selectedRow, 1).toString());
+                reporte_empleados_individual reporte = new reporte_empleados_individual();
+                reporte.generarReporteEmpleadoIndividual(idEmpleado);
+            } else {
+                JOptionPane.showMessageDialog(null, "Por favor, selecciona una fila para continuar", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            }
+        });
+
+
+
+
+        btnImprimir.setToolTipText("Imprimir registro");
+        btnImprimir.setFont(new Font("Tahoma", Font.BOLD, 10));
+        btnImprimir.setBackground(UIManager.getColor("Button.highlight"));
+        btnImprimir.setBounds(163, 18, 90, 23);
+        panelbotones.add(btnImprimir);
         btneliminar.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         	    int filaSeleccionada;
@@ -571,7 +594,4 @@ public class empleado_tabla extends JFrame {
 				JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
 			System.exit(0);
 	}
-    
-    
-
 }//end

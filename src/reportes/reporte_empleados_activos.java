@@ -37,10 +37,10 @@ public class reporte_empleados_activos {
 	                LocalDate fechaActual = LocalDate.now();
 	                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 	                String fechaFormateada = fechaActual.format(formatter);
-	                String nombreArchivo = "Reporte_general_empleados_" + fechaFormateada + ".pdf";
+	                String nombreArchivo = "Reporte_empleados_activos" + fechaFormateada + ".pdf";
 
 	                JFileChooser fileChooser = new JFileChooser();
-	                fileChooser.setDialogTitle("Guardar reporte general de empleados");
+	                fileChooser.setDialogTitle("Guardar reporte de empleados activos");
 
 	                FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos PDF", "pdf");
 	                fileChooser.setFileFilter(filter);

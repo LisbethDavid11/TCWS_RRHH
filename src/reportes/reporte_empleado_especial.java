@@ -45,6 +45,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.awt.event.ActionEvent;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.UIManager;
 
 @SuppressWarnings("serial")
 public class reporte_empleado_especial extends JFrame{
@@ -206,8 +207,8 @@ public class reporte_empleado_especial extends JFrame{
 
 
 	btncomprobante.setToolTipText("Generar comprobante");
-	btncomprobante.setFont(new Font("Tahoma", Font.BOLD, 9));
-	btncomprobante.setBackground(Color.WHITE);
+	btncomprobante.setFont(new Font("Tahoma", Font.BOLD, 10));
+	btncomprobante.setBackground(UIManager.getColor("Button.highlight"));
 	btncomprobante.setBounds(718, 233, 121, 25);
 	panel_datos.add(btncomprobante);
 	
@@ -229,9 +230,9 @@ public class reporte_empleado_especial extends JFrame{
 			}
 	});
 	btnregresar.setToolTipText("Regresar a la tabla");
-	btnregresar.setFont(new Font("Tahoma", Font.BOLD, 8));
-	btnregresar.setBackground(Color.WHITE);
-	btnregresar.setBounds(932, 24, 75, 23);
+	btnregresar.setFont(new Font("Tahoma", Font.BOLD, 10));
+	btnregresar.setBackground(UIManager.getColor("Button.highlight"));
+	btnregresar.setBounds(917, 24, 90, 23);
 	getContentPane().add(btnregresar);
 	
 	}
@@ -297,9 +298,10 @@ public class reporte_empleado_especial extends JFrame{
 	            ResultSet rs = estatuto.executeQuery(query);
 
 	            // Definir columnas de la tabla
-	            float[] columnWidths = {0.5f, 1.5f, 1.5f, 1.5f, 1f, 1f, 1f, 1.3f, 1.3f, 1f, 1.2f};
+	            float[] columnWidths = {0.5f, 0.5f, 1.5f, 1.5f, 1.5f, 1f, 1f, 1f, 1.3f, 1.3f, 1f, 1.2f};
 	            Table table = new Table(UnitValue.createPercentArray(columnWidths)).useAllAvailableWidth();
-	            table.addHeaderCell(new Cell().add(new Paragraph("ID").setBold().setFontSize(10)));
+	            table.addHeaderCell(new Cell().add(new Paragraph("No.").setBold().setFontSize(10)));
+	            table.addHeaderCell(new Cell().add(new Paragraph("Id").setBold().setFontSize(10)));
 	            table.addHeaderCell(new Cell().add(new Paragraph("Identidad").setBold().setFontSize(10)));
 	            table.addHeaderCell(new Cell().add(new Paragraph("Nombres").setBold().setFontSize(10)));
 	            table.addHeaderCell(new Cell().add(new Paragraph("Apellidos").setBold().setFontSize(10)));
@@ -313,6 +315,7 @@ public class reporte_empleado_especial extends JFrame{
 
 	            // Iterar sobre los resultados y llenar la tabla
 	            while (rs.next()) {
+	            	table.addCell(new Cell().add(new Paragraph(rs.getString("id")).setFontSize(9)));
 	                table.addCell(new Cell().add(new Paragraph(rs.getString("id_empleado")).setFontSize(9)));
 	                table.addCell(new Cell().add(new Paragraph(rs.getString("identidad_empleado")).setFontSize(9)));
 	                table.addCell(new Cell().add(new Paragraph(rs.getString("nombres_empleado")).setFontSize(9)));

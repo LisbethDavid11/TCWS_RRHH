@@ -378,11 +378,8 @@ public class empleado_nuevo extends JFrame{
 		panel_datos.add(fecha_inicio);
 		validaciones.deshabilitarEscrituraJDateChooser(fecha_inicio);
 		
-			//Rango de años
-			Calendar fechaMin = Calendar.getInstance();
-			fechaMin.set(2012, Calendar.JANUARY, 1);
-			fecha_inicio.setMinSelectableDate(fechaMin.getTime()); // Fecha mínima permitida
-			fecha_inicio.setMaxSelectableDate(fechaActual);       // Fecha máxima permitida (hoy)
+		
+
 			
 			
 		JLabel lblFechaDeRenuncia = new JLabel("Fecha de renuncia");
@@ -399,11 +396,7 @@ public class empleado_nuevo extends JFrame{
 		panel_datos.add(fecha_renuncia);
 		validaciones.deshabilitarEscrituraJDateChooser(fecha_renuncia);
 		
-			//Rango de años
-			Calendar fechaMinimo = Calendar.getInstance();
-			fechaMinimo.set(2012, Calendar.JANUARY, 1);
-			fecha_renuncia.setMinSelectableDate(fechaMinimo.getTime()); // Fecha mínima permitida
-			fecha_renuncia.setMaxSelectableDate(fechaActual);       // Fecha máxima permitida (hoy)
+			
 		
 		JLabel lblcargo = new JLabel("Cargo");
 		lblcargo.setFont(new Font("Tahoma", Font.BOLD, 15));
@@ -481,7 +474,7 @@ public class empleado_nuevo extends JFrame{
 		txtidOriginal.setEditable(false);
 		txtidOriginal.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtidOriginal.setColumns(10);
-		txtidOriginal.setBounds(963, 10, 12, 13);
+		txtidOriginal.setBounds(974, 10, 1, 2);
 		panel_datos.add(txtidOriginal);
 		
 		JPanel panel_titulo_1 = new JPanel();
@@ -593,14 +586,14 @@ public class empleado_nuevo extends JFrame{
 		            // Verificar que el campo 'Id empleado' no esté vacío
 		            String idEmpleadoStr = txtid_empleado.getText().trim();
 		            if (idEmpleadoStr.isEmpty()) {
-		                JOptionPane.showMessageDialog(null, "Error: El campo 'Id empleado' no puede estar vacío.");
+		                JOptionPane.showMessageDialog(null, "Error: El campo 'Id empleado' no puede estar vacío");
 		                return;
 		            }
 
 		            // Verificar que el campo de texto para el ID original no esté vacío
 		            String idOriginalStr = txtidOriginal.getText().trim();
 		            if (idOriginalStr.isEmpty()) {
-		                JOptionPane.showMessageDialog(null, "Error: El campo 'ID original' no puede estar vacío.");
+		                JOptionPane.showMessageDialog(null, "Error: El campo 'Id original' no puede estar vacío");
 		                return;
 		            }
 
@@ -611,21 +604,21 @@ public class empleado_nuevo extends JFrame{
 		            // Verificar que el campo 'Número de cuenta bancaria' no esté vacío
 		            String cuentaEmpleado = txtcuenta.getText().trim();
 		            if (cuentaEmpleado.isEmpty()) {
-		                JOptionPane.showMessageDialog(null, "El campo 'Número de cuenta bancaria' no puede estar vacío.");
+		                JOptionPane.showMessageDialog(null, "El campo 'Número de cuenta bancaria' no puede estar vacío");
 		                return;
 		            }
 
 		            // Verificar que el campo 'Número de teléfono' no esté vacío
 		            String telefonoEmpleado = txttel.getText().trim();
 		            if (telefonoEmpleado.isEmpty()) {
-		                JOptionPane.showMessageDialog(null, "El campo 'Número de teléfono' no puede estar vacío.");
+		                JOptionPane.showMessageDialog(null, "El campo 'Número de teléfono' no puede estar vacío");
 		                return;
 		            }
 
 		            // Verificar que el campo 'Identidad' no esté vacío
 		            String identidadEmpleado = txtidentidad.getText().trim();
 		            if (identidadEmpleado.isEmpty()) {
-		                JOptionPane.showMessageDialog(null, "El campo 'Número de identidad' no puede estar vacío.");
+		                JOptionPane.showMessageDialog(null, "El campo 'Número de identidad' no puede estar vacío");
 		                return;
 		            }
 
@@ -638,7 +631,7 @@ public class empleado_nuevo extends JFrame{
 		            } else if (buttonotro.isSelected()) {
 		                sexoEmpleado = "Otro";
 		            } else {
-		                JOptionPane.showMessageDialog(null, "Debe seleccionar un sexo para el empleado.");
+		                JOptionPane.showMessageDialog(null, "Debe seleccionar un sexo para el empleado");
 		                return;
 		            }
 
@@ -686,6 +679,21 @@ public class empleado_nuevo extends JFrame{
 		        }
 		    }
 		});
+		
+		
+		// Rango de años para los jdatechooser
+		Calendar fechaMin = Calendar.getInstance();
+		fechaMin.set(2012, Calendar.JANUARY, 1);
+		fecha_inicio.setMinSelectableDate(fechaMin.getTime()); // Fecha mínima permitida
+		fecha_inicio.setMaxSelectableDate(fechaActual);       // Fecha máxima permitida (hoy)
+
+		
+		//renuncia
+		Calendar fechaMinimo = Calendar.getInstance();
+		fechaMinimo.set(2012, Calendar.JANUARY, 1);
+		fecha_renuncia.setMinSelectableDate(fechaMinimo.getTime()); 
+		fecha_renuncia.setMaxSelectableDate(fechaActual);       
+
 
 
 
@@ -752,17 +760,10 @@ public class empleado_nuevo extends JFrame{
 		        clase.setFotografia_empleado(txtruta.getText());
 		        clase.setCuenta_empleado(txtcuenta.getText());
 
+		        // Validar si el id_empleado o identidad_empleado ya existen
 		        String campoDuplicado = consulta.empleadoExiste(
 		            clase.getId_empleado(), 
-		            clase.getIdentidad_empleado(), 
-		            clase.getNombres_empleado(), 
-		            clase.getApellidos_empleado(), 
-		            clase.getNacimiento_empleado(), 
-		            clase.getDireccion_empleado(), 
-		            clase.getTel_empleado(), 
-		            clase.getCorreo_empleado(), 
-		            clase.getInicio_empleado(), 
-		            clase.getCuenta_empleado());
+		            clase.getIdentidad_empleado());
 
 		        if (campoDuplicado != null) {
 		            JOptionPane.showMessageDialog(null, "Error, ya existe un empleado con el mismo " + campoDuplicado + ".", "Error de duplicado", JOptionPane.ERROR_MESSAGE);
@@ -781,6 +782,7 @@ public class empleado_nuevo extends JFrame{
 		        }
 		    }
 		}
+
 
 		public void limpiar() {
 			txtid_empleado.setText("");
@@ -953,7 +955,6 @@ public class empleado_nuevo extends JFrame{
 		
 		// Método para habilitar o deshabilitar los campos del formulario
 		private void habilitarCampos(boolean habilitar) {
-		    // TextFields
 		    txtid_empleado.setEditable(habilitar);
 		    txtidentidad.setEditable(habilitar);
 		    txtnombres.setEditable(habilitar);
@@ -961,31 +962,21 @@ public class empleado_nuevo extends JFrame{
 		    txttel.setEditable(habilitar);
 		    txtcorreo.setEditable(habilitar);
 		    txtcuenta.setEditable(habilitar);
-
-		    // TextArea (Dirección)
-		    txadireccion.setEditable(habilitar); // Solo permitir edición si habilitar es true
-		    txadireccion.setEnabled(habilitar);  // Desactiva la interacción si es false
-
-		    // ComboBoxes y botones de radio (Estado civil y sexo)
+		    txadireccion.setEditable(habilitar); 
+		    txadireccion.setEnabled(habilitar);  
 		    cbxestado_civil.setEnabled(habilitar);
 		    buttonmasculino.setEnabled(habilitar);
 		    buttonfemenino.setEnabled(habilitar);
 		    buttonotro.setEnabled(habilitar);
-
-		    // JDateChoosers (Fechas de nacimiento, inicio y renuncia)
 		    fecha_nacimiento.setEnabled(habilitar);
 		    fecha_inicio.setEnabled(habilitar);
 		    fecha_renuncia.setEnabled(habilitar);
-
-		    // ComboBoxes para cargo y área
 		    cbxcargo.setEnabled(habilitar);
 		    cbxarea.setEnabled(habilitar);
 
-		    // Botones para seleccionar y eliminar foto
-		    btnseleccionar_foto.setVisible(habilitar);  // Mostrar botón de selección de foto solo si está habilitado
-		    btneliminar_foto.setVisible(habilitar);     // Mostrar botón de eliminar foto solo si está habilitado
+		    btnseleccionar_foto.setVisible(habilitar);  
+		    btneliminar_foto.setVisible(habilitar);    
 
-		    // Adicionalmente, si deseas cambiar el color de los componentes cuando se habilitan o deshabilitan:
 		    Color colorTexto = habilitar ? Color.BLACK : Color.GRAY;  // Cambia el color según el estado
 
 		    txtid_empleado.setForeground(colorTexto);
@@ -1032,21 +1023,21 @@ public class empleado_nuevo extends JFrame{
 		    try {
 		        // Verificar que el campo txtid no esté vacío
 		        if (txtid.getText().isEmpty()) {
-		            JOptionPane.showMessageDialog(null, "Error: ID del empleado no puede estar vacío.");
+		            JOptionPane.showMessageDialog(null, "Error: El Id del empleado no puede estar vacío");
 		            return;
 		        }
 
 		        int idOriginal = Integer.parseInt(txtid.getText().trim()); // Convertir idOriginal
 
 		        if (idOriginal == 0) {
-		            JOptionPane.showMessageDialog(null, "Error: ID del empleado no válido.");
+		            JOptionPane.showMessageDialog(null, "Error: El Id del empleado no válido");
 		            return;
 		        }
 
 		        // Verificar que el campo id_empleado contenga un número válido
 		        String nuevoIdEmpleadoStr = txtid_empleado.getText().trim();
 		        if (nuevoIdEmpleadoStr.isEmpty()) {
-		            JOptionPane.showMessageDialog(null, "Error: El campo 'Id empleado' no puede estar vacío.");
+		            JOptionPane.showMessageDialog(null, "Error: El campo 'Id empleado' no puede estar vacío");
 		            return;
 		        }
 		        int nuevoIdEmpleado = Integer.parseInt(nuevoIdEmpleadoStr); // Convertir idEmpleado
@@ -1060,7 +1051,7 @@ public class empleado_nuevo extends JFrame{
 		        empleado empleadoOriginal = consulta.obtenerEmpleadoPorId(idOriginal);
 
 		        if (empleadoOriginal == null) {
-		            JOptionPane.showMessageDialog(null, "Error: No se pudo encontrar el empleado con el ID original proporcionado.");
+		            JOptionPane.showMessageDialog(null, "Error: No se pudo encontrar el empleado con el Id original proporcionado");
 		            return;
 		        }
 

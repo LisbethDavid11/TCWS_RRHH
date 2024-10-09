@@ -579,8 +579,6 @@ public class permiso_AL_nuevo extends JFrame {
 	            String sql = "SELECT nombres_empleado FROM empleados";
 	            PreparedStatement pst = conn.prepareStatement(sql);
 	            ResultSet rs = pst.executeQuery();
-
-	            // Añadir ítem vacío al JComboBox para que aparezca inicialmente en blanco
 	            cbxnombres.addItem("");  // Este es el ítem vacío
 
 	            while (rs.next()) {
@@ -656,7 +654,6 @@ public class permiso_AL_nuevo extends JFrame {
 	        Date fechaHasta = date_hasta.getDate();
 
 	        if (fechaDesde != null && fechaHasta != null) {
-	            // Convertir Date a LocalDate
 	            LocalDate localDateDesde = fechaDesde.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 	            LocalDate localDateHasta = fechaHasta.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 	            long diasEntreFechas = ChronoUnit.DAYS.between(localDateDesde, localDateHasta);
@@ -692,7 +689,7 @@ public class permiso_AL_nuevo extends JFrame {
 	    
 	    
 	    ///////////////////////////////////////////////////////////////////////////
-	    //CRUD
+	    
 	    public void guardar_permiso_ausencia_laboral() {
 	        try {
 	            
@@ -706,8 +703,8 @@ public class permiso_AL_nuevo extends JFrame {
 	            calendarHoraFin.setTime(horaFinDate);
 	            Time horaFinTime = new Time(calendarHoraFin.get(Calendar.HOUR_OF_DAY), calendarHoraFin.get(Calendar.MINUTE), 0);
 
-	            Date fechaSeleccionada3 = date_desde.getDate(); // Fecha desde
-	            Date fechaSeleccionada4 = date_hasta.getDate();  // Fecha hasta
+	            Date fechaSeleccionada3 = date_desde.getDate();
+	            Date fechaSeleccionada4 = date_hasta.getDate();  
 	       
 	            String fechaActualTexto = txtFecha.getText();
 	            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd-MM-yy");
@@ -737,14 +734,14 @@ public class permiso_AL_nuevo extends JFrame {
 	                clase.setCorreo_empleado(txtcorreo.getText().toString());
 	                clase.setCargo_empleado(txtcargo.getText().toString());
 	                clase.setArea_empleado(txtarea.getText().toString());
-	                clase.setDesde_hora(horaInicioTime); // Almacenar la hora de inicio
-	                clase.setHasta_hora(horaFinTime);    // Almacenar la hora de fin
+	                clase.setDesde_hora(horaInicioTime); 
+	                clase.setHasta_hora(horaFinTime);    
 	                
 	                String[] tiempo = txttotal_horas.getText().split(":");
 	                int horas = Integer.parseInt(tiempo[0]);
 	                int minutos = Integer.parseInt(tiempo[1]);
-	                Time totalHoras = new Time(horas, minutos, 0); // Crear objeto Time con horas y minutos
-	                clase.setTotal_horas(totalHoras); // Almacenar el total de horas como TIME
+	                Time totalHoras = new Time(horas, minutos, 0); 
+	                clase.setTotal_horas(totalHoras); 
 
 	                clase.setMotivo_ausencia(txamotivo.getText().toString());
 	                clase.setDesde_fecha(fechaSeleccionada3);
@@ -773,8 +770,7 @@ public class permiso_AL_nuevo extends JFrame {
 
 	    
 	    
-	    /////////////////////////////////////////////////////////////////////
-	    //generar ID
+	   
 	    public int obtenerUltimoIdPermiso() {
 	        int ultimoId = 0;
 	        conexion conex = new conexion();
@@ -784,7 +780,7 @@ public class permiso_AL_nuevo extends JFrame {
 	            ResultSet rs = estatuto.executeQuery("SELECT MAX(id_permisos) FROM permisos_ausencia_laboral");
 
 	            if (rs.next()) {
-	                ultimoId = rs.getInt(1); // Obtiene el último ID
+	                ultimoId = rs.getInt(1); 
 	            }
 
 	            rs.close();
@@ -799,8 +795,8 @@ public class permiso_AL_nuevo extends JFrame {
 
 	    
 	    public void inicializarFormulario() {
-	        int nuevoIdPermiso = obtenerUltimoIdPermiso() + 1; // Incrementar el ID
-	        txtnumero_permiso.setText(String.valueOf(nuevoIdPermiso)); // Asignar el nuevo ID
+	        int nuevoIdPermiso = obtenerUltimoIdPermiso() + 1; 
+	        txtnumero_permiso.setText(String.valueOf(nuevoIdPermiso)); 
 	    }
 	    
 	    
@@ -821,17 +817,15 @@ public class permiso_AL_nuevo extends JFrame {
 	        txttotal_horas.setText("");
 	        date_desde.setDate(null);
 	        date_hasta.setDate(null);
-	        spinnerHoraInicio.setValue(new java.util.Date(0, 0, 0, 0, 0));  // Establece el valor a '00:00'
-	        spinnerHoraFin.setValue(new java.util.Date(0, 0, 0, 0, 0));     // Establece el valor a '00:00'
+	        spinnerHoraInicio.setValue(new java.util.Date(0, 0, 0, 0, 0));  
+	        spinnerHoraFin.setValue(new java.util.Date(0, 0, 0, 0, 0));     
 	    
-	      
 	        
 	    }
 	  
 	    
 	    public void actualizar_permiso_laboral() {
 	        try {
-	            // Obtener las horas desde los JSpinners
 	            Date horaInicioDate = (Date) spinnerHoraInicio.getValue();
 	            Date horaFinDate = (Date) spinnerHoraFin.getValue();
 	            Calendar calendarHoraInicio = Calendar.getInstance();
@@ -842,17 +836,14 @@ public class permiso_AL_nuevo extends JFrame {
 	            calendarHoraFin.setTime(horaFinDate);
 	            Time horaFinTime = new Time(calendarHoraFin.get(Calendar.HOUR_OF_DAY), calendarHoraFin.get(Calendar.MINUTE), 0);
 
-	            // Obtener las fechas de los JDateChoosers
 	            Date fechaSeleccionada3 = date_desde.getDate(); // Fecha desde
 	            Date fechaSeleccionada4 = date_hasta.getDate();  // Fecha hasta
 
-	            // Obtener la fecha actual desde txtFecha (ya está en formato dd-MM-yy)
 	            String fechaActualTexto = txtFecha.getText();
 	            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd-MM-yy");
 	            Date fechaUtil = formatoFecha.parse(fechaActualTexto);
 	            java.sql.Date fechaSQL = new java.sql.Date(fechaUtil.getTime());
 
-	            // Validar que los campos importantes no estén vacíos
 	            if (cbxnombres.getSelectedItem().equals("") || txtapellidos.getText().equals("") ||
 	                txtidentidad.getText().equals("") || txtid.getText().equals("") ||
 	                txttel.getText().equals("") || txtcorreo.getText().equals("") ||
@@ -865,12 +856,10 @@ public class permiso_AL_nuevo extends JFrame {
 	                        "Advertencia", JOptionPane.WARNING_MESSAGE);
 
 	            } else {
-	                // Crear una instancia de la clase permiso_ausencia_laboral y consultas_permiso_ausencia_laboral
 	                permiso_ausencia_laboral clase = new permiso_ausencia_laboral();
 	                consultas_permiso_ausencia_laboral consulta = new consultas_permiso_ausencia_laboral();
 
-	                // Establecer los valores en la clase de permiso_ausencia_laboral
-	                clase.setId_permisos(Integer.parseInt(txtnumero_permiso.getText())); // El ID del permiso
+	                clase.setId_permisos(Integer.parseInt(txtnumero_permiso.getText())); 
 	                clase.setNombres_empleado(cbxnombres.getSelectedItem().toString());
 	                clase.setApellidos_empleado(txtapellidos.getText());
 	                clase.setIdentidad_empleado(txtidentidad.getText());
@@ -888,7 +877,7 @@ public class permiso_AL_nuevo extends JFrame {
 	                String[] tiempo = txttotal_horas.getText().split(":");
 	                int horas = Integer.parseInt(tiempo[0]);
 	                int minutos = Integer.parseInt(tiempo[1]);
-	                Time totalHoras = new Time(horas, minutos, 0); // Crear objeto Time con horas y minutos
+	                Time totalHoras = new Time(horas, minutos, 0); 
 	                clase.setTotal_horas(totalHoras); 
 
 	                // Establecer los demás datos
@@ -899,17 +888,15 @@ public class permiso_AL_nuevo extends JFrame {
 	                clase.setNombres_recibe(txtnombres_recibe.getText());
 	                clase.setFecha_recibe(fechaSQL);
 
-	                // Intentar actualizar los datos en la base de datos
 	                if (consulta.actualizar_permiso_ausencia_laboral(clase, horaInicioTime, horaFinTime, fechaSeleccionada3, fechaSeleccionada4, fechaSQL)) {
 	                    JOptionPane.showMessageDialog(null, "Permiso por ausencia laboral actualizado correctamente");
 
-	                    // Reconstruir la tabla para ver los cambios actualizados
 	                    permiso_AL_tabla ver_permiso = new permiso_AL_tabla();
 	                    ver_permiso.construirTabla(); // Método para actualizar la tabla
 	                    ver_permiso.setLocationRelativeTo(null);
 	                    ver_permiso.setVisible(true);
 
-	                    dispose(); // Cerrar la ventana actual
+	                    dispose(); 
 	                } else {
 	                    JOptionPane.showMessageDialog(null, "Error, no se puede actualizar el permiso por ausencia laboral");
 	                }
@@ -922,51 +909,47 @@ public class permiso_AL_nuevo extends JFrame {
 
 	    
 	    
-	 // Método para verificar si el permiso está guardado en la base de datos
 	    private boolean permisoGuardadoEnBaseDeDatos(int numeroPermiso) {
 	        boolean existe = false;
-	        try {
-	            Connection conn = new conexion().conectar();
-	            String sql = "SELECT COUNT(*) FROM permisos_ausencia_laboral WHERE id_permisos = ?";
-	            PreparedStatement pst = conn.prepareStatement(sql);
-	            pst.setInt(1, numeroPermiso);
-	            ResultSet rs = pst.executeQuery();
+	        String sql = "SELECT COUNT(*) FROM permisos_ausencia_laboral WHERE id_permisos = ?";
 
-	            if (rs.next()) {
-	                existe = rs.getInt(1) > 0;
+	        try (Connection conn = new conexion().conectar();
+	             PreparedStatement pst = conn.prepareStatement(sql)) {
+	            
+	            pst.setInt(1, numeroPermiso);
+	            try (ResultSet rs = pst.executeQuery()) {
+	                if (rs.next()) {
+	                    existe = rs.getInt(1) > 0;
+	                }
 	            }
 
-	            rs.close();
-	            pst.close();
-	            conn.close();
 	        } catch (SQLException ex) {
+	            // Puedes personalizar el manejo del error aquí o loguear más información
+	            System.err.println("Error al verificar si el permiso ya existe en la base de datos para id_permisos: " + numeroPermiso);
 	            ex.printStackTrace();
 	        }
 	        return existe;
 	    }
+
 	    
 	   
 	    
 	    private void generarPDF() {
-	        // Obtener el nombre y apellido del empleado
 	        String nombreEmpleado = cbxnombres.getSelectedItem().toString();
 	        String apellidosEmpleado = txtapellidos.getText();
-	        String nombreArchivo = "Constancia_Permiso_" + nombreEmpleado.replaceAll("\\s+", "_") + "_" + apellidosEmpleado.replaceAll("\\s+", "_") + ".pdf";
+	        String nombreArchivo = "Constancia_Permiso_Ausencia_" + nombreEmpleado.replaceAll("\\s+", "_") + "_" + apellidosEmpleado.replaceAll("\\s+", "_") + ".pdf";
 
-	        // Crear el JFileChooser para guardar el archivo
 	        JFileChooser fileChooser = new JFileChooser();
 	        fileChooser.setDialogTitle("Guardar constancia de permiso por ausencia laboral");
 
 	        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos PDF", "pdf");
 	        fileChooser.setFileFilter(filter);
 
-	        // Nombre predeterminado del archivo
 	        fileChooser.setSelectedFile(new File(nombreArchivo));
 
 	        boolean archivoValido = false;
 	        File fileToSave = null;
 
-	        // Bucle para mantener el JFileChooser activo hasta que se seleccione un archivo válido
 	        while (!archivoValido) {
 	            int userSelection = fileChooser.showSaveDialog(this);
 
@@ -979,7 +962,6 @@ public class permiso_AL_nuevo extends JFrame {
 	                    fileToSave = new File(rutaArchivo);
 	                }
 
-	                // Verificar si el archivo ya existe
 	                if (fileToSave.exists()) {
 	                    JOptionPane.showMessageDialog(null,
 	                        "El archivo ya existe. Por favor, elige un nombre de archivo diferente.",
@@ -990,29 +972,23 @@ public class permiso_AL_nuevo extends JFrame {
 	                    archivoValido = true;
 	                }
 	            } else {
-	                // Si el usuario cancela, salimos del método
 	                JOptionPane.showMessageDialog(null, "Generación del comprobante cancelada");
 	                return; 
 	            }
 	        }
 
-	        // Intentar crear el PDF con la ruta válida seleccionada
 	        try {
-	            // Crear el escritor del PDF con la ruta válida
 	            PdfWriter writer = new PdfWriter(fileToSave.getAbsolutePath());
 	            PdfDocument pdf = new PdfDocument(writer);
 	            Document document = new Document(pdf);
 
-	            // Agregar encabezado del documento
 	            encabezado_documentos encabezado = new encabezado_documentos();
-	            encabezado.agregarEncabezado(document);  // Invocación del método para agregar el encabezado
+	            encabezado.agregarEncabezado(document);  
 
-	            // Título del documento
 	            document.add(new Paragraph("Constancia de permiso por ausencia laboral")
 	                .setBold().setFontSize(16).setTextAlignment(TextAlignment.CENTER));
 	            document.add(new Paragraph("\n"));
 
-	            // Obtener los demás datos del empleado y otros
 	            String identidadEmpleado = txtidentidad.getText();
 	            String cargoEmpleado = txtcargo.getText();
 	            String areaEmpleado = txtarea.getText();
@@ -1028,7 +1004,6 @@ public class permiso_AL_nuevo extends JFrame {
 	            String mesActual = fechaActual.getMonth().getDisplayName(TextStyle.FULL, new Locale("es", "ES")); // Nombre del mes en español
 	            int añoActual = fechaActual.getYear();
 
-	            // Cuerpo del documento
 	            String textoCuerpo = "Yo Marco Murillo como suscrito Administrador del instituto TCWS & TCWHS le autorizo ausentarse del establecimiento al empleado(a): "
 	                + nombreEmpleado + " " + apellidosEmpleado + ", con identidad No. " + identidadEmpleado
 	                + ", que labora bajo el cargo de " + cargoEmpleado + " en el área de " + areaEmpleado + ". "
@@ -1047,7 +1022,6 @@ public class permiso_AL_nuevo extends JFrame {
 	            JOptionPane.showMessageDialog(null, "Comprobante guardado con éxito en: \n" + fileToSave.getAbsolutePath(), 
 	            		"Éxito", JOptionPane.INFORMATION_MESSAGE);
 
-	            // Abrir la tabla de permisos de ausencia laboral
 	            permiso_AL_tabla tabla = new permiso_AL_tabla();
 	            tabla.setLocationRelativeTo(null);
 	            tabla.setVisible(true);
@@ -1062,7 +1036,6 @@ public class permiso_AL_nuevo extends JFrame {
 	    }
 	    
 	    public void desactivarCampos() {
-	        // Desactivar los campos para evitar que el usuario pueda editarlos
 	        cbxnombres.setEnabled(false);
 	        txtapellidos.setEditable(false);
 	        txtcorreo.setEditable(false);
@@ -1084,7 +1057,6 @@ public class permiso_AL_nuevo extends JFrame {
 	    
 	    
 	    public void cargarNombresEmpleadosEnPermisoNuevo() {
-	        // Crear una instancia de la ventana permiso_AL_nuevo
 	        permiso_AL_nuevo ventanaPermiso = new permiso_AL_nuevo();
 
 	        try {
@@ -1093,16 +1065,13 @@ public class permiso_AL_nuevo extends JFrame {
 	            PreparedStatement pst = conn.prepareStatement(sql);
 	            ResultSet rs = pst.executeQuery();
 
-	            // Limpiar el JComboBox antes de cargar nuevos nombres
 	            ventanaPermiso.cbxnombres.removeAllItems(); 
-	            ventanaPermiso.cbxnombres.addItem(""); // Añadir un ítem vacío al inicio
+	            ventanaPermiso.cbxnombres.addItem(""); 
 
-	            // Añadir nombres de empleados al JComboBox
 	            while (rs.next()) {
 	                ventanaPermiso.cbxnombres.addItem(rs.getString("nombres_empleado"));
 	            }
 
-	            // Cerrar las conexiones
 	            rs.close();
 	            pst.close();
 	            conn.close();
@@ -1111,18 +1080,15 @@ public class permiso_AL_nuevo extends JFrame {
 	            JOptionPane.showMessageDialog(null, "Error al cargar los nombres de los empleados.");
 	        }
 
-	        // Mostrar la ventana donde se han cargado los nombres en el JComboBox
 	        ventanaPermiso.setLocationRelativeTo(null);
 	        ventanaPermiso.setVisible(true);
 	    }
 	    
 	    
-	 // Método para manejar el JCheckBox
 	    private void habilitarEdicion() {
 	        chxeditar.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
 	                if (chxeditar.isSelected()) {
-	                    // Habilitar los componentes necesarios para editar
 	                    cbxnombres.setEnabled(true);
 	                    txamotivo.setEditable(true);
 	                    txtnombres_recibe.setEditable(true);
@@ -1133,7 +1099,6 @@ public class permiso_AL_nuevo extends JFrame {
 	                    btnactualizar.setVisible(true);
 	                    btnlimpiar.setVisible(true);
 	                } else {
-	                    // Desactivar los componentes si se desmarca el CheckBox
 	                    cbxnombres.setEnabled(false);
 	                    txamotivo.setEditable(false);
 	                    txtnombres_recibe.setEditable(false);

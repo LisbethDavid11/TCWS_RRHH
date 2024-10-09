@@ -164,7 +164,7 @@ public class incapacidad_laboral_tabla extends JFrame {
         JPanel panelbotones = new JPanel();
         panelbotones.setLayout(null);
         panelbotones.setBackground(SystemColor.menu);
-        panelbotones.setBounds(552, 23, 463, 56);
+        panelbotones.setBounds(564, 23, 451, 56);
         getContentPane().add(panelbotones);
 
         btnactualizar = new JButton("Actualizar");
@@ -183,7 +183,7 @@ public class incapacidad_laboral_tabla extends JFrame {
         });
         btnregresar.setFont(new Font("Tahoma", Font.BOLD, 10));
         btnregresar.setToolTipText("Regresar al menú principal");
-        btnregresar.setBounds(10, 17, 90, 23);
+        btnregresar.setBounds(22, 17, 90, 23);
         panelbotones.add(btnregresar);
 
         btnnuevo = new JButton("Nuevo");
@@ -239,10 +239,10 @@ public class incapacidad_laboral_tabla extends JFrame {
         btneliminar.setBounds(263, 17, 90, 23);
         panelbotones.add(btneliminar);
 
-        JLabel lblPermisosAusenciaLaboral = new JLabel("INCAPACIDAD LABORAL");
+        JLabel lblPermisosAusenciaLaboral = new JLabel("INCAPACIDADES POR AUSENCIA LABORAL");
         lblPermisosAusenciaLaboral.setHorizontalAlignment(SwingConstants.LEFT);
         lblPermisosAusenciaLaboral.setFont(new Font("Segoe UI", Font.BOLD, 26));
-        lblPermisosAusenciaLaboral.setBounds(25, 23, 514, 26);
+        lblPermisosAusenciaLaboral.setBounds(25, 30, 534, 26);
         getContentPane().add(lblPermisosAusenciaLaboral);
 
         construirTabla(); // Construir la tabla al iniciar

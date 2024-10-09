@@ -203,70 +203,30 @@ public class consultas_empleado extends conexion {
     
     
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public String empleadoExiste(int id_empleado, String identidad_empleado, String nombres_empleado, String apellidos_empleado, 
-            Date nacimiento_empleado, String direccion_empleado, String tel_empleado, 
-            String correo_empleado, Date inicio_empleado, String cuenta_empleado) {
-    	
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		Connection con = conectar(); 
-		
-		String sql = "SELECT * FROM empleados WHERE id_empleado = ? OR identidad_empleado = ? OR nombres_empleado = ? OR " +
-		"apellidos_empleado = ? OR nacimiento_empleado = ? OR direccion_empleado = ? OR " +
-		"tel_empleado = ? OR correo_empleado = ? OR inicio_empleado = ? OR cuenta_empleado = ?";
-		
-		try {
-			ps = con.prepareStatement(sql);
-			ps.setInt(1, id_empleado);
-			ps.setString(2, identidad_empleado);
-			ps.setString(3, nombres_empleado);
-			ps.setString(4, apellidos_empleado);
-			ps.setDate(5, new java.sql.Date(nacimiento_empleado.getTime())); // Convertir Date a java.sql.Date
-			ps.setString(6, direccion_empleado);
-			ps.setString(7, tel_empleado);
-			ps.setString(8, correo_empleado);
-			ps.setDate(9, new java.sql.Date(inicio_empleado.getTime())); // Convertir Date a java.sql.Date
-			ps.setString(10, cuenta_empleado);
-			
-			rs = ps.executeQuery();
-			
-			if (rs.next()) {
-			if (rs.getInt("id_empleado") == id_empleado) {
-				return "ID del empleado";
-				} else if (rs.getString("identidad_empleado").equals(identidad_empleado)) {
-					return "Identidad";
-						} else if (rs.getString("nombres_empleado").equals(nombres_empleado) && rs.getString("apellidos_empleado").equals(apellidos_empleado)) {
-							return "Nombre y Apellido";
-							} else if (rs.getDate("nacimiento_empleado").equals(new java.sql.Date(nacimiento_empleado.getTime()))) {
-								return "Fecha de nacimiento";
-							} else if (rs.getString("direccion_empleado").equals(direccion_empleado)) {
-								return "Dirección";
-							} else if (rs.getString("tel_empleado").equals(tel_empleado)) {
-								return "Teléfono";
-							} else if (rs.getString("correo_empleado").equals(correo_empleado)) {
-								return "Correo electrónico";
-							} else if (rs.getDate("inicio_empleado").equals(new java.sql.Date(inicio_empleado.getTime()))) {
-								return "Fecha de inicio";
-							} else if (rs.getString("cuenta_empleado").equals(cuenta_empleado)) {
-								return "Cuenta bancaria";
-				}
-			}
-		return null; 
-		
-		} catch (SQLException e) {
-		e.printStackTrace();
-		return null;
-		
-		} finally {
-		try {
-		if (rs != null) rs.close();
-		if (ps != null) ps.close();
-		desconectar(); 
-		} catch (SQLException e) {
-		e.printStackTrace();
-				}	
-			}
-		}
+    public String empleadoExiste(int id_empleado, String identidad_empleado) {
+        String campoDuplicado = null;
+        try (Connection conn = new conexion().conectar();
+             PreparedStatement pst = conn.prepareStatement("SELECT id_empleado, identidad_empleado FROM empleados WHERE id_empleado = ? OR identidad_empleado = ?")) {
+
+            pst.setInt(1, id_empleado);
+            pst.setString(2, identidad_empleado);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                if (rs.getInt("id_empleado") == id_empleado) {
+                    campoDuplicado = "Id de empleado";
+                } else if (rs.getString("identidad_empleado").equals(identidad_empleado)) {
+                    campoDuplicado = "Identidad de empleado";
+                }
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return campoDuplicado;
+    }
+
 	    
     
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -289,7 +249,7 @@ public class consultas_empleado extends conexion {
                 if (rs.getString("identidad_empleado").equals(identidad_empleado)) {
                     return "Identidad";
                 } else if (rs.getInt("id_empleado") == nuevoIdEmpleado) {
-                    return "ID del empleado";
+                    return "Id del empleado";
                 }
             }
             return null; 
