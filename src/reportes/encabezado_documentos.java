@@ -7,7 +7,6 @@ import com.itextpdf.layout.properties.TextAlignment;
 
 public class encabezado_documentos {
 	
-    // Método para agregar el encabezado al documento PDF
     public void agregarEncabezado(Document document) {
         try {
             
@@ -33,17 +32,22 @@ public class encabezado_documentos {
                     .setTextAlignment(TextAlignment.CENTER)
                     .setBold();
 
-            Paragraph address = new Paragraph("Colonia La Ceibita, 20mts hacia el norte del pavimento \n Danli, El Paraiso, Honduras")
+            Paragraph address = new Paragraph("Col. La Ceibita, 20mts hacia el norte del pavimento \n Danli, El Paraiso, Honduras")
                     .setFontSize(12)
                     .setTextAlignment(TextAlignment.CENTER);
 
-            Paragraph phone = new Paragraph("Teléfono: 2793-0000")
+            Paragraph phone = new Paragraph("Teléfono: 9671-0574")
+                    .setFontSize(12)
+                    .setTextAlignment(TextAlignment.CENTER);
+            
+            Paragraph correo = new Paragraph("Correo: info@tcws.edu.hn")
                     .setFontSize(12)
                     .setTextAlignment(TextAlignment.CENTER);
 
             document.add(header);
             document.add(address);
             document.add(phone);
+            document.add(correo);
             document.add(new Paragraph("\n"));  // Espacio extra después del encabezado
 
         } catch (Exception e) {

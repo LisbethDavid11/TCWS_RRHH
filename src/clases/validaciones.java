@@ -181,5 +181,65 @@ public class validaciones {
         }
     }
     
+    
+    
+    // Método para validar solo letras con un máximo de 50 caracteres
+    public static void validarSoloLetras(KeyEvent e, JTextField textField) {
+        char key = e.getKeyChar();
+        
+        boolean mayusculas = (key >= 65 && key <= 90) || key == 209;  // A-Z o Ñ
+        boolean minusculas = (key >= 97 && key <= 122) || key == 241; // a-z o ñ
+        boolean espacio = key == 32; // Permitir espacio
+
+        if (!(mayusculas || minusculas || espacio)) {
+            e.consume();
+        }
+
+        if (textField.getText().trim().length() == 50) {
+            e.consume();
+            JOptionPane.showMessageDialog(null, "¡Solo puede ingresar 50 caracteres!", 
+            		"Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        String texto = textField.getText();
+
+        if (texto.isEmpty() || texto.endsWith(" ")) {
+            e.setKeyChar(Character.toUpperCase(key));
+        } else {
+            e.setKeyChar(Character.toLowerCase(key));
+        }
+    }
+    
+    
+ // Método para validar letras y números con un máximo de 50 caracteres
+    public static void validarLetrasYNumeros(KeyEvent e, JTextField textField) {
+        char key = e.getKeyChar();
+        boolean mayusculas = (key >= 65 && key <= 90) || key == 209;  
+        boolean minusculas = (key >= 97 && key <= 122) || key == 241; 
+        boolean numeros = (key >= 48 && key <= 57); 
+        boolean espacio = key == 32; 
+        
+        if (!(mayusculas || minusculas || numeros || espacio)) {
+            e.consume();
+        }
+
+        if (textField.getText().trim().length() == 50) {
+            e.consume();
+            JOptionPane.showMessageDialog(null, "¡Solo puede ingresar 50 caracteres!", 
+            		"Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String texto = textField.getText();
+
+        if (texto.isEmpty() || texto.endsWith(" ")) {
+            e.setKeyChar(Character.toUpperCase(key));
+        } else {
+            e.setKeyChar(Character.toLowerCase(key));
+        }
+    }
+
+
 
 }

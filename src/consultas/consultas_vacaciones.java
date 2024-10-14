@@ -23,21 +23,15 @@ public class consultas_vacaciones extends conexion {
 	    try {
 	        con = conectar();
 	        
-	        // Obtener los días tomados previamente
 	        int diasTomadosPrevios = obtenerDiasTomados(claseVacaciones.getId_empleado());
-	        
-	        // Calcular los días pendientes actuales
 	        int diasCorrespondientes = claseVacaciones.getDias_correspondientes();
 	        int totalDiasNuevos = claseVacaciones.getTotal_dias();
 	        int diasPendientesActuales = diasCorrespondientes - diasTomadosPrevios - totalDiasNuevos;
-
-	        // Validar si el empleado tiene suficientes días disponibles
 	        if (diasPendientesActuales < 0) {
 	            JOptionPane.showMessageDialog(null, "El empleado no tiene suficientes días disponibles.", "Error", JOptionPane.ERROR_MESSAGE);
 	            return false;
 	        }
 
-	        // Preparar la consulta SQL
 	        String sql = "INSERT INTO vacaciones (id_empleado, nombres_empleado, apellidos_empleado, identidad_empleado, "
 	                + "tel_empleado, correo_empleado, cargo_empleado, area_empleado, nacimiento_empleado, "
 	                + "sexo_empleado, edad_empleado, fecha_actual, hora_actual, antiguedad, dias_correspondientes, "
@@ -45,8 +39,6 @@ public class consultas_vacaciones extends conexion {
 	                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	        ps = con.prepareStatement(sql);
-
-	        // Asignar valores a la consulta SQL
 	        ps.setInt(1, claseVacaciones.getId_empleado());
 	        ps.setString(2, claseVacaciones.getNombres_empleado());
 	        ps.setString(3, claseVacaciones.getApellidos_empleado());
@@ -67,8 +59,6 @@ public class consultas_vacaciones extends conexion {
 	        ps.setInt(18, totalDiasNuevos);  // Días que el empleado está tomando en esta ocasión
 	        ps.setInt(19, diasPendientesActuales);  // Días pendientes después de esta toma
 	        ps.setString(20, claseVacaciones.getPagadas());
-
-	        // Ejecutar la consulta
 	        ps.executeUpdate();
 	        return true;
 
@@ -95,7 +85,6 @@ public class consultas_vacaciones extends conexion {
 	    try {
 	        con = new conexion().conectar();
 	        
-	        // Consulta para actualizar las vacaciones
 	        String sql = "UPDATE vacaciones SET " +
 	                     "id_empleado = ?, nombres_empleado = ?, apellidos_empleado = ?, identidad_empleado = ?, " +
 	                     "tel_empleado = ?, correo_empleado = ?, cargo_empleado = ?, area_empleado = ?, " +
@@ -105,37 +94,32 @@ public class consultas_vacaciones extends conexion {
 	                     "WHERE id_vacaciones = ?";
 
 	        ps = con.prepareStatement(sql);
-
-	        // Asignar valores a la consulta SQL
-	        ps.setInt(1, Integer.parseInt(ventana.txtid.getText()));  // id_empleado
-	        ps.setString(2, (String) ventana.cbxnombres.getSelectedItem());  // nombres_empleado
-	        ps.setString(3, ventana.txtapellidos.getText());  // apellidos_empleado
-	        ps.setString(4, ventana.txtidentidad.getText());  // identidad_empleado
-	        ps.setString(5, ventana.txttel.getText());  // tel_empleado
-	        ps.setString(6, ventana.txtcorreo.getText());  // correo_empleado
-	        ps.setString(7, ventana.txtcargo.getText());  // cargo_empleado
-	        ps.setString(8, ventana.txtarea.getText());  // area_empleado
-	        ps.setDate(9, new java.sql.Date(ventana.fecha_nacimiento.getDate().getTime()));  // nacimiento_empleado
-	        ps.setString(10, ventana.txtsexo.getText());  // sexo_empleado
-	        ps.setInt(11, Integer.parseInt(ventana.txtedad.getText()));  // edad_empleado
-	        ps.setInt(12, Integer.parseInt(ventana.txtantiguedad.getText()));  // antiguedad
-	        ps.setInt(13, Integer.parseInt(ventana.txtdias_correspondientes.getText()));  // dias_correspondientes
-	        ps.setDate(14, new java.sql.Date(ventana.fecha_inicio_v.getDate().getTime()));  // fecha_inicio_v
-	        ps.setDate(15, new java.sql.Date(ventana.fecha_finalizacion_v.getDate().getTime()));  // fecha_finalizacion_v
-	        ps.setInt(16, Integer.parseInt(ventana.txttotal_dias.getText()));  // total_dias
-	        ps.setInt(17, Integer.parseInt(ventana.txtdias_pendientes.getText()));  // dias_pendientes
+	        ps.setInt(1, Integer.parseInt(ventana.txtid.getText()));  
+	        ps.setString(2, (String) ventana.cbxnombres.getSelectedItem());  
+	        ps.setString(3, ventana.txtapellidos.getText());  
+	        ps.setString(4, ventana.txtidentidad.getText()); 
+	        ps.setString(5, ventana.txttel.getText()); 
+	        ps.setString(6, ventana.txtcorreo.getText());  
+	        ps.setString(7, ventana.txtcargo.getText());  
+	        ps.setString(8, ventana.txtarea.getText());  
+	        ps.setDate(9, new java.sql.Date(ventana.fecha_nacimiento.getDate().getTime()));  
+	        ps.setString(10, ventana.txtsexo.getText()); 
+	        ps.setInt(11, Integer.parseInt(ventana.txtedad.getText()));  
+	        ps.setInt(12, Integer.parseInt(ventana.txtantiguedad.getText()));  
+	        ps.setInt(13, Integer.parseInt(ventana.txtdias_correspondientes.getText()));  
+	        ps.setDate(14, new java.sql.Date(ventana.fecha_inicio_v.getDate().getTime()));  
+	        ps.setDate(15, new java.sql.Date(ventana.fecha_finalizacion_v.getDate().getTime()));  
+	        ps.setInt(16, Integer.parseInt(ventana.txttotal_dias.getText()));  
+	        ps.setInt(17, Integer.parseInt(ventana.txtdias_pendientes.getText()));  
 	        
 	        // Manejo del campo "pagadas"
 	        ps.setString(18, ventana.radio_si.isSelected() ? "Si" : "No");
 	        
-	        // Asignar la fecha y hora actuales
-	        ps.setDate(19, new java.sql.Date(new Date().getTime()));  // fecha_actual
-	        ps.setTime(20, java.sql.Time.valueOf(ventana.txthora_actual.getText() + ":00"));  // hora_actual
+	        ps.setDate(19, new java.sql.Date(new Date().getTime())); 
+	        ps.setTime(20, java.sql.Time.valueOf(ventana.txthora_actual.getText() + ":00")); 
 	        
-	        // Establecer el id_vacaciones para la actualización
-	        ps.setInt(21, Integer.parseInt(ventana.txtid_tabla.getText()));  // id_vacaciones
+	        ps.setInt(21, Integer.parseInt(ventana.txtid_tabla.getText()));
 
-	        // Ejecutar la consulta de actualización
 	        int resultado = ps.executeUpdate();
 
 	        if (resultado > 0) {
@@ -173,8 +157,7 @@ public class consultas_vacaciones extends conexion {
 
 	    try {
 	        con = new conexion().conectar();
-
-	        // Consulta para obtener los días correspondientes del empleado
+	        
 	        String sql = "SELECT dias_correspondientes FROM vacaciones WHERE nombres_empleado = ? ORDER BY fecha_inicio_v DESC LIMIT 1";
 	        ps = con.prepareStatement(sql);
 	        ps.setString(1, nombreEmpleado);
@@ -209,7 +192,6 @@ public class consultas_vacaciones extends conexion {
 	    try {
 	        con = new conexion().conectar();
 
-	        // Consultar los días tomados previamente por el empleado
 	        String sql = "SELECT SUM(total_dias) AS dias_tomados FROM vacaciones WHERE nombres_empleado = ?";
 	        ps = con.prepareStatement(sql);
 	        ps.setString(1, nombreEmpleado);
@@ -220,13 +202,9 @@ public class consultas_vacaciones extends conexion {
 	            diasTomados = rs.getInt("dias_tomados");
 	        }
 
-	        // Obtener los días correspondientes del empleado
 	        int diasCorrespondientes = obtenerDiasCorrespondientes(nombreEmpleado);
-
-	        // Calcular los días pendientes
 	        diasPendientes = diasCorrespondientes - diasTomados;
-
-	        // Asegurarse de no devolver días pendientes negativos
+	        
 	        if (diasPendientes < 0) {
 	            diasPendientes = 0;
 	        }
@@ -247,6 +225,8 @@ public class consultas_vacaciones extends conexion {
 	}
 
 	
+	
+	
 	public int obtenerDiasTomados(int idEmpleado) {
 	    int diasTomados = 0;
 	    Connection con = null;
@@ -255,8 +235,6 @@ public class consultas_vacaciones extends conexion {
 
 	    try {
 	        con = new conexion().conectar();
-
-	        // Consulta para obtener la suma de los días tomados
 	        String sql = "SELECT SUM(total_dias) AS dias_tomados FROM vacaciones WHERE id_empleado = ?";
 	        ps = con.prepareStatement(sql);
 	        ps.setInt(1, idEmpleado);
@@ -280,52 +258,34 @@ public class consultas_vacaciones extends conexion {
 	    return diasTomados;
 	}
 
-
-
-	
-	
-
 	    
 	    
-	public boolean eliminarVacaciones(vacaciones_nuevo ventana) {
+	public boolean eliminarVacaciones(int idVacaciones) {
 	    Connection con = null;
-	    PreparedStatement ps = null;
+	    PreparedStatement pst = null;
 	    String sql = "DELETE FROM vacaciones WHERE id_vacaciones = ?";
-
+	    
 	    try {
 	        con = new conexion().conectar();
-	        ps = con.prepareStatement(sql);
-	        
-	        // Obtener el id_vacaciones desde el campo txtid_tabla
-	        int idVacaciones = Integer.parseInt(ventana.txtid_tabla.getText());
-	        ps.setInt(1, idVacaciones);
+	        pst = con.prepareStatement(sql);
+	        pst.setInt(1, idVacaciones);
 
-	        // Ejecutar la consulta de eliminación
-	        int filasAfectadas = ps.executeUpdate();
-	        return filasAfectadas > 0; // Retorna true si al menos una fila fue eliminada
+	        int resultado = pst.executeUpdate();
+	        return resultado > 0;  // Si se eliminó una fila, retornamos true
 
 	    } catch (SQLException e) {
 	        e.printStackTrace();
-	        return false;
+	        return false;  // Retornamos false en caso de un error
 	    } finally {
-	        if (ps != null) {
-	            try {
-	                ps.close();
-	            } catch (SQLException e) {
-	                e.printStackTrace();
-	            }
-	        }
-	        if (con != null) {
-	            new conexion().desconectar();
+	        try {
+	            if (pst != null) pst.close();
+	            if (con != null) con.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
 	        }
 	    }
 	}
 
-	
-
-	
-	
-	
 	
 	
 

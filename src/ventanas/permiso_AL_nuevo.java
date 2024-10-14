@@ -554,7 +554,7 @@ public class permiso_AL_nuevo extends JFrame {
 		txtnumero.setEditable(false);
 		txtnumero.setColumns(10);
 		txtnumero.setBackground(SystemColor.menu);
-		txtnumero.setBounds(947, 5, 10, 13);
+		txtnumero.setBounds(955, 5, 2, 9);
 		panel_datos.add(txtnumero);
 		
 		
@@ -633,7 +633,7 @@ public class permiso_AL_nuevo extends JFrame {
 	    
 	    ///////////////////////////////////////////////////////////////////////////////////////
 	    //Metodo para establecer el rango de fechas de los JDateChooser
-	    private void establecerRangoFechas() {
+	    /*private void establecerRangoFechas() {
 	
 	        Calendar cal = Calendar.getInstance();//fecha actual
 	        Date fechaActual = cal.getTime();
@@ -646,7 +646,30 @@ public class permiso_AL_nuevo extends JFrame {
 	        date_desde.setMaxSelectableDate(fechaMaxima);
 	        date_hasta.setMinSelectableDate(fechaActual);
 	        date_hasta.setMaxSelectableDate(fechaMaxima);
+	    }*/
+	    
+	 // Método para establecer el rango de fechas de los JDateChooser
+	    private void establecerRangoFechas() {
+	        Calendar cal = Calendar.getInstance(); 
+	        Date fechaActual = cal.getTime(); // Fecha actual
+
+	        
+	        cal.add(Calendar.MONTH, -3);
+	        Date fechaMinima = cal.getTime(); 
+	        date_desde.setMinSelectableDate(fechaMinima); 
+
+	        cal.setTime(fechaActual); 
+	        cal.add(Calendar.MONTH, 3); 
+	        Date fechaMaxima = cal.getTime();
+	        date_desde.setMaxSelectableDate(fechaMaxima); 
+
+	        date_hasta.setMinSelectableDate(fechaMinima); 
+	        date_hasta.setMaxSelectableDate(fechaMaxima); 
 	    }
+
+	    
+	    
+	    
 	    
 	    
 	    private void calcularDiasEntreFechas() {
@@ -682,94 +705,122 @@ public class permiso_AL_nuevo extends JFrame {
 	            String formatoHora = String.format("%02d:%02d", horas, minutos);
 	            txttotal_horas.setText(formatoHora);
 	        } catch (Exception e) {
-	            JOptionPane.showMessageDialog(null, "Error al calcular el tiempo: " + e.getMessage());
+	            JOptionPane.showMessageDialog(null, "Error al calcular el tiempo", "Error", JOptionPane.ERROR_MESSAGE);
 	        }
 	    }
 	    
+	 
 	    
-	    
-	    ///////////////////////////////////////////////////////////////////////////
-	    
-	    public void guardar_permiso_ausencia_laboral() {
-	        try {
-	            
-	            Date horaInicioDate = (Date) spinnerHoraInicio.getValue();
-	            Date horaFinDate = (Date) spinnerHoraFin.getValue();
-	            Calendar calendarHoraInicio = Calendar.getInstance();
-	            calendarHoraInicio.setTime(horaInicioDate);
-	            Time horaInicioTime = new Time(calendarHoraInicio.get(Calendar.HOUR_OF_DAY), calendarHoraInicio.get(Calendar.MINUTE), 0);
-
-	            Calendar calendarHoraFin = Calendar.getInstance();
-	            calendarHoraFin.setTime(horaFinDate);
-	            Time horaFinTime = new Time(calendarHoraFin.get(Calendar.HOUR_OF_DAY), calendarHoraFin.get(Calendar.MINUTE), 0);
-
-	            Date fechaSeleccionada3 = date_desde.getDate();
-	            Date fechaSeleccionada4 = date_hasta.getDate();  
+	    public boolean validarCamposPermiso() {
+	        if (cbxnombres.getSelectedItem() == null || cbxnombres.getSelectedItem().toString().trim().isEmpty()) {
+	            JOptionPane.showMessageDialog(null, "El campo 'Nombres' está vacío", "Advertencia", JOptionPane.WARNING_MESSAGE);
+	            return false;
+	        }
 	       
-	            String fechaActualTexto = txtFecha.getText();
-	            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd-MM-yy");
-	            Date fechaUtil = formatoFecha.parse(fechaActualTexto);
-	            java.sql.Date fechaSQL = new java.sql.Date(fechaUtil.getTime());
+	        if (txttotal_horas.getText().trim().isEmpty()) {
+	            JOptionPane.showMessageDialog(null, "El campo 'Total de horas' está vacío", "Advertencia", JOptionPane.WARNING_MESSAGE);
+	            return false;
+	        }
+	        if (txamotivo.getText().trim().isEmpty()) {
+	            JOptionPane.showMessageDialog(null, "El campo 'Motivo de ausencia' está vacío", "Advertencia", JOptionPane.WARNING_MESSAGE);
+	            return false;
+	        }
+	        if (date_desde.getDate() == null) {
+	            JOptionPane.showMessageDialog(null, "Debe seleccionar una 'Fecha Desde'", "Advertencia", JOptionPane.WARNING_MESSAGE);
+	            return false;
+	        }
+	        if (date_hasta.getDate() == null) {
+	            JOptionPane.showMessageDialog(null, "Debe seleccionar una 'Fecha Hasta'", "Advertencia", JOptionPane.WARNING_MESSAGE);
+	            return false;
+	        }
+	        if (txttotal_dias.getText().trim().isEmpty()) {
+	            JOptionPane.showMessageDialog(null, "El campo 'Total de días' está vacío", "Advertencia", JOptionPane.WARNING_MESSAGE);
+	            return false;
+	        }
+	        if (txtnombres_recibe.getText().trim().isEmpty()) {
+	            JOptionPane.showMessageDialog(null, "El campo 'Nombre de quien recibe' está vacío", "Advertencia", JOptionPane.WARNING_MESSAGE);
+	            return false;
+	        }
 
-	            if (cbxnombres.getSelectedItem().equals("") || txtapellidos.getText().equals("") ||
-	                txtidentidad.getText().equals("") || txtid.getText().equals("") ||
-	                txttel.getText().equals("") || txtcorreo.getText().equals("") ||
-	                txtcargo.getText().equals("") || txtarea.getText().equals("") ||
-	                txttotal_horas.getText().equals("") || txamotivo.getText().equals("") ||
-	                fechaSeleccionada3 == null || fechaSeleccionada4 == null ||
-	                txttotal_dias.getText().equals("") || txtnombres_recibe.getText().equals("")) {
+	        return true;
+	    }
 
-	                JOptionPane.showMessageDialog(null, "¡Datos vacíos, por favor, para guardar el permiso llene todos los campos!",
-	                        "Advertencia", JOptionPane.WARNING_MESSAGE);
+	    // Método adicional para validar el rango de horas
+	    private boolean validarRangoHoras(String totalHorasStr) {
+	        try {
+	            String[] tiempo = totalHorasStr.split(":");
+	            int horas = Integer.parseInt(tiempo[0]);
+	            int minutos = Integer.parseInt(tiempo[1]);
 
-	            } else {
-	                permiso_ausencia_laboral clase = new permiso_ausencia_laboral();
-	                consultas_permiso_ausencia_laboral consulta = new consultas_permiso_ausencia_laboral();
-
-	                clase.setNombres_empleado(cbxnombres.getSelectedItem().toString());
-	                clase.setApellidos_empleado(txtapellidos.getText().toString());
-	                clase.setIdentidad_empleado(txtidentidad.getText().toString());
-	                clase.setId_empleado(Integer.parseInt(txtid.getText()));
-	                clase.setTel_empleado(txttel.getText().toString());
-	                clase.setCorreo_empleado(txtcorreo.getText().toString());
-	                clase.setCargo_empleado(txtcargo.getText().toString());
-	                clase.setArea_empleado(txtarea.getText().toString());
-	                clase.setDesde_hora(horaInicioTime); 
-	                clase.setHasta_hora(horaFinTime);    
-	                
-	                String[] tiempo = txttotal_horas.getText().split(":");
-	                int horas = Integer.parseInt(tiempo[0]);
-	                int minutos = Integer.parseInt(tiempo[1]);
-	                Time totalHoras = new Time(horas, minutos, 0); 
-	                clase.setTotal_horas(totalHoras); 
-
-	                clase.setMotivo_ausencia(txamotivo.getText().toString());
-	                clase.setDesde_fecha(fechaSeleccionada3);
-	                clase.setHasta_fecha(fechaSeleccionada4);
-	                clase.setTotal_fecha(Integer.parseInt(txttotal_dias.getText()));
-	                clase.setNombres_recibe(txtnombres_recibe.getText().toString());
-	                clase.setFecha_recibe(fechaSQL);
-	                
-	                if (consulta.guardar_permiso_ausencia_laboral(clase, horaInicioTime, horaFinTime, fechaSeleccionada3, fechaSeleccionada4, fechaSQL)) {
-	                    JOptionPane.showMessageDialog(null, "El permiso por ausencia laboral se ha registrado correctamente",
-	                            "Registro guardado", JOptionPane.INFORMATION_MESSAGE);
-
-	                    /*permiso_AL_tabla tabla = new permiso_AL_tabla();
-	                    tabla.setLocationRelativeTo(null);
-	                    tabla.setVisible(true);
-	                    tabla.construirTabla();
-	                    dispose();*/
-	                } else {
-	                    JOptionPane.showMessageDialog(null, "Error, permiso por ausencia laboral no guardado", "Error", JOptionPane.ERROR_MESSAGE);
-	                }
+	            // Validar que las horas estén en el rango correcto
+	            if (horas < 1 || horas > 23) {
+	                return false;
+	            }
+	            // Validar que los minutos estén en un rango válido
+	            if (minutos < 0 || minutos >= 60) {
+	                return false;
 	            }
 	        } catch (Exception e) {
-	            JOptionPane.showMessageDialog(null, "Error al guardar el permiso: " + e.getMessage());
+	            return false; // Cualquier excepción durante la validación debe devolver false
 	        }
+	        return true;
 	    }
 
 	    
 	    
+	    
+	    public void guardar_permiso_ausencia_laboral() {
+	        if (!validarCamposPermiso()) {
+	            return; 
+	        }
+
+	        permiso_ausencia_laboral permiso = new permiso_ausencia_laboral();
+	        permiso.setId_empleado(Integer.parseInt(txtid.getText()));
+	        permiso.setNombres_empleado(cbxnombres.getSelectedItem().toString());
+	        permiso.setApellidos_empleado(txtapellidos.getText());
+	        permiso.setIdentidad_empleado(txtidentidad.getText());
+	        permiso.setTel_empleado(txttel.getText());
+	        permiso.setCorreo_empleado(txtcorreo.getText());
+	        permiso.setCargo_empleado(txtcargo.getText());
+	        permiso.setArea_empleado(txtarea.getText());
+	        permiso.setMotivo_ausencia(txamotivo.getText());
+	        permiso.setNombres_recibe(txtnombres_recibe.getText());
+
+	        // Guardar las fechas
+	        Date desdeFecha = date_desde.getDate();
+	        Date hastaFecha = date_hasta.getDate();
+	        Date fechaRecibe = new Date();
+
+	        // Obtener las horas desde los JSpinner
+	        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+	        String horaInicioStr = timeFormat.format(spinnerHoraInicio.getValue());
+	        String horaFinStr = timeFormat.format(spinnerHoraFin.getValue());
+
+	        // Convertir las horas a Time
+	        Time desdeHora = Time.valueOf(horaInicioStr); 
+	        Time hastaHora = Time.valueOf(horaFinStr);   
+	        
+	        // Verificar si total_horas es válido
+	        String totalHorasStr = txttotal_horas.getText().trim();
+	        if (totalHorasStr.isEmpty() || totalHorasStr.equals("00:00")) {
+	            JOptionPane.showMessageDialog(null, "El total de horas no puede estar vacío o ser 00:00", "Error", JOptionPane.ERROR_MESSAGE);
+	            return; 
+	        }
+	        
+	        // Convertir el valor de total_horas a Time
+	        Time totalHoras = Time.valueOf(totalHorasStr + ":00"); // Asegurar formato "HH:mm:ss"
+
+	        permiso.setTotal_horas(totalHoras);
+	        consultas_permiso_ausencia_laboral consulta = new consultas_permiso_ausencia_laboral();
+	        
+	        if (consulta.consulta_guardar_permiso_ausencia_laboral(permiso, desdeHora, hastaHora, desdeFecha, hastaFecha, fechaRecibe)) {
+	            JOptionPane.showMessageDialog(null, "El permiso por ausencia laboral se ha registrado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+	        } else {
+	            JOptionPane.showMessageDialog(null, "Error al guardar el permiso por ausencia laboral", "Error", JOptionPane.ERROR_MESSAGE);
+	        }
+	    }
+
+
 	   
 	    public int obtenerUltimoIdPermiso() {
 	        int ultimoId = 0;
@@ -788,7 +839,7 @@ public class permiso_AL_nuevo extends JFrame {
 	            conex.desconectar();
 	        } catch (SQLException e) {
 	            e.printStackTrace();
-	            JOptionPane.showMessageDialog(null, "Error al obtener el último ID de permiso", "Error", JOptionPane.ERROR_MESSAGE);
+	            JOptionPane.showMessageDialog(null, "Error al obtener el último Id de permiso", "Error", JOptionPane.ERROR_MESSAGE);
 	        }
 	        return ultimoId;
 	    }
@@ -826,15 +877,21 @@ public class permiso_AL_nuevo extends JFrame {
 	    
 	    public void actualizar_permiso_laboral() {
 	        try {
+	            if (!validarCamposPermiso()) {
+	                return; 
+	            }
+
 	            Date horaInicioDate = (Date) spinnerHoraInicio.getValue();
 	            Date horaFinDate = (Date) spinnerHoraFin.getValue();
 	            Calendar calendarHoraInicio = Calendar.getInstance();
 	            calendarHoraInicio.setTime(horaInicioDate);
-	            Time horaInicioTime = new Time(calendarHoraInicio.get(Calendar.HOUR_OF_DAY), calendarHoraInicio.get(Calendar.MINUTE), 0);
+	            @SuppressWarnings("deprecation")
+				Time horaInicioTime = new Time(calendarHoraInicio.get(Calendar.HOUR_OF_DAY), calendarHoraInicio.get(Calendar.MINUTE), 0);
 
 	            Calendar calendarHoraFin = Calendar.getInstance();
 	            calendarHoraFin.setTime(horaFinDate);
-	            Time horaFinTime = new Time(calendarHoraFin.get(Calendar.HOUR_OF_DAY), calendarHoraFin.get(Calendar.MINUTE), 0);
+	            @SuppressWarnings("deprecation")
+				Time horaFinTime = new Time(calendarHoraFin.get(Calendar.HOUR_OF_DAY), calendarHoraFin.get(Calendar.MINUTE), 0);
 
 	            Date fechaSeleccionada3 = date_desde.getDate(); // Fecha desde
 	            Date fechaSeleccionada4 = date_hasta.getDate();  // Fecha hasta
@@ -844,65 +901,52 @@ public class permiso_AL_nuevo extends JFrame {
 	            Date fechaUtil = formatoFecha.parse(fechaActualTexto);
 	            java.sql.Date fechaSQL = new java.sql.Date(fechaUtil.getTime());
 
-	            if (cbxnombres.getSelectedItem().equals("") || txtapellidos.getText().equals("") ||
-	                txtidentidad.getText().equals("") || txtid.getText().equals("") ||
-	                txttel.getText().equals("") || txtcorreo.getText().equals("") ||
-	                txtcargo.getText().equals("") || txtarea.getText().equals("") ||
-	                txttotal_horas.getText().equals("") || txamotivo.getText().equals("") ||
-	                fechaSeleccionada3 == null || fechaSeleccionada4 == null ||
-	                txttotal_dias.getText().equals("") || txtnombres_recibe.getText().equals("")) {
+	            permiso_ausencia_laboral clase = new permiso_ausencia_laboral();
+	            consultas_permiso_ausencia_laboral consulta = new consultas_permiso_ausencia_laboral();
 
-	                JOptionPane.showMessageDialog(null, "¡Datos vacíos, por favor, para actualizar el permiso llene todos los campos!",
-	                        "Advertencia", JOptionPane.WARNING_MESSAGE);
+	            clase.setId_permisos(Integer.parseInt(txtnumero_permiso.getText())); 
+	            clase.setNombres_empleado(cbxnombres.getSelectedItem().toString());
+	            clase.setApellidos_empleado(txtapellidos.getText());
+	            clase.setIdentidad_empleado(txtidentidad.getText());
+	            clase.setId_empleado(Integer.parseInt(txtid.getText()));
+	            clase.setTel_empleado(txttel.getText());
+	            clase.setCorreo_empleado(txtcorreo.getText());
+	            clase.setCargo_empleado(txtcargo.getText());
+	            clase.setArea_empleado(txtarea.getText());
 
+	            // Almacenar las horas de inicio y fin
+	            clase.setDesde_hora(horaInicioTime); 
+	            clase.setHasta_hora(horaFinTime);    
+
+	            // Calcular el total de horas desde txttotal_horas
+	            String[] tiempo = txttotal_horas.getText().split(":");
+	            int horas = Integer.parseInt(tiempo[0]);
+	            int minutos = Integer.parseInt(tiempo[1]);
+	            Time totalHoras = new Time(horas, minutos, 0); 
+	            clase.setTotal_horas(totalHoras); 
+
+	            // Establecer los demás datos
+	            clase.setMotivo_ausencia(txamotivo.getText());
+	            clase.setDesde_fecha(fechaSeleccionada3);
+	            clase.setHasta_fecha(fechaSeleccionada4);
+	            clase.setTotal_fecha(Integer.parseInt(txttotal_dias.getText()));
+	            clase.setNombres_recibe(txtnombres_recibe.getText());
+	            clase.setFecha_recibe(fechaSQL);
+
+	            if (consulta.actualizar_permiso_ausencia_laboral(clase, horaInicioTime, horaFinTime, fechaSeleccionada3, fechaSeleccionada4, fechaSQL)) {
+	                JOptionPane.showMessageDialog(null, "Permiso por ausencia laboral actualizado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+	                permiso_AL_tabla ver_permiso = new permiso_AL_tabla();
+	                ver_permiso.construirTabla(); 
+	                ver_permiso.setLocationRelativeTo(null);
+	                ver_permiso.setVisible(true);
+
+	                dispose(); 
 	            } else {
-	                permiso_ausencia_laboral clase = new permiso_ausencia_laboral();
-	                consultas_permiso_ausencia_laboral consulta = new consultas_permiso_ausencia_laboral();
-
-	                clase.setId_permisos(Integer.parseInt(txtnumero_permiso.getText())); 
-	                clase.setNombres_empleado(cbxnombres.getSelectedItem().toString());
-	                clase.setApellidos_empleado(txtapellidos.getText());
-	                clase.setIdentidad_empleado(txtidentidad.getText());
-	                clase.setId_empleado(Integer.parseInt(txtid.getText()));
-	                clase.setTel_empleado(txttel.getText());
-	                clase.setCorreo_empleado(txtcorreo.getText());
-	                clase.setCargo_empleado(txtcargo.getText());
-	                clase.setArea_empleado(txtarea.getText());
-
-	                // Almacenar las horas de inicio y fin
-	                clase.setDesde_hora(horaInicioTime); 
-	                clase.setHasta_hora(horaFinTime);    
-
-	                // Calcular el total de horas desde txttotal_horas
-	                String[] tiempo = txttotal_horas.getText().split(":");
-	                int horas = Integer.parseInt(tiempo[0]);
-	                int minutos = Integer.parseInt(tiempo[1]);
-	                Time totalHoras = new Time(horas, minutos, 0); 
-	                clase.setTotal_horas(totalHoras); 
-
-	                // Establecer los demás datos
-	                clase.setMotivo_ausencia(txamotivo.getText());
-	                clase.setDesde_fecha(fechaSeleccionada3);
-	                clase.setHasta_fecha(fechaSeleccionada4);
-	                clase.setTotal_fecha(Integer.parseInt(txttotal_dias.getText()));
-	                clase.setNombres_recibe(txtnombres_recibe.getText());
-	                clase.setFecha_recibe(fechaSQL);
-
-	                if (consulta.actualizar_permiso_ausencia_laboral(clase, horaInicioTime, horaFinTime, fechaSeleccionada3, fechaSeleccionada4, fechaSQL)) {
-	                    JOptionPane.showMessageDialog(null, "Permiso por ausencia laboral actualizado correctamente");
-
-	                    permiso_AL_tabla ver_permiso = new permiso_AL_tabla();
-	                    ver_permiso.construirTabla(); // Método para actualizar la tabla
-	                    ver_permiso.setLocationRelativeTo(null);
-	                    ver_permiso.setVisible(true);
-
-	                    dispose(); 
-	                } else {
-	                    JOptionPane.showMessageDialog(null, "Error, no se puede actualizar el permiso por ausencia laboral");
-	                }
+	                JOptionPane.showMessageDialog(null, "Error, no se puede actualizar el permiso por ausencia laboral", "Error", JOptionPane.ERROR_MESSAGE);
 	            }
 	        } catch (Exception e) {
-	            JOptionPane.showMessageDialog(null, "Error al actualizar el permiso: " + e.getMessage());
+	            JOptionPane.showMessageDialog(null, "Error al actualizar el permiso", "Error", JOptionPane.ERROR_MESSAGE);
 	        }
 	    }
 
@@ -924,8 +968,7 @@ public class permiso_AL_nuevo extends JFrame {
 	            }
 
 	        } catch (SQLException ex) {
-	            // Puedes personalizar el manejo del error aquí o loguear más información
-	            System.err.println("Error al verificar si el permiso ya existe en la base de datos para id_permisos: " + numeroPermiso);
+	            System.err.println("Error al verificar si el permiso ya existe en la base de datos para id_permisos" + numeroPermiso);
 	            ex.printStackTrace();
 	        }
 	        return existe;
@@ -941,15 +984,12 @@ public class permiso_AL_nuevo extends JFrame {
 
 	        JFileChooser fileChooser = new JFileChooser();
 	        fileChooser.setDialogTitle("Guardar constancia de permiso por ausencia laboral");
-
 	        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos PDF", "pdf");
 	        fileChooser.setFileFilter(filter);
-
 	        fileChooser.setSelectedFile(new File(nombreArchivo));
 
 	        boolean archivoValido = false;
 	        File fileToSave = null;
-
 	        while (!archivoValido) {
 	            int userSelection = fileChooser.showSaveDialog(this);
 
@@ -972,7 +1012,7 @@ public class permiso_AL_nuevo extends JFrame {
 	                    archivoValido = true;
 	                }
 	            } else {
-	                JOptionPane.showMessageDialog(null, "Generación del comprobante cancelada");
+	                JOptionPane.showMessageDialog(null, "Generación del comprobante cancelada", "Error", JOptionPane.ERROR_MESSAGE);
 	                return; 
 	            }
 	        }
@@ -1030,7 +1070,7 @@ public class permiso_AL_nuevo extends JFrame {
 
 	        } catch (Exception ex) {
 	            ex.printStackTrace();
-	            JOptionPane.showMessageDialog(null, "Error al guardar el comprobante: " + ex.getMessage(), 
+	            JOptionPane.showMessageDialog(null, "Error al guardar el comprobante", 
 	            		"Error", JOptionPane.ERROR_MESSAGE);
 	        }
 	    }
@@ -1077,7 +1117,7 @@ public class permiso_AL_nuevo extends JFrame {
 	            conn.close();
 	        } catch (SQLException ex) {
 	            ex.printStackTrace();
-	            JOptionPane.showMessageDialog(null, "Error al cargar los nombres de los empleados.");
+	            JOptionPane.showMessageDialog(null, "Error al cargar los nombres de los empleados", "Error", JOptionPane.ERROR_MESSAGE);
 	        }
 
 	        ventanaPermiso.setLocationRelativeTo(null);

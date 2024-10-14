@@ -58,8 +58,6 @@ public class empleado_tabla extends JFrame {
     public TableRowSorter<TableModel> trsfiltroCodigo;
     String filtroCodigo;
     empleado clase_empleado = new empleado();
-
-    //public DefaultTableModel DefaultTableModel;
     public JLabel lblCargo;
     public DefaultTableModel tableModel;
     public JTable tableEmpleados;
@@ -75,7 +73,7 @@ public class empleado_tabla extends JFrame {
     public JComboBox<String> cbxbusquedasexo;
     public JButton btneliminar;
 
-    private final String placeHolderText = "Nombres, apellidos, identidad, estado civil y teléfono"; // Placeholder definido
+    private final String placeHolderText = "Nombres, apellidos, identidad, estado civil y teléfono"; 
 
     public JPanel panelbusqueda;
 
@@ -86,7 +84,7 @@ public class empleado_tabla extends JFrame {
                     empleado_tabla frame = new empleado_tabla();
                     frame.setVisible(true);
                     frame.setLocationRelativeTo(null);
-                    frame.construirTabla(); // Llamamos a construirTabla para inicializar la tabla y el sorter
+                    frame.construirTabla(); 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -161,7 +159,9 @@ public class empleado_tabla extends JFrame {
 
         cbxbusquedaCargo = new JComboBox<>();
         cbxbusquedaCargo.setFont(new Font("Tahoma", Font.BOLD, 12));
-        cbxbusquedaCargo.setModel(new DefaultComboBoxModel(new String[] {"Director general", "Director", "Gerente financiero", "Administrador", "Asistente", "Cobros", "Enfermero", "Psicologo", "Supervisor", "Consejero", "Docente", "Docente auxiliar", "Soporte técnico", "Marketing", "Aseo", "Mantenimiento", "Conserje", " "}));
+        cbxbusquedaCargo.setModel(new DefaultComboBoxModel<String>(new String[] {"Director general", "Director", 
+        		"Gerente financiero", "Administrador", "Asistente", "Cobros", "Enfermero", "Psicologo", "Supervisor", 
+        		"Consejero", "Docente", "Docente auxiliar", "Soporte técnico", "Marketing", "Aseo", "Mantenimiento", "Conserje", " "}));
         cbxbusquedaCargo.setBounds(438, 9, 136, 26);
         cbxbusquedaCargo.setSelectedIndex(-1);
         panelbusqueda.add(cbxbusquedaCargo);
@@ -174,7 +174,8 @@ public class empleado_tabla extends JFrame {
         panelbusqueda.add(lblCargo);
 
         cbxbusquedaarea = new JComboBox<>();
-        cbxbusquedaarea.setModel(new DefaultComboBoxModel<>(new String[] { "Administrativa", "Financiera", "Pre basica", "Primaria", "Secundaria", "Logistica", "Aseo", "Mantenimiento", " " }));
+        cbxbusquedaarea.setModel(new DefaultComboBoxModel<>(new String[] { "Administrativa", "Financiera", "Pre basica", "Primaria", 
+        		"Secundaria", "Logistica", "Aseo", "Mantenimiento", " " }));
         cbxbusquedaarea.setFont(new Font("Tahoma", Font.BOLD, 12));
         cbxbusquedaarea.setBounds(638, 9, 136, 26);
         cbxbusquedaarea.setSelectedIndex(-1);
@@ -308,7 +309,7 @@ public class empleado_tabla extends JFrame {
         	                if (consulta.eliminar_empleado(Integer.parseInt(id))) {
         	                   
         	                    ((DefaultTableModel) table.getModel()).removeRow(filaSeleccionada);
-        	                    JOptionPane.showMessageDialog(null, "El registro ha sido eliminado correctamente de la tabla y la base de datos.");
+        	                    JOptionPane.showMessageDialog(null, "El registro ha sido eliminado correctamente de la tabla y la base de datos", "Éxito", JOptionPane.INFORMATION_MESSAGE );
         	                } else {
         	                    
         	                    JOptionPane.showMessageDialog(null, "Error al eliminar el registro de la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -316,15 +317,14 @@ public class empleado_tabla extends JFrame {
         	            } 
         	        }
         	    } catch (HeadlessException ex) {
-        	        JOptionPane.showMessageDialog(null, "Error: " + ex + "\nInténtelo nuevamente", "Error en la operación", JOptionPane.ERROR_MESSAGE);
+        	        JOptionPane.showMessageDialog(null, "Error, inténtelo nuevamente", "Error en la operación", JOptionPane.ERROR_MESSAGE);
         	    }
         	}
 
         });
 
         
-       ////////////////////////////////////////////////////////////////////////////////////////
-        // Configurar ActionListener para los JComboBox
+        // Configuracion para los JComboBox
         cbxbusquedaCargo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -346,6 +346,7 @@ public class empleado_tabla extends JFrame {
             }
         });
 
+        
         // Configuración del placeholder
         txtb.setText(placeHolderText);
         txtb.setForeground(Color.GRAY);
@@ -373,11 +374,11 @@ public class empleado_tabla extends JFrame {
   
     
     public void construirTabla() {
-        String titulos[] = { "No", "Id", "Identidad", "Nombres", "Apellidos", "Sexo", "Fecha nacimiento", "Estado civil", "Dirección", "Teléfono", "Correo", "Cargo", "Área", "Fecha inicio", "Fecha renuncia", "Fotografía", "No.cuenta" };
+        String titulos[] = { "No", "Id", "Identidad", "Nombres", "Apellidos", "Sexo", "Nacimiento", "Estado civil", "Dirección", 
+        		"Teléfono", "Correo", "Cargo", "Área", "Inicio", "Renuncia", "Fotografía", "No.cuenta" };
         String informacion[][] = obtenerMatriz();
         
-        // Crear el modelo de tabla no editable
-        DefaultTableModel modeloTabla = new DefaultTableModel(informacion, titulos) {
+        DefaultTableModel modeloTabla = new DefaultTableModel(informacion, titulos) { //modelo de tabla no editable
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // Todas las celdas no serán editables
@@ -393,7 +394,7 @@ public class empleado_tabla extends JFrame {
         table.getColumnModel().getColumn(1).setPreferredWidth(40);
 
         
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy"); // Ajustar el formato según el que estés utilizando
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy"); 
 
         table.addMouseListener(new MouseAdapter() {
             @Override
@@ -407,7 +408,6 @@ public class empleado_tabla extends JFrame {
 
                         
                         try {
-                            // Obtener los datos de la fila seleccionada
                             String idOriginalStr = String.valueOf(table.getModel().getValueAt(fila, 0));  // El idOriginal es la clave primaria
                             String idEmpleado = String.valueOf(table.getModel().getValueAt(fila, 1));  // El idEmpleado se mantiene como String
                             String identidad = String.valueOf(table.getModel().getValueAt(fila, 2));
@@ -415,7 +415,6 @@ public class empleado_tabla extends JFrame {
                             String apellidos = String.valueOf(table.getModel().getValueAt(fila, 4));
                             String sexo = String.valueOf(table.getModel().getValueAt(fila, 5));
 
-                            // Convertir las fechas de String a Date utilizando SimpleDateFormat
                             Date fechaNacimiento = null;
                             Date fechaInicio = null;
                             Date fechaRenuncia = null;
@@ -427,34 +426,31 @@ public class empleado_tabla extends JFrame {
                                     fechaRenuncia = dateFormat.parse(fechaRenunciaStr);
                                 }
                             } catch (ParseException ex) {
-                                JOptionPane.showMessageDialog(null, "Error al procesar las fechas: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                                JOptionPane.showMessageDialog(null, "Error al procesar las fechas", "Error", JOptionPane.ERROR_MESSAGE);
                                 return;
                             }
 
                             String estadoCivil = String.valueOf(table.getModel().getValueAt(fila, 7));
                             String direccion = String.valueOf(table.getModel().getValueAt(fila, 8));
-                            String telefono = String.valueOf(table.getModel().getValueAt(fila, 9));  // Teléfono como String
+                            String telefono = String.valueOf(table.getModel().getValueAt(fila, 9));  
                             String correo = String.valueOf(table.getModel().getValueAt(fila, 10));
                             String cargo = String.valueOf(table.getModel().getValueAt(fila, 11));
                             String area = String.valueOf(table.getModel().getValueAt(fila, 12));
                             String fotografia = String.valueOf(table.getModel().getValueAt(fila, 15));
-                            String cuenta = String.valueOf(table.getModel().getValueAt(fila, 16));  // Cuenta bancaria como String
+                            String cuenta = String.valueOf(table.getModel().getValueAt(fila, 16));  
 
-                            // Crear una instancia de la ventana "empleado_nuevo"
                             empleado_nuevo ventanaNuevo = new empleado_nuevo();
-
                             ventanaNuevo.ver_empleado(idEmpleado, identidad, nombres, apellidos, sexo, fechaNacimiento, estadoCivil,
                                     direccion, telefono, correo, cargo, area, fechaInicio, fechaRenuncia, fotografia, cuenta);
 
-                            ventanaNuevo.txtidOriginal.setText(idOriginalStr);  // idOriginal es la clave primaria INT
-
+                            ventanaNuevo.txtidOriginal.setText(idOriginalStr);  
                             ventanaNuevo.setLocationRelativeTo(null);
                             ventanaNuevo.btnguardar.setVisible(false); 
                             ventanaNuevo.btnactualizar.setVisible(false);
                             ventanaNuevo.btnlimpiar.setVisible(false);
-                            dispose();  // Cerrar la ventana actual
+                            dispose(); 
                         } catch (Exception ex) {
-                            JOptionPane.showMessageDialog(null, "Error al procesar los datos: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(null, "Error al procesar los datos", "Error", JOptionPane.ERROR_MESSAGE);
                             ex.printStackTrace();
                         }
                     }
@@ -463,17 +459,10 @@ public class empleado_tabla extends JFrame {
         });
 
 
-
-
-        
     }
     
     
-    
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////
-    
-
- // Método que aplica los filtros combinados de los tres JComboBox
+   
     private void aplicarFiltros() {
         String filtroCargo = (String) cbxbusquedaCargo.getSelectedItem();
         String filtroArea = (String) cbxbusquedaarea.getSelectedItem();
@@ -501,7 +490,7 @@ public class empleado_tabla extends JFrame {
             trsfiltroCodigo.setRowFilter(combinedFilter);
         }
     }
-    /////////////////////////////////////////////////////////////////////////////////////////////////
+    
     
 
     public static String[][] obtenerMatriz() {
@@ -585,7 +574,6 @@ public class empleado_tabla extends JFrame {
 
     public void filtro() {
         filtroCodigo = txtb.getText();
-        //trsfiltroCodigo.setRowFilter(RowFilter.regexFilter("(?i)" + filtroCodigo, 1, 2, 3, 6, 8));
         trsfiltroCodigo.setRowFilter(RowFilter.regexFilter("(?i)" + filtroCodigo, 2, 3, 4, 7, 9));
     }
     

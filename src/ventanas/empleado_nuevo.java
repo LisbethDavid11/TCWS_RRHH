@@ -92,6 +92,8 @@ public class empleado_nuevo extends JFrame{
 	public JCheckBox chxeditar;
 	public JTextField txtidOriginal;
 	
+	consultas_empleado consulta = new consultas_empleado();
+	
 
 	
 	
@@ -509,6 +511,11 @@ public class empleado_nuevo extends JFrame{
 		 btnlimpiar.setBackground(UIManager.getColor("Button.highlight"));
 		 
 		 btnactualizar = new JButton("Actualizar");
+		 btnactualizar.addActionListener(new ActionListener() {
+		 	public void actionPerformed(ActionEvent e) {
+		 		actualizarEmpleado();
+		 	}
+		 });
 		 btnactualizar.setSelectedIcon(null);
 		 btnactualizar.setIcon(null);
 		 btnactualizar.setToolTipText("Actualizar registro");
@@ -578,114 +585,14 @@ public class empleado_nuevo extends JFrame{
 			}
 			});
 		
-		
-		btnactualizar.addActionListener(new ActionListener() {
-		    @Override
-		    public void actionPerformed(ActionEvent e) {
-		        try {
-		            // Verificar que el campo 'Id empleado' no esté vacío
-		            String idEmpleadoStr = txtid_empleado.getText().trim();
-		            if (idEmpleadoStr.isEmpty()) {
-		                JOptionPane.showMessageDialog(null, "Error: El campo 'Id empleado' no puede estar vacío");
-		                return;
-		            }
-
-		            // Verificar que el campo de texto para el ID original no esté vacío
-		            String idOriginalStr = txtidOriginal.getText().trim();
-		            if (idOriginalStr.isEmpty()) {
-		                JOptionPane.showMessageDialog(null, "Error: El campo 'Id original' no puede estar vacío");
-		                return;
-		            }
-
-		            // Convertir los IDs a enteros
-		            int idOriginal = Integer.parseInt(idOriginalStr); 
-		            int idEmpleado = Integer.parseInt(idEmpleadoStr);
-
-		            // Verificar que el campo 'Número de cuenta bancaria' no esté vacío
-		            String cuentaEmpleado = txtcuenta.getText().trim();
-		            if (cuentaEmpleado.isEmpty()) {
-		                JOptionPane.showMessageDialog(null, "El campo 'Número de cuenta bancaria' no puede estar vacío");
-		                return;
-		            }
-
-		            // Verificar que el campo 'Número de teléfono' no esté vacío
-		            String telefonoEmpleado = txttel.getText().trim();
-		            if (telefonoEmpleado.isEmpty()) {
-		                JOptionPane.showMessageDialog(null, "El campo 'Número de teléfono' no puede estar vacío");
-		                return;
-		            }
-
-		            // Verificar que el campo 'Identidad' no esté vacío
-		            String identidadEmpleado = txtidentidad.getText().trim();
-		            if (identidadEmpleado.isEmpty()) {
-		                JOptionPane.showMessageDialog(null, "El campo 'Número de identidad' no puede estar vacío");
-		                return;
-		            }
-
-		            // Validar que uno de los botones de sexo esté seleccionado
-		            String sexoEmpleado = "";
-		            if (buttonmasculino.isSelected()) {
-		                sexoEmpleado = "Masculino";
-		            } else if (buttonfemenino.isSelected()) {
-		                sexoEmpleado = "Femenino";
-		            } else if (buttonotro.isSelected()) {
-		                sexoEmpleado = "Otro";
-		            } else {
-		                JOptionPane.showMessageDialog(null, "Debe seleccionar un sexo para el empleado");
-		                return;
-		            }
-
-		            // Crear el objeto empleado con los datos
-		            empleado empleadoActualizado = new empleado();
-		            empleadoActualizado.setId_empleado(idEmpleado);
-		            empleadoActualizado.setIdentidad_empleado(identidadEmpleado);
-		            empleadoActualizado.setNombres_empleado(txtnombres.getText().trim());
-		            empleadoActualizado.setApellidos_empleado(txtapellidos.getText().trim());
-		            empleadoActualizado.setSexo_empleado(sexoEmpleado);  // Asignamos el sexo correctamente
-		            empleadoActualizado.setNacimiento_empleado(fecha_nacimiento.getDate());
-		            empleadoActualizado.setCivil_empleado(cbxestado_civil.getSelectedItem().toString());
-		            empleadoActualizado.setDireccion_empleado(txadireccion.getText().trim());
-		            empleadoActualizado.setTel_empleado(telefonoEmpleado);
-		            empleadoActualizado.setCorreo_empleado(txtcorreo.getText().trim());
-		            empleadoActualizado.setCargo_empleado(cbxcargo.getSelectedItem().toString());
-		            empleadoActualizado.setArea_empleado(cbxarea.getSelectedItem().toString());
-		            empleadoActualizado.setInicio_empleado(fecha_inicio.getDate());
-		            empleadoActualizado.setRenuncia_empleado(fecha_renuncia.getDate());
-		            empleadoActualizado.setFotografia_empleado(txtruta.getText().trim());
-		            empleadoActualizado.setCuenta_empleado(cuentaEmpleado);
-
-		            // Llamar al método de actualización de la base de datos
-		            consultas_empleado consulta = new consultas_empleado();
-		            if (consulta.actualizar_empleado(empleadoActualizado, idOriginal, 
-		                    empleadoActualizado.getId_empleado(), empleadoActualizado.getNacimiento_empleado(), 
-		                    empleadoActualizado.getInicio_empleado(), empleadoActualizado.getRenuncia_empleado())) {
-		                JOptionPane.showMessageDialog(null, "Registro actualizado correctamente.");
-		                
-		                empleado_tabla tabla = new empleado_tabla();
-		                tabla.setVisible(true);
-		                tabla.setLocationRelativeTo(null);
-		                tabla.construirTabla();
-		                dispose();
-		                
-		                
-		            } else {
-		                JOptionPane.showMessageDialog(null, "Error al actualizar el registro.", "Error", JOptionPane.ERROR_MESSAGE);
-		            }
-		        } catch (NumberFormatException ex) {
-		            JOptionPane.showMessageDialog(null, "Error: ID de empleado no válido o vacío. Detalles: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-		        } catch (Exception ex) {
-		            JOptionPane.showMessageDialog(null, "Ocurrió un error inesperado: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-		            ex.printStackTrace();
-		        }
-		    }
-		});
+	
 		
 		
 		// Rango de años para los jdatechooser
 		Calendar fechaMin = Calendar.getInstance();
 		fechaMin.set(2012, Calendar.JANUARY, 1);
-		fecha_inicio.setMinSelectableDate(fechaMin.getTime()); // Fecha mínima permitida
-		fecha_inicio.setMaxSelectableDate(fechaActual);       // Fecha máxima permitida (hoy)
+		fecha_inicio.setMinSelectableDate(fechaMin.getTime()); 
+		fecha_inicio.setMaxSelectableDate(fechaActual);      
 
 		
 		//renuncia
@@ -695,11 +602,6 @@ public class empleado_nuevo extends JFrame{
 		fecha_renuncia.setMaxSelectableDate(fechaActual);       
 
 
-
-
-
-	
-        	
 	}///////////////////FIN CLASS/////////////////////
 
 		private void cerrar_ventana() {
@@ -708,82 +610,133 @@ public class empleado_nuevo extends JFrame{
 				System.exit(0);
 		}
 		
-		
-		public void guardar_empleado() {
+		public boolean validarCamposEmpleadoGuardar() {
 		    Date fechaSeleccionada = fecha_nacimiento.getDate();
 		    Date fechaSeleccionada2 = fecha_inicio.getDate();
-		    Date fechaSeleccionada3 = fecha_renuncia.getDate(); // Fecha de renuncia
 
-		    // Verificar si hay campos vacíos
-		    if (txtid_empleado.getText().equals("") || txtidentidad.getText().equals("") || 
-		        txtnombres.getText().equals("") || txtapellidos.getText().equals("") || 
-		        (!buttonfemenino.isSelected() && !buttonmasculino.isSelected() && !buttonotro.isSelected()) || 
-		        fechaSeleccionada == null || fechaSeleccionada2 == null || 
-		        txadireccion.getText().equals("") || txttel.getText().equals("") || 
-		        txtcorreo.getText().equals("") || txtruta.getText().equals("") || 
-		        txtcuenta.getText().equals("") || cbxestado_civil.getSelectedItem().equals("") || 
-		        cbxarea.getSelectedItem().equals("") || cbxcargo.getSelectedItem().equals("")) {
+		    if (txtid_empleado.getText().trim().isEmpty()) {
+		        JOptionPane.showMessageDialog(null, "El campo 'Id empleado' no puede estar vacío", "Advertencia", JOptionPane.WARNING_MESSAGE);
+		        return false;
+		    }
+		    if (txtidentidad.getText().trim().isEmpty()) {
+		        JOptionPane.showMessageDialog(null, "El campo 'Número de identidad' no puede estar vacío", "Advertencia", JOptionPane.WARNING_MESSAGE);
+		        return false;
+		    }
+		    if (txtnombres.getText().trim().isEmpty()) {
+		        JOptionPane.showMessageDialog(null, "El campo 'Nombres' no puede estar vacío", "Advertencia", JOptionPane.WARNING_MESSAGE);
+		        return false;
+		    }
+		    if (txtapellidos.getText().trim().isEmpty()) {
+		        JOptionPane.showMessageDialog(null, "El campo 'Apellidos' no puede estar vacío", "Advertencia", JOptionPane.WARNING_MESSAGE);
+		        return false;
+		    }
+		    if (!buttonfemenino.isSelected() && !buttonmasculino.isSelected() && !buttonotro.isSelected()) {
+		        JOptionPane.showMessageDialog(null, "Debe seleccionar un sexo para el empleado", "Advertencia", JOptionPane.WARNING_MESSAGE);
+		        return false;
+		    }
+		    if (fechaSeleccionada == null) {
+		        JOptionPane.showMessageDialog(null, "Debe seleccionar una fecha de nacimiento", "Advertencia", JOptionPane.WARNING_MESSAGE);
+		        return false;
+		    }
+		    if (fechaSeleccionada2 == null) {
+		        JOptionPane.showMessageDialog(null, "Debe seleccionar una fecha de inicio", "Advertencia", JOptionPane.WARNING_MESSAGE);
+		        return false;
+		    }
+		    if (txadireccion.getText().trim().isEmpty()) {
+		        JOptionPane.showMessageDialog(null, "El campo 'Dirección' no puede estar vacío", "Advertencia", JOptionPane.WARNING_MESSAGE);
+		        return false;
+		    }
+		    if (txttel.getText().trim().isEmpty()) {
+		        JOptionPane.showMessageDialog(null, "El campo 'Número de teléfono' no puede estar vacío", "Advertencia", JOptionPane.WARNING_MESSAGE);
+		        return false;
+		    }
+		    if (txtcorreo.getText().trim().isEmpty()) {
+		        JOptionPane.showMessageDialog(null, "El campo 'Correo electrónico' no puede estar vacío", "Advertencia", JOptionPane.WARNING_MESSAGE);
+		        return false;
+		    }
+		    if (txtcuenta.getText().trim().isEmpty()) {
+		        JOptionPane.showMessageDialog(null, "El campo 'Número de cuenta bancaria' no puede estar vacío", "Advertencia", JOptionPane.WARNING_MESSAGE);
+		        return false;
+		    }
+		    if (cbxestado_civil.getSelectedItem() == null || cbxestado_civil.getSelectedItem().toString().trim().isEmpty()) {
+		        JOptionPane.showMessageDialog(null, "Debe seleccionar un estado civil", "Advertencia", JOptionPane.WARNING_MESSAGE);
+		        return false;
+		    }
+		    if (cbxarea.getSelectedItem() == null || cbxarea.getSelectedItem().toString().trim().isEmpty()) {
+		        JOptionPane.showMessageDialog(null, "Debe seleccionar un área", "Advertencia", JOptionPane.WARNING_MESSAGE);
+		        return false;
+		    }
+		    if (cbxcargo.getSelectedItem() == null || cbxcargo.getSelectedItem().toString().trim().isEmpty()) {
+		        JOptionPane.showMessageDialog(null, "Debe seleccionar un cargo", "Advertencia", JOptionPane.WARNING_MESSAGE);
+		        return false;
+		    }
 
-		        JOptionPane.showMessageDialog(null, "Datos vacíos. Por favor, complete todos los campos para registrar al empleado", "", JOptionPane.ERROR_MESSAGE);
+		    return true;
+		}
+		
+		
+		public void guardar_empleado() {
+		    if (!validarCamposEmpleadoGuardar()) {
+		        return; 
+		    }
+
+		    Date fechaSeleccionada = fecha_nacimiento.getDate();
+		    Date fechaSeleccionada2 = fecha_inicio.getDate();
+		    Date fechaSeleccionada3 = fecha_renuncia.getDate(); 
+
+		    empleado clase = new empleado();
+
+		    clase.setId_empleado(Integer.parseInt(txtid_empleado.getText()));
+		    clase.setIdentidad_empleado(txtidentidad.getText());
+		    clase.setNombres_empleado(txtnombres.getText());
+		    clase.setApellidos_empleado(txtapellidos.getText());
+
+		    if (buttonmasculino.isSelected()) {
+		        clase.setSexo_empleado("Masculino");
+		    } else if (buttonfemenino.isSelected()) {
+		        clase.setSexo_empleado("Femenino");
+		    } else if (buttonotro.isSelected()) {
+		        clase.setSexo_empleado("Otro");
+		    }
+
+		    clase.setNacimiento_empleado(fechaSeleccionada);
+		    clase.setCivil_empleado(cbxestado_civil.getSelectedItem().toString());
+		    clase.setDireccion_empleado(txadireccion.getText());
+		    clase.setTel_empleado(txttel.getText());
+		    clase.setCorreo_empleado(txtcorreo.getText());
+		    clase.setCargo_empleado(cbxcargo.getSelectedItem().toString());
+		    clase.setArea_empleado(cbxarea.getSelectedItem().toString());
+		    clase.setInicio_empleado(fechaSeleccionada2);
+
+		    if (fechaSeleccionada3 == null) {
+		        clase.setRenuncia_empleado(null);
 		    } else {
-		        empleado clase = new empleado();
-		        consultas_empleado consulta = new consultas_empleado();
+		        clase.setRenuncia_empleado(fechaSeleccionada3);
+		    }
 
-		        clase.setId_empleado(Integer.parseInt(txtid_empleado.getText()));
-		        clase.setIdentidad_empleado(txtidentidad.getText());
-		        clase.setNombres_empleado(txtnombres.getText());
-		        clase.setApellidos_empleado(txtapellidos.getText());
+		    clase.setFotografia_empleado(txtruta.getText());
+		    clase.setCuenta_empleado(txtcuenta.getText());
 
-		        if (buttonmasculino.isSelected()) {
-		            clase.setSexo_empleado("Masculino");
-		        } else if (buttonfemenino.isSelected()) {
-		            clase.setSexo_empleado("Femenino");
-		        } else if (buttonotro.isSelected()) {
-		            clase.setSexo_empleado("Otro");
-		        }
+		    String campoDuplicado = consulta.empleadoExiste(
+		        clase.getId_empleado(), 
+		        clase.getIdentidad_empleado());
 
-		        clase.setNacimiento_empleado(fecha_nacimiento.getDate());
-		        clase.setCivil_empleado(cbxestado_civil.getSelectedItem().toString());
-		        clase.setDireccion_empleado(txadireccion.getText());
-		        clase.setTel_empleado(txttel.getText());
-		        clase.setCorreo_empleado(txtcorreo.getText());
-		        clase.setCargo_empleado(cbxcargo.getSelectedItem().toString());
-		        clase.setArea_empleado(cbxarea.getSelectedItem().toString());
-		        clase.setInicio_empleado(fecha_inicio.getDate());
-
-		        if (fechaSeleccionada3 == null) {
-		            clase.setRenuncia_empleado(null);
+		    if (campoDuplicado != null) {
+		        JOptionPane.showMessageDialog(null, "Error, ya existe un empleado con el mismo " + campoDuplicado, "Error de duplicado", JOptionPane.ERROR_MESSAGE);
+		    } else {
+		        if (consulta.guardar_empleado(clase, fechaSeleccionada, fechaSeleccionada2, fechaSeleccionada3)) {
+		            JOptionPane.showMessageDialog(null, "El empleado se ha registrado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+		            empleado_tabla tabla = new empleado_tabla();
+		            tabla.setLocationRelativeTo(null);
+		            tabla.setVisible(true);
+		            tabla.construirTabla();
+		            dispose();
 		        } else {
-		            clase.setRenuncia_empleado(fechaSeleccionada3);
-		        }
-
-		        clase.setFotografia_empleado(txtruta.getText());
-		        clase.setCuenta_empleado(txtcuenta.getText());
-
-		        // Validar si el id_empleado o identidad_empleado ya existen
-		        String campoDuplicado = consulta.empleadoExiste(
-		            clase.getId_empleado(), 
-		            clase.getIdentidad_empleado());
-
-		        if (campoDuplicado != null) {
-		            JOptionPane.showMessageDialog(null, "Error, ya existe un empleado con el mismo " + campoDuplicado + ".", "Error de duplicado", JOptionPane.ERROR_MESSAGE);
-		        } else {
-		            // Intentar guardar el empleado
-		            if (consulta.guardar_empleado(clase, fechaSeleccionada, fechaSeleccionada2, fechaSeleccionada3)) {
-		                JOptionPane.showMessageDialog(null, "El empleado se ha registrado correctamente.", "Registro guardado", JOptionPane.INFORMATION_MESSAGE);
-		                empleado_tabla tabla = new empleado_tabla();
-		                tabla.setLocationRelativeTo(null);
-		                tabla.setVisible(true);
-		                tabla.construirTabla();
-		                dispose();
-		            } else {
-		                JOptionPane.showMessageDialog(null, "Error, empleado no guardado.", "Error al guardar", JOptionPane.ERROR_MESSAGE);
-		            }
+		            JOptionPane.showMessageDialog(null, "Error, empleado no guardado", "Error", JOptionPane.ERROR_MESSAGE);
 		        }
 		    }
 		}
-
-
+		
 		public void limpiar() {
 			txtid_empleado.setText("");
 			txtidentidad.setText("");
@@ -809,72 +762,19 @@ public class empleado_nuevo extends JFrame{
 	
 		}
 	
-		/*public boolean actualizar_empleado(empleado emp, int idOriginal, int nuevoIdEmpleado, Date fechaNacimiento, Date fechaInicio, Date fechaRenuncia) {
-			Connection con = null;
-		    PreparedStatement ps = null;
-		    
-		    try {
-		        conexion conex = new conexion(); 
-		        con = conex.conectar(); 
-		        
-		        String sql = "UPDATE empleados SET " +
-		                     "id_empleado=?, identidad_empleado=?, nombres_empleado=?, apellidos_empleado=?, " +
-		                     "sexo_empleado=?, nacimiento_empleado=?, civil_empleado=?, direccion_empleado=?, " +
-		                     "tel_empleado=?, correo_empleado=?, cargo_empleado=?, area_empleado=?, " +
-		                     "inicio_empleado=?, renuncia_empleado=?, fotografia_empleado=?, cuenta_empleado=? " +
-		                     "WHERE id=?";
-		        
-		        ps = con.prepareStatement(sql);
-		        int i = 1;
-		        ps.setInt(i++, nuevoIdEmpleado); 
-		        ps.setString(i++, emp.getIdentidad_empleado());
-		        ps.setString(i++, emp.getNombres_empleado());
-		        ps.setString(i++, emp.getApellidos_empleado());
-		        ps.setString(i++, emp.getSexo_empleado());
-		        ps.setDate(i++, new java.sql.Date(fechaNacimiento.getTime()));
-		        ps.setString(i++, emp.getCivil_empleado());
-		        ps.setString(i++, emp.getDireccion_empleado());
-		        ps.setString(i++, emp.getTel_empleado());
-		        ps.setString(i++, emp.getCorreo_empleado());
-		        ps.setString(i++, emp.getCargo_empleado());
-		        ps.setString(i++, emp.getArea_empleado());
-		        ps.setDate(i++, new java.sql.Date(fechaInicio.getTime()));
-		        ps.setDate(i++, fechaRenuncia != null ? new java.sql.Date(fechaRenuncia.getTime()) : null);
-		        ps.setString(i++, emp.getFotografia_empleado());
-		        ps.setString(i++, emp.getCuenta_empleado());
-		        ps.setInt(i++, idOriginal);  
-
-		        int resultado = ps.executeUpdate();
-		        return resultado > 0; 
-		    } catch (SQLException e) {
-		        System.out.println("Error al actualizar empleado: " + e.getMessage());
-		        e.printStackTrace();
-		        return false;
-		    } finally {
-		        try {
-		            if (ps != null) ps.close();
-		            if (con != null) con.close();
-		        } catch (SQLException e) {
-		            System.out.println("Error al cerrar la conexión: " + e.getMessage());
-		            e.printStackTrace();
-		        }
-		    }
-		}*/
 		
 		
 		public void ver_empleado(String idEmpleado, String identidad, String nombres, String apellidos, String sexo, Date fechaNacimiento,
                 String estadoCivil, String direccion, String telefono, String correo, String cargo, String area, 
                 Date fechaInicio, Date fechaRenuncia, String fotografia, String cuenta) {
 
-			// Cargar los datos en los campos correspondientes
 			txtid_empleado.setText(idEmpleado);
 			txtidentidad.setText(identidad);
 			txtnombres.setText(nombres);
 			txtapellidos.setText(apellidos);
 			txtcuenta.setText(cuenta);
-			txtruta.setText(fotografia);  // Colocar la ruta de la fotografía en el JTextField
+			txtruta.setText(fotografia);  
 			
-			// Seleccionar el radio button según el sexo
 			if (sexo.equalsIgnoreCase("Masculino")) {
 				buttonmasculino.setSelected(true);
 			} else if (sexo.equalsIgnoreCase("Femenino")) {
@@ -903,7 +803,6 @@ public class empleado_nuevo extends JFrame{
 						lblfoto.getHeight(), Image.SCALE_SMOOTH)));
 			}
 			
-			// Deshabilitar todos los campos
 			txtid_empleado.setEditable(false);
 			txtidentidad.setEditable(false);
 			txtnombres.setEditable(false);
@@ -923,11 +822,9 @@ public class empleado_nuevo extends JFrame{
 			txtcuenta.setEditable(false);
 			txtruta.setEditable(false);
 			
-			// Ocultar los botones de "Seleccionar foto" y "Eliminar foto"
 			btnseleccionar_foto.setVisible(false);
 			btneliminar_foto.setVisible(false);
 			
-			// Cambiar el color de la fuente a negro para todos los componentes
 			txtid_empleado.setForeground(Color.BLACK);
 			txtidentidad.setForeground(Color.BLACK);
 			txtnombres.setForeground(Color.BLACK);
@@ -945,15 +842,13 @@ public class empleado_nuevo extends JFrame{
 			fecha_inicio.setForeground(Color.BLACK);
 			fecha_renuncia.setForeground(Color.BLACK);
 			txtcuenta.setForeground(Color.BLACK);
-			txtruta.setForeground(Color.BLACK);  // Ruta de la fotografía
+			txtruta.setForeground(Color.BLACK); 
 			lblfoto.setForeground(Color.BLACK);
 			
-			// Mostrar la ventana
 			setVisible(true);
 		}
 		
 		
-		// Método para habilitar o deshabilitar los campos del formulario
 		private void habilitarCampos(boolean habilitar) {
 		    txtid_empleado.setEditable(habilitar);
 		    txtidentidad.setEditable(habilitar);
@@ -973,12 +868,10 @@ public class empleado_nuevo extends JFrame{
 		    fecha_renuncia.setEnabled(habilitar);
 		    cbxcargo.setEnabled(habilitar);
 		    cbxarea.setEnabled(habilitar);
-
 		    btnseleccionar_foto.setVisible(habilitar);  
 		    btneliminar_foto.setVisible(habilitar);    
 
-		    Color colorTexto = habilitar ? Color.BLACK : Color.GRAY;  // Cambia el color según el estado
-
+		    Color colorTexto = habilitar ? Color.BLACK : Color.GRAY;  
 		    txtid_empleado.setForeground(colorTexto);
 		    txtidentidad.setForeground(colorTexto);
 		    txtnombres.setForeground(colorTexto);
@@ -986,131 +879,153 @@ public class empleado_nuevo extends JFrame{
 		    txttel.setForeground(colorTexto);
 		    txtcorreo.setForeground(colorTexto);
 		    txtcuenta.setForeground(colorTexto);
-		    txadireccion.setForeground(colorTexto);  // Cambia el color del texto en el JTextArea
+		    txadireccion.setForeground(colorTexto);  
 		}
 
 		
-		private boolean validarCampos() {
-		    if (txtid_empleado.getText().isEmpty() || txtidentidad.getText().isEmpty() || 
-		        txtnombres.getText().isEmpty() || txtapellidos.getText().isEmpty() || 
-		        txttel.getText().isEmpty() || txtcorreo.getText().isEmpty() || 
-		        txadireccion.getText().isEmpty() || cbxestado_civil.getSelectedIndex() == -1 || 
-		        cbxcargo.getSelectedIndex() == -1 || cbxarea.getSelectedIndex() == -1) {
-		        return false;  // Hay campos vacíos
+		public boolean validarCamposEmpleado() {
+		    String idEmpleadoStr = txtid_empleado.getText().trim();
+		    String cuentaEmpleado = txtcuenta.getText().trim();
+		    String nombresEmpleado = txtnombres.getText().trim();
+		    String apellidosEmpleado = txtapellidos.getText().trim();
+		    String telefonoEmpleado = txttel.getText().trim();
+		    String identidadEmpleado = txtidentidad.getText().trim();
+		    String correoEmpleado = txtcorreo.getText().trim();
+		    String direccionEmpleado = txadireccion.getText().trim();
+		    String sexoEmpleado = "";
+
+		    if (identidadEmpleado.isEmpty()) {
+		        JOptionPane.showMessageDialog(null, "El campo 'Número de identidad' no puede estar vacío", "Advertencia", JOptionPane.WARNING_MESSAGE);
+		        return false;
 		    }
-		    return true;  // Todos los campos están llenos
+		    if (nombresEmpleado.isEmpty()) {
+		        JOptionPane.showMessageDialog(null, "El campo 'Nombres' no puede estar vacío", "Advertencia", JOptionPane.WARNING_MESSAGE);
+		        return false;
+		    }
+		    if (apellidosEmpleado.isEmpty()) {
+		        JOptionPane.showMessageDialog(null, "El campo 'Apellidos' no puede estar vacío", "Advertencia", JOptionPane.WARNING_MESSAGE);
+		        return false;            
+		    }
+		    if (direccionEmpleado.isEmpty()) {
+		        JOptionPane.showMessageDialog(null, "El campo 'Dirección' no puede estar vacío", "Advertencia", JOptionPane.WARNING_MESSAGE);
+		        return false;
+		    }
+		    if (correoEmpleado.isEmpty()) {
+		        JOptionPane.showMessageDialog(null, "El campo 'Correo electrónico' no puede estar vacío", "Advertencia", JOptionPane.WARNING_MESSAGE);
+		        return false;
+		    }
+		    if (idEmpleadoStr.isEmpty()) {
+		        JOptionPane.showMessageDialog(null, "El campo 'Id empleado' no puede estar vacío", "Advertencia", JOptionPane.WARNING_MESSAGE);
+		        return false;
+		    }
+		    if (cuentaEmpleado.isEmpty()) {
+		        JOptionPane.showMessageDialog(null, "El campo 'Número de cuenta bancaria' no puede estar vacío", "Advertencia", JOptionPane.WARNING_MESSAGE);
+		        return false;
+		    }
+		    if (telefonoEmpleado.isEmpty()) {
+		        JOptionPane.showMessageDialog(null, "El campo 'Número de teléfono' no puede estar vacío", "Advertencia", JOptionPane.WARNING_MESSAGE);
+		        return false;
+		    }
+
+		    if (buttonmasculino.isSelected()) {
+		        sexoEmpleado = "Masculino";
+		    } else if (buttonfemenino.isSelected()) {
+		        sexoEmpleado = "Femenino";
+		    } else if (buttonotro.isSelected()) {
+		        sexoEmpleado = "Otro";
+		    } else {
+		        JOptionPane.showMessageDialog(null, "Debe seleccionar un sexo para el empleado", "Advertencia", JOptionPane.WARNING_MESSAGE);
+		        return false;
+		    }
+
+		    return true;
 		}
+
+		
+
 		
 		
-		public void actualizar_empleado() {
-		    Date fechaNacimiento = fecha_nacimiento.getDate();
-		    Date fechaInicio = fecha_inicio.getDate();
-		    Date fechaRenuncia = fecha_renuncia.getDate();
-
-		    // Validación de campos vacíos
-		    if (txtid_empleado.getText().isEmpty() || txtidentidad.getText().isEmpty() ||
-		        txtnombres.getText().isEmpty() || txtapellidos.getText().isEmpty() ||
-		        (!buttonmasculino.isSelected() && !buttonfemenino.isSelected() && !buttonotro.isSelected()) ||
-		        fechaNacimiento == null || fechaInicio == null || txadireccion.getText().isEmpty() ||
-		        txttel.getText().isEmpty() || txtcorreo.getText().isEmpty() || txtruta.getText().isEmpty() ||
-		        txtcuenta.getText().isEmpty() || cbxestado_civil.getSelectedItem() == null ||
-		        cbxarea.getSelectedItem() == null || cbxcargo.getSelectedItem() == null) {
-
-		        JOptionPane.showMessageDialog(null, "Datos vacíos, por favor, ingrese todos los datos para actualizar el empleado");
-		        return;
-		    }
-
+		public void actualizarEmpleado() {
 		    try {
-		        // Verificar que el campo txtid no esté vacío
-		        if (txtid.getText().isEmpty()) {
-		            JOptionPane.showMessageDialog(null, "Error: El Id del empleado no puede estar vacío");
-		            return;
+		        // Primero validamos los campos
+		        if (!validarCamposEmpleado()) {
+		            return; // Si la validación falla, detener el proceso de actualización
 		        }
 
-		        int idOriginal = Integer.parseInt(txtid.getText().trim()); // Convertir idOriginal
+		        // Obtener los valores de los campos necesarios para la actualización
+		        String idOriginalStr = txtidOriginal.getText().trim();
+		        String idEmpleadoStr = txtid_empleado.getText().trim();
+		        int idOriginal = Integer.parseInt(idOriginalStr); 
+		        int idEmpleado = Integer.parseInt(idEmpleadoStr);
 
-		        if (idOriginal == 0) {
-		            JOptionPane.showMessageDialog(null, "Error: El Id del empleado no válido");
-		            return;
-		        }
+		        String cuentaEmpleado = txtcuenta.getText().trim();
+		        String nombresEmpleado = txtnombres.getText().trim();
+		        String apellidosEmpleado = txtapellidos.getText().trim();
+		        String telefonoEmpleado = txttel.getText().trim();
+		        String identidadEmpleado = txtidentidad.getText().trim();
+		        String correoEmpleado = txtcorreo.getText().trim();
+		        String direccionEmpleado = txadireccion.getText().trim();
+		        String sexoEmpleado = "";
 
-		        // Verificar que el campo id_empleado contenga un número válido
-		        String nuevoIdEmpleadoStr = txtid_empleado.getText().trim();
-		        if (nuevoIdEmpleadoStr.isEmpty()) {
-		            JOptionPane.showMessageDialog(null, "Error: El campo 'Id empleado' no puede estar vacío");
-		            return;
-		        }
-		        int nuevoIdEmpleado = Integer.parseInt(nuevoIdEmpleadoStr); // Convertir idEmpleado
-
-		        String nuevaIdentidad = txtidentidad.getText().trim();
-
-		        empleado clase = new empleado();
-		        consultas_empleado consulta = new consultas_empleado();
-
-		        // Obtener el empleado original usando el ID original
-		        empleado empleadoOriginal = consulta.obtenerEmpleadoPorId(idOriginal);
-
-		        if (empleadoOriginal == null) {
-		            JOptionPane.showMessageDialog(null, "Error: No se pudo encontrar el empleado con el Id original proporcionado");
-		            return;
-		        }
-
-		        boolean idModificado = nuevoIdEmpleado != empleadoOriginal.getId_empleado();
-		        boolean identidadModificada = !nuevaIdentidad.equals(empleadoOriginal.getIdentidad_empleado());
-
-		        // Verificar duplicados solo si se ha modificado la identidad o el ID
-		        if (idModificado || identidadModificada) {
-		            String campoDuplicado = consulta.empleadoExisteParaActualizar(idOriginal, nuevoIdEmpleado, nuevaIdentidad);
-		            if (campoDuplicado != null) {
-		                JOptionPane.showMessageDialog(null, "Error, ya existe un empleado con el mismo " + campoDuplicado + ".", "Error de duplicado", JOptionPane.ERROR_MESSAGE);
-		                return;
-		            }
-		        }
-
-		        // Asignar valores a la clase empleado
-		        clase.setId(idOriginal); // Usamos el ID original para la actualización
-		        clase.setId_empleado(nuevoIdEmpleado);
-		        clase.setIdentidad_empleado(nuevaIdentidad);
-		        clase.setNombres_empleado(txtnombres.getText().trim());
-		        clase.setApellidos_empleado(txtapellidos.getText().trim());
-
+		        // Determinamos el sexo seleccionado
 		        if (buttonmasculino.isSelected()) {
-		            clase.setSexo_empleado("Masculino");
+		            sexoEmpleado = "Masculino";
 		        } else if (buttonfemenino.isSelected()) {
-		            clase.setSexo_empleado("Femenino");
+		            sexoEmpleado = "Femenino";
 		        } else if (buttonotro.isSelected()) {
-		            clase.setSexo_empleado("Otro");
+		            sexoEmpleado = "Otro";
 		        }
 
-		        clase.setNacimiento_empleado(fechaNacimiento);
-		        clase.setCivil_empleado(cbxestado_civil.getSelectedItem().toString());
-		        clase.setDireccion_empleado(txadireccion.getText().trim());
-		        clase.setTel_empleado(txttel.getText().trim());
-		        clase.setCorreo_empleado(txtcorreo.getText().trim());
-		        clase.setCargo_empleado(cbxcargo.getSelectedItem().toString());
-		        clase.setArea_empleado(cbxarea.getSelectedItem().toString());
-		        clase.setInicio_empleado(fechaInicio);
-		        clase.setRenuncia_empleado(fechaRenuncia);
-		        clase.setFotografia_empleado(txtruta.getText().trim());
-		        clase.setCuenta_empleado(txtcuenta.getText().trim());
+		        // Crear objeto empleado actualizado
+		        empleado empleadoActualizado = new empleado();
+		        empleadoActualizado.setId_empleado(idEmpleado);
+		        empleadoActualizado.setIdentidad_empleado(identidadEmpleado);
+		        empleadoActualizado.setNombres_empleado(nombresEmpleado);
+		        empleadoActualizado.setApellidos_empleado(apellidosEmpleado);
+		        empleadoActualizado.setSexo_empleado(sexoEmpleado);
+		        empleadoActualizado.setNacimiento_empleado(fecha_nacimiento.getDate());
+		        empleadoActualizado.setCivil_empleado(cbxestado_civil.getSelectedItem().toString());
+		        empleadoActualizado.setDireccion_empleado(direccionEmpleado);
+		        empleadoActualizado.setTel_empleado(telefonoEmpleado);
+		        empleadoActualizado.setCorreo_empleado(correoEmpleado);
+		        empleadoActualizado.setCargo_empleado(cbxcargo.getSelectedItem().toString());
+		        empleadoActualizado.setArea_empleado(cbxarea.getSelectedItem().toString());
+		        empleadoActualizado.setInicio_empleado(fecha_inicio.getDate());
+		        empleadoActualizado.setRenuncia_empleado(fecha_renuncia.getDate());
+		        empleadoActualizado.setFotografia_empleado(txtruta.getText().trim());
+		        empleadoActualizado.setCuenta_empleado(cuentaEmpleado);
 
-		        // Llamada al método de actualización
-		        if (consulta.actualizar_empleado(clase, idOriginal, nuevoIdEmpleado, fechaNacimiento, fechaInicio, fechaRenuncia)) {
-		            JOptionPane.showMessageDialog(null, "El empleado se ha actualizado correctamente");
-		            // Actualizar la tabla y cerrar la ventana actual
+		        // Verificar si el idEmpleado o identidadEmpleado han cambiado
+		        boolean idModificado = idEmpleado != idOriginal;
+		        boolean identidadModificada = !identidadEmpleado.equals(consulta.obtenerIdentidadEmpleado(idOriginal));
+
+		        // Validar si el nuevo idEmpleado o identidadEmpleado ya existen en otro registro
+		        if ((idModificado && consulta.existeIdEmpleado(idEmpleado, idOriginal)) ||
+		            (identidadModificada && consulta.existeIdentidadEmpleado(identidadEmpleado, idOriginal))) {
+		            JOptionPane.showMessageDialog(null, "El ID o la Identidad ya están en uso por otro empleado.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+		            return;
+		        }
+
+		        // Lógica para actualizar el empleado en la base de datos
+		        if (consulta.actualizar_empleado(empleadoActualizado, idOriginal, empleadoActualizado.getId_empleado(),
+		                                         empleadoActualizado.getNacimiento_empleado(), empleadoActualizado.getInicio_empleado(),
+		                                         empleadoActualizado.getRenuncia_empleado())) {
+		            JOptionPane.showMessageDialog(null, "Registro actualizado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 		            empleado_tabla tabla = new empleado_tabla();
-		            tabla.setLocationRelativeTo(null);
 		            tabla.setVisible(true);
+		            tabla.setLocationRelativeTo(null);
 		            tabla.construirTabla();
 		            dispose();
 		        } else {
-		            JOptionPane.showMessageDialog(null, "Error, no se actualizó el empleado");
+		            JOptionPane.showMessageDialog(null, "Error al actualizar el registro", "Error", JOptionPane.ERROR_MESSAGE);
 		        }
-		    } catch (NumberFormatException e) {
-		        JOptionPane.showMessageDialog(null, "Error: ID de empleado inválido");
-		    } catch (Exception e) {
-		        JOptionPane.showMessageDialog(null, "Error inesperado: " + e.getMessage());
-		        e.printStackTrace();
+		    } catch (NumberFormatException ex) {
+		        JOptionPane.showMessageDialog(null, "Id de empleado no válido o vacío", "Error", JOptionPane.ERROR_MESSAGE);
+		    } catch (Exception ex) {
+		        JOptionPane.showMessageDialog(null, "Ocurrió un error inesperado", "Error", JOptionPane.ERROR_MESSAGE);
+		        ex.printStackTrace();
 		    }
 		}
+
+
 }//end

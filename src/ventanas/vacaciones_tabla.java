@@ -8,6 +8,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
@@ -21,8 +22,10 @@ import java.util.Date;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -30,6 +33,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.RowFilter;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
@@ -39,11 +43,13 @@ import com.toedter.calendar.JDateChooser;
 
 import clases.vacaciones;
 import conexion.conexion;
+import consultas.consultas_vacaciones;
 import principal.menu_principal;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.UIManager;
+import javax.swing.RowFilter.Entry;
 
 public class vacaciones_tabla extends JFrame {
     private JTable table;
@@ -59,10 +65,11 @@ public class vacaciones_tabla extends JFrame {
     public JButton btnnuevo;
     public JButton btneliminar;
     
+    private final String placeHolderText = "Id empleado, nombres, apellidos e identidad"; // Placeholder definido
+
 
     @SuppressWarnings("unchecked")
 	public vacaciones_tabla() {
-    	//formulario.btnregresar.setBackground(UIManager.getColor("Button.highlight"));
         getContentPane().setBackground(new Color(255, 255, 255));
         setType(Type.UTILITY);
         setResizable(false);
@@ -102,33 +109,39 @@ public class vacaciones_tabla extends JFrame {
         txtbuscar.setBounds(68, 10, 230, 27);
         panelbusqueda.add(txtbuscar);
 
-        final String placeHolderText = "Id empleado, nombres, apellidos e identidad";
-
+        // Configuramos el placeholder
         txtbuscar.setText(placeHolderText);
         txtbuscar.setForeground(Color.GRAY);
 
+        // Añadir FocusListener para manejar el placeholder
         txtbuscar.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
+                // Si el texto actual es el placeholder, lo limpiamos y cambiamos el color de texto
                 if (txtbuscar.getText().equals(placeHolderText)) {
-                    txtbuscar.setText(""); 
+                    txtbuscar.setText("");
                     txtbuscar.setForeground(Color.BLACK);
                 }
             }
 
             @Override
             public void focusLost(FocusEvent e) {
+                // Si el campo está vacío al perder el foco, volvemos a mostrar el placeholder
                 if (txtbuscar.getText().isEmpty()) {
-                    txtbuscar.setText(placeHolderText);  
-                    txtbuscar.setForeground(Color.GRAY);  
+                    txtbuscar.setText(placeHolderText);
+                    txtbuscar.setForeground(Color.GRAY);
                 }
             }
         });
 
+        // Configuramos un KeyListener para el filtro
         txtbuscar.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                filtro();
+                // Solo aplicamos el filtro si el texto no es el placeholder
+                if (!txtbuscar.getText().equals(placeHolderText)) {
+                    filtro();
+                }
             }
         });
 
@@ -239,6 +252,45 @@ public class vacaciones_tabla extends JFrame {
         panelbotones.add(btnnuevo);
         
         btneliminar = new JButton("Eliminar");
+        btneliminar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int filaSeleccionada = table.getSelectedRow();
+                
+                // Validar que se haya seleccionado una fila
+                if (filaSeleccionada == -1) {
+                	JOptionPane.showMessageDialog(null, "¡No se ha seleccionado ninguna fila!", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                	return; // Si no se selecciona una fila, detenemos el proceso
+                }
+
+                // Confirmar eliminación
+                int confirmacion = JOptionPane.showConfirmDialog(null, 
+	                    "¿Está seguro de que desea eliminar el registro seleccionado?\nEsto también lo eliminará permanentemente de la base de datos", 
+	                    "Confirmar eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);if (confirmacion == JOptionPane.YES_OPTION) {
+                    try {
+                        // Obtener el id_vacaciones de la fila seleccionada
+                        int idVacaciones = Integer.parseInt(table.getValueAt(filaSeleccionada, 0).toString());  // Suponiendo que la columna 0 es el id
+
+                        // Llamar al método de eliminar de la clase consultas_vacaciones
+                        consultas_vacaciones consulta = new consultas_vacaciones();
+                        boolean resultado = consulta.eliminarVacaciones(idVacaciones);
+
+                        if (resultado) {
+                            JOptionPane.showMessageDialog(null, "El registro ha sido eliminado correctamente de\nla tabla y la base de datos", "Éxito", JOptionPane.INFORMATION_MESSAGE );
+                            
+                            // Remover la fila de la tabla en la interfaz
+                            ((DefaultTableModel) table.getModel()).removeRow(filaSeleccionada);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Error al eliminar las vacaciones.", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(null, "Error inesperado: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+
         btneliminar.setToolTipText("Eliminar registro");
         btneliminar.setFont(new Font("Tahoma", Font.BOLD, 10));
         btneliminar.setBounds(263, 17, 90, 23);
@@ -253,6 +305,50 @@ public class vacaciones_tabla extends JFrame {
             trsfiltroCodigo.setRowFilter(RowFilter.regexFilter("(?i)" + filtroTexto, 2, 3, 4));  // Filtro en columnas Nombres, Apellidos, Identidad
         }
     }
+    
+    
+ // Método que aplica los filtros combinados
+ 		private void aplicarFiltros() {
+ 			String filtroCargo = (String) cbxbusquedaCargo.getSelectedItem();
+ 	        String filtroArea = (String) cbxbusquedaarea.getSelectedItem();
+ 	        Date fechaDesde = desde_buscar.getDate();
+ 	        Date fechaHasta = hasta_buscar.getDate();
+ 	        
+ 	        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
+ 	        List<RowFilter<Object, Object>> filtros = new ArrayList<>();
+
+ 	        if (filtroCargo != null && !filtroCargo.trim().isEmpty()) {
+ 	            filtros.add(RowFilter.regexFilter("(?i)" + filtroCargo, 7)); // Columna 7 es "Cargo"
+ 	        }
+
+ 	        if (filtroArea != null && !filtroArea.trim().isEmpty()) {
+ 	            filtros.add(RowFilter.regexFilter("(?i)" + filtroArea, 8)); // Columna 8 es "Área"
+ 	        }
+
+ 	        if (fechaDesde != null && fechaHasta != null) {
+ 	            filtros.add(new RowFilter<Object, Object>() {
+ 	                @Override
+ 	                public boolean include(Entry<? extends Object, ? extends Object> entry) {
+ 	                    try {
+ 	                        String fechaRecibidoStr = entry.getStringValue(17); // Columna 17 es "Fecha recibido"
+ 	                        Date fechaRecibido = dateFormat.parse(fechaRecibidoStr);
+ 	                        
+ 	                        return (fechaRecibido.equals(fechaDesde) || fechaRecibido.after(fechaDesde)) 
+ 	                            && (fechaRecibido.equals(fechaHasta) || fechaRecibido.before(fechaHasta));
+ 	                    } catch (ParseException e) {
+ 	                        return false; // En caso de error al parsear la fecha
+ 	                    }
+ 	                }
+ 	            });
+ 	        }
+ 	        
+ 	        if (filtros.isEmpty()) {
+ 	            trsfiltroCodigo.setRowFilter(null);  
+ 	        } else {
+ 	            RowFilter<Object, Object> combinedFilter = RowFilter.andFilter(filtros);
+ 	            trsfiltroCodigo.setRowFilter(combinedFilter);
+ 	        }
+ 	    }
 
     public void construirTabla() {
         String[] titulos = { 
@@ -437,50 +533,6 @@ public class vacaciones_tabla extends JFrame {
             formulario.requestFocus();
         }
     }
-
-
-    
-        private void aplicarFiltros() {
-            List<RowFilter<Object, Object>> filtros = new ArrayList<>();
-
-            String textoFiltro = txtbuscar.getText();
-            if (textoFiltro != null && !textoFiltro.trim().isEmpty() && !textoFiltro.equals("Id empleado, nombres, apellidos e identidad")) {
-                filtros.add(RowFilter.regexFilter("(?i)" + textoFiltro, 1, 2, 3, 4)); 
-            }
-
-            String cargoSeleccionado = cbxbusquedaCargo.getSelectedItem() != null ? cbxbusquedaCargo.getSelectedItem().toString() : "";
-            if (cargoSeleccionado != null && !cargoSeleccionado.trim().isEmpty()) {
-                filtros.add(RowFilter.regexFilter(cargoSeleccionado, 7));
-            }
-
-            String areaSeleccionada = cbxbusquedaarea.getSelectedItem() != null ? cbxbusquedaarea.getSelectedItem().toString() : "";
-            if (areaSeleccionada != null && !areaSeleccionada.trim().isEmpty()) {
-                filtros.add(RowFilter.regexFilter(areaSeleccionada, 8)); 
-            }
-
-            Date fechaDesde = desde_buscar.getDate();
-            Date fechaHasta = hasta_buscar.getDate();
-
-            if (fechaDesde != null && fechaHasta != null) {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
-
-                filtros.add(RowFilter.dateFilter(RowFilter.ComparisonType.AFTER, fechaDesde, 12)); // Fecha de inicio
-
-                filtros.add(RowFilter.dateFilter(RowFilter.ComparisonType.BEFORE, fechaHasta, 13)); // Fecha de finalización
-            }
-
-            if (filtros.isEmpty()) {
-                trsfiltroCodigo.setRowFilter(null); 
-            } else {
-                RowFilter<Object, Object> combinedFilter = RowFilter.andFilter(filtros);
-                trsfiltroCodigo.setRowFilter(combinedFilter);
-            }
-        }
-
-
-
-
-
 
     private void cerrar_ventana() {
         if (JOptionPane.showConfirmDialog(rootPane, "¿Desea salir del sistema?", "Salir del sistema",

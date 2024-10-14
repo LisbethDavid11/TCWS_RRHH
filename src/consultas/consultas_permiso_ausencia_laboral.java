@@ -15,61 +15,65 @@ import conexion.conexion;
 
 public class consultas_permiso_ausencia_laboral extends conexion {
 	
-	public boolean guardar_permiso_ausencia_laboral(permiso_ausencia_laboral permiso_ausencia_laboral, Time desde_hora, 
+	public boolean consulta_guardar_permiso_ausencia_laboral(permiso_ausencia_laboral permiso_ausencia_laboral, Time desde_hora, 
             Time hasta_hora, Date desde_fecha, Date hasta_fecha, Date fecha_recibe) {
-		PreparedStatement ps = null;
-		Connection con = conectar();
-		
-		String sql = "INSERT INTO permisos_ausencia_laboral (nombres_empleado, apellidos_empleado, identidad_empleado, id_empleado, tel_empleado, correo_empleado, "
-				+ "cargo_empleado, area_empleado, desde_hora, hasta_hora, total_horas, motivo_ausencia, desde_fecha, hasta_fecha, total_fecha, nombres_recibe, fecha_recibe) "
-				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
-		
-		try {
-			ps = con.prepareStatement(sql);
+    
+    PreparedStatement ps = null;
+    Connection con = conectar();
+    
+    String sql = "INSERT INTO permisos_ausencia_laboral (nombres_empleado, apellidos_empleado, identidad_empleado, id_empleado, tel_empleado, correo_empleado, "
+            + "cargo_empleado, area_empleado, desde_hora, hasta_hora, total_horas, motivo_ausencia, desde_fecha, hasta_fecha, total_fecha, nombres_recibe, fecha_recibe) "
+            + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+    
+    try {
+        ps = con.prepareStatement(sql);
 
-			java.sql.Date sqlDate3 = new java.sql.Date(desde_fecha.getTime());
-			java.sql.Date sqlDate4 = new java.sql.Date(hasta_fecha.getTime());
-			java.sql.Date sqlDate5 = new java.sql.Date(fecha_recibe.getTime());
-			
-			ps.setString(1, permiso_ausencia_laboral.getNombres_empleado());
-			ps.setString(2, permiso_ausencia_laboral.getApellidos_empleado());
-			ps.setString(3, permiso_ausencia_laboral.getIdentidad_empleado());
-			ps.setInt(4, permiso_ausencia_laboral.getId_empleado());
-			ps.setString(5, permiso_ausencia_laboral.getTel_empleado());
-			ps.setString(6, permiso_ausencia_laboral.getCorreo_empleado());
-			ps.setString(7, permiso_ausencia_laboral.getCargo_empleado());
-			ps.setString(8, permiso_ausencia_laboral.getArea_empleado());
-			ps.setTime(9, desde_hora); // Usar Time para las horas
-			ps.setTime(10, hasta_hora); // Usar Time para las horas
-			ps.setTime(11, permiso_ausencia_laboral.getTotal_horas());
-			ps.setString(12, permiso_ausencia_laboral.getMotivo_ausencia());
-			ps.setDate(13, sqlDate3);
-			ps.setDate(14, sqlDate4);
-			ps.setInt(15, permiso_ausencia_laboral.getTotal_fecha());
-			ps.setString(16, permiso_ausencia_laboral.getNombres_recibe());
-			ps.setDate(17, sqlDate5);
-		
-			ps.execute();
-		return true;
-		
-		} catch (SQLException e) {
-			System.err.println(e);
-		return false;
-		
-		} finally {
-		try {
-			con.close();
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
-		}
+        // Convertir las fechas a java.sql.Date para la inserción
+        java.sql.Date sqlDateDesde = new java.sql.Date(desde_fecha.getTime());
+        java.sql.Date sqlDateHasta = new java.sql.Date(hasta_fecha.getTime());
+        java.sql.Date sqlDateRecibe = new java.sql.Date(fecha_recibe.getTime());
+        
+        // Establecer los valores en el PreparedStatement
+        ps.setString(1, permiso_ausencia_laboral.getNombres_empleado());
+        ps.setString(2, permiso_ausencia_laboral.getApellidos_empleado());
+        ps.setString(3, permiso_ausencia_laboral.getIdentidad_empleado());
+        ps.setInt(4, permiso_ausencia_laboral.getId_empleado());
+        ps.setString(5, permiso_ausencia_laboral.getTel_empleado());
+        ps.setString(6, permiso_ausencia_laboral.getCorreo_empleado());
+        ps.setString(7, permiso_ausencia_laboral.getCargo_empleado());
+        ps.setString(8, permiso_ausencia_laboral.getArea_empleado());
+        ps.setTime(9, desde_hora); // Usar Time para las horas de inicio
+        ps.setTime(10, hasta_hora); // Usar Time para las horas de fin
+        ps.setTime(11, permiso_ausencia_laboral.getTotal_horas()); // Total de horas
+        ps.setString(12, permiso_ausencia_laboral.getMotivo_ausencia());
+        ps.setDate(13, sqlDateDesde); // Fecha desde
+        ps.setDate(14, sqlDateHasta); // Fecha hasta
+        ps.setInt(15, permiso_ausencia_laboral.getTotal_fecha()); // Total de días
+        ps.setString(16, permiso_ausencia_laboral.getNombres_recibe()); // Nombre de quien recibe
+        ps.setDate(17, sqlDateRecibe); // Fecha recibe
+
+        // Ejecutar la consulta
+        ps.execute();
+        return true;
+    
+    } catch (SQLException e) {
+        System.err.println("Error al ejecutar la consulta: " + e.getMessage());
+        return false;
+    
+    } finally {
+        try {
+            if (ps != null) {
+                ps.close(); // Cerrar el PreparedStatement
+            }
+            if (con != null) {
+                con.close(); // Cerrar la conexión
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al cerrar la conexión: " + e.getMessage());
+        }
+    }
 }
-						
-	
-	
-	
-	
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public boolean actualizar_permiso_ausencia_laboral(permiso_ausencia_laboral permiso_ausencia_laboral, Time desde_hora, 
 		    Time hasta_hora, Date desde_fecha, Date hasta_fecha, Date fecha_recibe) {
 		    

@@ -27,11 +27,16 @@ import javax.swing.UIManager;
 import reportes.reporte_empleado_especial;
 import reportes.reporte_empleados_activos;
 import reportes.reporte_empleados_general;
+import reportes.reporte_incapacidad_general;
+import reportes.reporte_permisos_general;
+import reportes.reporte_vacaciones_general;
+import respaldos.respaldo_base_datos;
 import ventanas.derechos_autor;
 import ventanas.empleado_nuevo;
 import ventanas.empleado_tabla;
 import ventanas.incapacidad_laboral_nuevo;
 import ventanas.incapacidad_laboral_tabla;
+import ventanas.info_sistema;
 import ventanas.permiso_AL_nuevo;
 import ventanas.permiso_AL_tabla;
 import ventanas.vacaciones_nuevo;
@@ -253,19 +258,53 @@ public class menu_principal extends JFrame{
 		mntmNewMenuItem_8_1.setBackground(Color.WHITE);
 		mnNewMenu_3.add(mntmNewMenuItem_8_1);
 		
+		JMenuItem mntmNewMenuItem_8_3 = new JMenuItem("Reporte de permisos A.L. general");
+		mntmNewMenuItem_8_3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				reporte_permisos_general g = new reporte_permisos_general();
+				g.generarReportePermisos();
+			}
+		});
+		mntmNewMenuItem_8_3.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mntmNewMenuItem_8_3.setBackground(Color.WHITE);
+		mnNewMenu_3.add(mntmNewMenuItem_8_3);
+		
+		JMenuItem mntmNewMenuItem_8_4 = new JMenuItem("Reporte de incapacidades general");
+		mntmNewMenuItem_8_4.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				reporte_incapacidad_general i = new reporte_incapacidad_general();
+				i.generarReporteIncapacidades();
+			}
+		});
+		mntmNewMenuItem_8_4.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mntmNewMenuItem_8_4.setBackground(Color.WHITE);
+		mnNewMenu_3.add(mntmNewMenuItem_8_4);
+		
+		JMenuItem mntmNewMenuItem_8_4_1 = new JMenuItem("Reporte de vacaciones general");
+		mntmNewMenuItem_8_4_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				reporte_vacaciones_general v = new reporte_vacaciones_general();
+				v.generarReporteVacaciones();
+			}
+		});
+		mntmNewMenuItem_8_4_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mntmNewMenuItem_8_4_1.setBackground(Color.WHITE);
+		mnNewMenu_3.add(mntmNewMenuItem_8_4_1);
+		
 		JMenu mnNewMenu_5_1 = new JMenu("Respaldos");
 		mnNewMenu_5_1.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		menuBar.add(mnNewMenu_5_1);
 		
-		JMenuItem mntmNewMenuItem_5_1 = new JMenuItem("Exportar información de empleados");
+		JMenuItem mntmNewMenuItem_5_1 = new JMenuItem("Exportar información en script");
+		mntmNewMenuItem_5_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				respaldo_base_datos r = new respaldo_base_datos();
+				r.generarRespaldo();
+			}
+		});
 		mntmNewMenuItem_5_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmNewMenuItem_5_1.setBackground(Color.WHITE);
 		mnNewMenu_5_1.add(mntmNewMenuItem_5_1);
-		
-		JMenuItem mntmNewMenuItem_5_1_1 = new JMenuItem("Exportar información de permisos");
-		mntmNewMenuItem_5_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mntmNewMenuItem_5_1_1.setBackground(Color.WHITE);
-		mnNewMenu_5_1.add(mntmNewMenuItem_5_1_1);
 		
 		JMenu mnNewMenu_5 = new JMenu("Ayuda");
 		mnNewMenu_5.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -281,6 +320,14 @@ public class menu_principal extends JFrame{
 		menuBar.add(mnNewMenu_6);
 		
 		JMenuItem mntmNewMenuItem_6 = new JMenuItem("Información sobre el sistema");
+		mntmNewMenuItem_6.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				info_sistema info = new info_sistema();
+				info.setVisible(true);
+				info.setLocationRelativeTo(null);
+				dispose();
+			}
+		});
 		mntmNewMenuItem_6.setBackground(UIManager.getColor("Button.highlight"));
 		mntmNewMenuItem_6.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnNewMenu_6.add(mntmNewMenuItem_6);
@@ -345,10 +392,10 @@ public class menu_principal extends JFrame{
 		lblTcwsTcwhs.setBounds(0, 330, 497, 58);
 		getContentPane().add(lblTcwsTcwhs);
 		
-		JLabel lblCopyright = new JLabel("Copyright © 2024 Sistema Control de Empleados, Permisos e Incapacidades. ");
+		JLabel lblCopyright = new JLabel("Copyright © 2024 Sistema Control de Empleados, Permisos, Incapacidades y Vacaciones. ");
 		lblCopyright.setHorizontalAlignment(SwingConstants.CENTER);
 		lblCopyright.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-		lblCopyright.setBounds(27, 514, 425, 35);
+		lblCopyright.setBounds(10, 514, 475, 35);
 		getContentPane().add(lblCopyright);
 		
 		JLabel lblTodosLosDerechos = new JLabel("Todos los derechos reservados.\r\n");

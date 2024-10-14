@@ -35,6 +35,7 @@ import javax.swing.UIManager;
 import com.toedter.calendar.JDateChooser;
 
 import clases.vacaciones;
+import clases.validaciones;
 import conexion.conexion;
 import consultas.consultas_vacaciones;
 
@@ -183,6 +184,7 @@ public class vacaciones_nuevo extends JFrame {
         fecha_inicio_v = new JDateChooser();
         fecha_inicio_v.setDateFormatString("dd-MM-yy");
         fecha_inicio_v.setBounds(188, 434, 166, 33);
+        validaciones.deshabilitarEscrituraJDateChooser(fecha_inicio_v);
         panel_datos.add(fecha_inicio_v);
         
         JLabel lbldesde = new JLabel("Fecha de inicio");
@@ -241,6 +243,7 @@ public class vacaciones_nuevo extends JFrame {
         fecha_finalizacion_v = new JDateChooser();
         fecha_finalizacion_v.setDateFormatString("dd-MM-yy");
         fecha_finalizacion_v.setBounds(407, 434, 166, 33);
+        validaciones.deshabilitarEscrituraJDateChooser(fecha_finalizacion_v);
         panel_datos.add(fecha_finalizacion_v);
         
         JLabel lblhoy_es_1 = new JLabel("Hora actual");
@@ -388,7 +391,7 @@ public class vacaciones_nuevo extends JFrame {
         lblVacaciones.setHorizontalAlignment(SwingConstants.LEFT);
         lblVacaciones.setFont(new Font("Segoe UI", Font.BOLD, 26));
         lblVacaciones.setBackground(new Color(255, 153, 0));
-        lblVacaciones.setBounds(37, 21, 442, 36);
+        lblVacaciones.setBounds(30, 28, 442, 36);
         getContentPane().add(lblVacaciones);
         
         JPanel panel_botones = new JPanel();
@@ -398,6 +401,7 @@ public class vacaciones_nuevo extends JFrame {
         getContentPane().add(panel_botones);
         
         btnguardar = new JButton("Guardar");
+        btnguardar.setToolTipText("Guardar registro");
         btnguardar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 guardarVacaciones();
@@ -421,6 +425,7 @@ public class vacaciones_nuevo extends JFrame {
         panel_botones.add(btnactualizar);
         
         btnlimpiar = new JButton("Limpiar");
+        btnlimpiar.setToolTipText("Limpiar registro");
         btnlimpiar.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		limpiarCampos();
@@ -527,23 +532,11 @@ public class vacaciones_nuevo extends JFrame {
         
         
         calcularDiasEntreFechas();  // Método que calcula los días entre fechas
-        calcularDiasPendientes();  // Método que actualiza los días pendientes en base a txtultima_fecha y el total de días tomados
-
+        calcularDiasPendientes();  
         
-       
-        /*if (txtdias_correspondientes.getText().trim().isEmpty()) {
-            //JOptionPane.showMessageDialog(null, "El campo de días correspondientes está vacío.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        int diasCorrespondientes = Integer.parseInt(txtdias_correspondientes.getText().trim());*/
-
-        
-
-        // En lugar de usar directamente txtid_tabla.getText(), usa el método de validación
            int id = validateAndGetId();
            if (id == -1) {
-               JOptionPane.showMessageDialog(null, "El campo Id está vacío o tiene un valor no válido", "Error", JOptionPane.ERROR_MESSAGE);
+               //JOptionPane.showMessageDialog(null, "El campo Id está vacío o tiene un valor no válido", "Error", JOptionPane.ERROR_MESSAGE);
                return;
            }
         
@@ -700,27 +693,7 @@ public class vacaciones_nuevo extends JFrame {
 
 	
 	
-	// Método para obtener los días pendientes del último registro de vacaciones del empleado
-	private int obtenerDiasPendientesPrevios(String nombreEmpleado) {
-	    int diasPendientes = -1;  // Si no hay registros previos, retornará -1
-	    try {
-	        Connection con = new conexion().conectar();
-	        String sql = "SELECT dias_pendientes FROM vacaciones WHERE nombres_empleado = ? ORDER BY fecha_inicio_v DESC LIMIT 1";
-	        PreparedStatement ps = con.prepareStatement(sql);
-	        ps.setString(1, nombreEmpleado);
-	        ResultSet rs = ps.executeQuery();
-
-	        if (rs.next()) {
-	            diasPendientes = rs.getInt("dias_pendientes");
-	        }
-
-	        con.close();
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        JOptionPane.showMessageDialog(null, "Error al obtener los días pendientes previos: " + e.getMessage());
-	    }
-	    return diasPendientes;
-	}
+	
 	
 	
 	public void cargarAntiguedadEmpleado(Date fechaInicio) {
@@ -1080,29 +1053,43 @@ public class vacaciones_nuevo extends JFrame {
 	}
 
 	// Método 10: Validar campos antes de guardar/actualizar
-	private boolean validarCampos() {
-	    if (cbxnombres.getSelectedItem() == null || cbxnombres.getSelectedItem().toString().trim().isEmpty() ||
-	        txtapellidos.getText().trim().isEmpty() || txtidentidad.getText().trim().isEmpty() ||
-	        txtid.getText().trim().isEmpty() || txttel.getText().trim().isEmpty() ||
-	        txtcorreo.getText().trim().isEmpty() || txtcargo.getText().trim().isEmpty() ||
-	        txtarea.getText().trim().isEmpty() || txtedad.getText().trim().isEmpty() ||
-	        txtdias_correspondientes.getText().trim().isEmpty() || fecha_inicio_v.getDate() == null ||
-	        fecha_finalizacion_v.getDate() == null || grupoPago.getSelection() == null) {
-
-	        JOptionPane.showMessageDialog(null, "Por favor, complete todos los campos antes de guardar", "Campos vacíos", JOptionPane.ERROR_MESSAGE);
+	public boolean validarCamposVacaciones() {
+	    if (cbxnombres.getSelectedIndex() == -1 || cbxnombres.getSelectedItem().toString().trim().isEmpty()) {
+	        JOptionPane.showMessageDialog(null, "Debe seleccionar un nombre.", "Validación", JOptionPane.ERROR_MESSAGE);
 	        return false;
 	    }
+
+	    if (!radio_si.isSelected() && !radio_no.isSelected()) {
+	        JOptionPane.showMessageDialog(null, "Debe seleccionar si las vacaciones son pagadas o no.", "Validación", JOptionPane.ERROR_MESSAGE);
+	        return false;
+	    }
+
+	    if (fecha_inicio_v.getDate() == null) {
+	        JOptionPane.showMessageDialog(null, "Debe seleccionar una fecha de inicio.", "Validación", JOptionPane.ERROR_MESSAGE);
+	        return false;
+	    }
+
+	    if (fecha_finalizacion_v.getDate() == null) {
+	        JOptionPane.showMessageDialog(null, "Debe seleccionar una fecha de finalización.", "Validación", JOptionPane.ERROR_MESSAGE);
+	        return false;
+	    }
+
+	    if (fecha_finalizacion_v.getDate().before(fecha_inicio.getDate())) {
+	        JOptionPane.showMessageDialog(null, "La 'Fecha de finalización' no puede ser anterior a la fecha de inicio.", "Validación", JOptionPane.ERROR_MESSAGE);
+	        return false;
+	    }
+
 	    return true;
 	}
 
 
+
 	// Método 11: Guardar vacaciones
 	public void guardarVacaciones() {
-	    if (!validarCampos()) {
+	    if (!validarCamposVacaciones()) {
 	        return;
 	    }
 
-	    // Crear una instancia de la clase vacaciones y llenar con los datos del formulario
 	    vacaciones claseVacaciones = new vacaciones();
 
 	    claseVacaciones.setId_empleado(Integer.parseInt(txtid.getText()));
@@ -1184,7 +1171,7 @@ public class vacaciones_nuevo extends JFrame {
 
 	// Método 12: Actualizar vacaciones
 	public void actualizarVacaciones() {
-	    if (!validarCampos()) {
+	    if (!validarCamposVacaciones()) {
 	        return;
 	    }
 
@@ -1223,7 +1210,10 @@ public class vacaciones_nuevo extends JFrame {
 
 	    if (exito) {
 	        JOptionPane.showMessageDialog(null, "Vacaciones actualizadas correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-	        limpiarCampos();
+	        vacaciones_tabla tabla = new vacaciones_tabla();
+	    	tabla.setVisible(true);
+	    	tabla.setLocationRelativeTo(null);
+	    	dispose();
 	    } else {
 	        JOptionPane.showMessageDialog(null, "Error al actualizar las vacaciones", "Error", JOptionPane.ERROR_MESSAGE);
 	    }
@@ -1298,11 +1288,9 @@ public class vacaciones_nuevo extends JFrame {
 	        try {
 	            return Integer.parseInt(input.trim());
 	        } catch (NumberFormatException e) {
-	            System.out.println("Error: El formato del número no es válido.");
 	            return -1;
 	        }
 	    } else {
-	        System.out.println("Info: El campo ID está vacío.");
 	        return -1;
 	    }
 	}

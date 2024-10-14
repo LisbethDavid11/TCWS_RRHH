@@ -66,67 +66,7 @@ public class consultas_empleado extends conexion {
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	/*public boolean actualizar_empleado(empleado empleado, int nuevoIdEmpleado, Date fecha_nacimiento, Date fecha_inicio, Date fecha_renuncia) {
-	    PreparedStatement ps = null;
-	    Connection con = conectar();
-
-	    try {
-	        // Verificar si el nuevo id_empleado ya está en uso por otro registro
-	        if (nuevoIdEmpleado != empleado.getId()) {
-	            String verificarSql = "SELECT COUNT(*) FROM empleados WHERE id_empleado = ? AND id <> ?";
-	            ps = con.prepareStatement(verificarSql);
-	            ps.setInt(1, empleado.getId());
-	            ps.setInt(2, empleado.getId_empleado());
-	            ResultSet rs = ps.executeQuery();
-
-	            if (rs.next() && rs.getInt(1) > 0) {
-	                JOptionPane.showMessageDialog(null, "Error: El nuevo ID de empleado ya está en uso.");
-	                return false;
-	            }
-	        }
-
-	        // Proceder a la actualización
-	        String sql = "UPDATE empleados SET id_empleado=?, identidad_empleado=?, nombres_empleado=?, apellidos_empleado=?, sexo_empleado=?, "
-	                + "nacimiento_empleado=?, civil_empleado=?, direccion_empleado=?, tel_empleado=?, correo_empleado=?, "
-	                + "cargo_empleado=?, area_empleado=?, inicio_empleado=?, renuncia_empleado=?, fotografia_empleado=?, "
-	                + "cuenta_empleado=? WHERE id = ?";
-
-	        ps = con.prepareStatement(sql);
-	        ps.setInt(1, nuevoIdEmpleado);
-	        ps.setString(2, empleado.getIdentidad_empleado());
-	        ps.setString(3, empleado.getNombres_empleado());
-	        ps.setString(4, empleado.getApellidos_empleado());
-	        ps.setString(5, empleado.getSexo_empleado());
-	        ps.setDate(6, new java.sql.Date(fecha_nacimiento.getTime()));
-	        ps.setString(7, empleado.getCivil_empleado());
-	        ps.setString(8, empleado.getDireccion_empleado());
-	        ps.setString(9, empleado.getTel_empleado());
-	        ps.setString(10, empleado.getCorreo_empleado());
-	        ps.setString(11, empleado.getCargo_empleado());
-	        ps.setString(12, empleado.getArea_empleado());
-	        ps.setDate(13, new java.sql.Date(fecha_inicio.getTime()));
-	        ps.setDate(14, fecha_renuncia != null ? new java.sql.Date(fecha_renuncia.getTime()) : null);
-	        ps.setString(15, empleado.getFotografia_empleado());
-	        ps.setString(16, empleado.getCuenta_empleado());
-	        ps.setInt(17, empleado.getId());
-
-	        int rowsUpdated = ps.executeUpdate();
-	        return rowsUpdated > 0;
-
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        return false;
-	    } finally {
-	        try {
-	            if (ps != null) ps.close();
-	            if (con != null) con.close();
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
-	    }
-	}*/
 	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public boolean eliminar_empleado(int id) {
 	    PreparedStatement ps = null;
 	    Connection con = conectar();
@@ -323,20 +263,65 @@ public class consultas_empleado extends conexion {
 
 
 
+    public boolean existeIdEmpleado(int idEmpleado, int idOriginal) {
+        String query = "SELECT COUNT(*) FROM empleados WHERE id_empleado = ? AND id <> ?";
+        try (Connection conn = conectar(); 
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            
+            stmt.setInt(1, idEmpleado);
+            stmt.setInt(2, idOriginal); // Excluir el registro del empleado actual
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // Si el resultado es mayor a 0, el ID existe en otro empleado
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; // Si no se encuentra, devuelve falso
+    }
 
 
     
+    public boolean existeIdentidadEmpleado(String identidadEmpleado, int idOriginal) {
+        String query = "SELECT COUNT(*) FROM empleados WHERE identidad_empleado = ? AND id <> ?";
+        try (Connection conn = conectar(); 
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            
+            stmt.setString(1, identidadEmpleado);
+            stmt.setInt(2, idOriginal); // Excluir el registro del empleado actual
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // Si el resultado es mayor a 0, la identidad existe en otro empleado
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; // Si no se encuentra, devuelve falso
+    }
+
+
+
+
     
-
-
-   
-    
-
-
-
-
-
-
+    public String obtenerIdentidadEmpleado(int idOriginal) {
+        String identidadEmpleado = null;
+        String query = "SELECT identidad_empleado FROM empleados WHERE id = ?"; // Aquí asumo que "id" es la columna de la tabla que almacena el ID original.
+        try (Connection conn = conectar(); 
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            
+            stmt.setInt(1, idOriginal); // El ID original del empleado
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                identidadEmpleado = rs.getString("identidad_empleado"); // Obtener la identidad del empleado
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return identidadEmpleado; // Devuelve la identidad, o null si no se encuentra
+    }
 
 
 

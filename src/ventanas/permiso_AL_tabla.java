@@ -120,7 +120,7 @@ public class permiso_AL_tabla extends JFrame {
 		getContentPane().add(panelbusqueda);
 		
 		txtbuscar = new JTextField();
-		txtbuscar.setText("Buscar por nombres, apellidos, identidad, id del empleado");
+		txtbuscar.setText("Nombres, apellidos, identidad, id del empleado");
 		txtbuscar.setForeground(Color.GRAY);
 		txtbuscar.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		txtbuscar.setColumns(10);
@@ -159,7 +159,7 @@ public class permiso_AL_tabla extends JFrame {
 		panelbusqueda.add(lblbuscar);
 		
 		cbxbusquedaCargo = new JComboBox<String>();
-		cbxbusquedaCargo.setModel(new DefaultComboBoxModel(new String[] {"Director general", "Director", "Gerente financiero", "Administrador", "Asistente", "Cobros", "Enfermero", "Psicologo", "Supervisor", "Consejero", "Docente", "Docente auxiliar", "Soporte técnico", "Marketing", "Aseo", "Mantenimiento", "Conserje", " "}));
+		cbxbusquedaCargo.setModel(new DefaultComboBoxModel<String>(new String[] {"Director general", "Director", "Gerente financiero", "Administrador", "Asistente", "Cobros", "Enfermero", "Psicologo", "Supervisor", "Consejero", "Docente", "Docente auxiliar", "Soporte técnico", "Marketing", "Aseo", "Mantenimiento", "Conserje", " "}));
 		cbxbusquedaCargo.setSelectedIndex(-1);
 		cbxbusquedaCargo.setFont(new Font("Tahoma", Font.BOLD, 11));
 		cbxbusquedaCargo.setBounds(347, 12, 111, 26);
@@ -295,25 +295,6 @@ public class permiso_AL_tabla extends JFrame {
 		cal.add(Calendar.YEAR, 1); 
 		hasta_buscar.setMaxSelectableDate(cal.getTime());
 		
-		
-		
-	        cbxbusquedaCargo.addActionListener(new ActionListener() {
-	            @Override
-	            public void actionPerformed(ActionEvent e) {
-	                aplicarFiltros();
-	            }
-	        });
-	
-	        cbxbusquedaarea.addActionListener(new ActionListener() {
-	            @Override
-	            public void actionPerformed(ActionEvent e) {
-	                aplicarFiltros();
-	            }
-	        });
-	
-	        
-	
-	   
 	        txtbuscar.setText(placeHolderText);
 	        txtbuscar.setForeground(Color.GRAY);
 	        
@@ -330,6 +311,24 @@ public class permiso_AL_tabla extends JFrame {
 	        desde_buscar.setBackground(Color.WHITE);
 	        desde_buscar.setBounds(707, 10, 101, 27);
 	        panelbusqueda.add(desde_buscar);
+	        
+
+			
+	        cbxbusquedaCargo.addActionListener(new ActionListener() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	                aplicarFiltros();
+	            }
+	        });
+	
+	        cbxbusquedaarea.addActionListener(new ActionListener() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	                aplicarFiltros();
+	            }
+	        });
+	        
+	        
 	
 	        txtbuscar.addFocusListener(new FocusAdapter() {
 	            @Override
@@ -349,15 +348,33 @@ public class permiso_AL_tabla extends JFrame {
 	            }
 	        });
 	        
+	        construirTabla();
 	        
-	//////////////////////////////// filtros de jdatechooser
-	     // Agregar el listener para el JDateChooser "desde_buscar"
 	        desde_buscar.getDateEditor().addPropertyChangeListener("date", evt -> aplicarFiltros());
-
-	        // Agregar el listener para el JDateChooser "hasta_buscar"
 	        hasta_buscar.getDateEditor().addPropertyChangeListener("date", evt -> aplicarFiltros());
-
+	        trsfiltroCodigo = new TableRowSorter<>(table.getModel());
+	        table.setRowSorter(trsfiltroCodigo);  
 	        
+	        txtbuscar.addKeyListener(new KeyListener() {
+	            @Override
+	            public void keyTyped(KeyEvent ke) {
+	                if (txtbuscar.getText().length() == 50)
+	                    ke.consume();
+
+	                if (txtbuscar.getText().equals(" ")) {
+	                    JOptionPane.showMessageDialog(null, "No está permitido ingresar espacios vacíos");
+	                    txtbuscar.setText("");
+	                }
+	            }
+
+	            @Override
+	            public void keyPressed(KeyEvent ke) {}
+
+	            @Override
+	            public void keyReleased(KeyEvent ke) {
+	                filtro();
+	            }
+	        });
 	   
 		
 	}//class
@@ -381,16 +398,18 @@ public class permiso_AL_tabla extends JFrame {
 
 		    String[][] informacion = obtenerMatriz(); 
 
-		    DefaultTableModel modeloTabla = new DefaultTableModel(informacion, titulos) {
-		        @Override
-		        public boolean isCellEditable(int row, int column) {
-		            return false; // Todas las celdas no serán editables
-		        }
-		    };
+	        DefaultTableModel modeloTabla = new DefaultTableModel(informacion, titulos) {
+	            @Override
+	            public boolean isCellEditable(int row, int column) {
+	                return false; // Todas las celdas no serán editables
+	            }
+	        };
 
-		    table.setModel(modeloTabla);
-		    TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(modeloTabla);
-		    table.setRowSorter(sorter);
+	        table.setModel(modeloTabla);
+	        scrollPane.setViewportView(table);
+
+	        trsfiltroCodigo = new TableRowSorter<>(modeloTabla);
+	        table.setRowSorter(trsfiltroCodigo);
 		    table.getColumnModel().getColumn(0).setPreferredWidth(30); 
 		    table.getColumnModel().getColumn(1).setPreferredWidth(30);  
 		    table.getColumnModel().getColumn(15).setPreferredWidth(30); 
@@ -477,6 +496,13 @@ public class permiso_AL_tabla extends JFrame {
 		    });
 		}
 
+		public void filtro() {
+	        filtroCodigo = txtbuscar.getText();
+	        if (trsfiltroCodigo != null) {
+	            trsfiltroCodigo.setRowFilter(RowFilter.regexFilter("(?i)" + filtroCodigo, 2, 3, 4, 5));
+	        }
+	    }
+		
 
 		private void desactivarComponentes(permiso_AL_nuevo ventana) {
 		    ventana.cbxnombres.setEnabled(false);
@@ -500,10 +526,10 @@ public class permiso_AL_tabla extends JFrame {
 		private void cambiarColorFuenteNegro(JPanel panel) {
 		    for (Component componente : panel.getComponents()) {
 		        if (componente instanceof JTextField || componente instanceof JLabel || componente instanceof JComboBox || componente instanceof JTextArea || componente instanceof JSpinner) {
-		            componente.setForeground(Color.BLACK); // Cambia el color de la fuente a negro
+		            componente.setForeground(Color.BLACK); 
 		        }
 		        if (componente instanceof JPanel) {
-		            cambiarColorFuenteNegro((JPanel) componente); // Llama recursivamente si es un panel
+		            cambiarColorFuenteNegro((JPanel) componente); 
 		        }
 		    }
 		}
@@ -594,56 +620,53 @@ public class permiso_AL_tabla extends JFrame {
 		    return miLista;
 		}
 		
-		public void filtro() {
-	        filtroCodigo = txtbuscar.getText();
-	        trsfiltroCodigo.setRowFilter(RowFilter.regexFilter("(?i)" + filtroCodigo, 2, 3, 4, 5));
-	    }
-
+		
     	
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
     	// Método que aplica los filtros combinados
 		private void aplicarFiltros() {
-		    String filtroCargo = (String) cbxbusquedaCargo.getSelectedItem();
-		    String filtroArea = (String) cbxbusquedaarea.getSelectedItem();
-		    Date fechaDesde = desde_buscar.getDate();
-		    Date fechaHasta = hasta_buscar.getDate();
-		    
-		    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
-		    List<RowFilter<Object, Object>> filtros = new ArrayList<>();
+			String filtroCargo = (String) cbxbusquedaCargo.getSelectedItem();
+	        String filtroArea = (String) cbxbusquedaarea.getSelectedItem();
+	        Date fechaDesde = desde_buscar.getDate();
+	        Date fechaHasta = hasta_buscar.getDate();
+	        
+	        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
+	        List<RowFilter<Object, Object>> filtros = new ArrayList<>();
 
-		    if (filtroCargo != null && !filtroCargo.trim().isEmpty()) {
-		        filtros.add(RowFilter.regexFilter("(?i)" + filtroCargo, 7)); // Columna 7 es "Cargo"
-		    }
+	        if (filtroCargo != null && !filtroCargo.trim().isEmpty()) {
+	            filtros.add(RowFilter.regexFilter("(?i)" + filtroCargo, 7)); // Columna 7 es "Cargo"
+	        }
 
-		    if (filtroArea != null && !filtroArea.trim().isEmpty()) {
-		        filtros.add(RowFilter.regexFilter("(?i)" + filtroArea, 8)); // Columna 8 es "Área"
-		    }
+	        if (filtroArea != null && !filtroArea.trim().isEmpty()) {
+	            filtros.add(RowFilter.regexFilter("(?i)" + filtroArea, 8)); // Columna 8 es "Área"
+	        }
 
-		    if (fechaDesde != null && fechaHasta != null) {
-		        filtros.add(new RowFilter<Object, Object>() {
-		            @Override
-		            public boolean include(Entry<? extends Object, ? extends Object> entry) {
-		                try {
-		                    String fechaRecibidoStr = entry.getStringValue(17); // Columna 17 es "Fecha recibido"
-		                    Date fechaRecibido = dateFormat.parse(fechaRecibidoStr);
-		                    
-		                    return (fechaRecibido.equals(fechaDesde) || fechaRecibido.after(fechaDesde)) 
-		                        && (fechaRecibido.equals(fechaHasta) || fechaRecibido.before(fechaHasta));
-		                } catch (ParseException e) {
-		                    return false; // En caso de error al parsear la fecha
-		                }
-		            }
-		        });
-		    }
-		    
-		    if (filtros.isEmpty()) {
-		        trsfiltroCodigo.setRowFilter(null);  // Quitar todos los filtros
-		    } else {
-		    	
-		        RowFilter<Object, Object> combinedFilter = RowFilter.andFilter(filtros);
-		        trsfiltroCodigo.setRowFilter(combinedFilter);
-		    }
-		}
+	        if (fechaDesde != null && fechaHasta != null) {
+	            filtros.add(new RowFilter<Object, Object>() {
+	                @Override
+	                public boolean include(Entry<? extends Object, ? extends Object> entry) {
+	                    try {
+	                        String fechaRecibidoStr = entry.getStringValue(17); // Columna 17 es "Fecha recibido"
+	                        Date fechaRecibido = dateFormat.parse(fechaRecibidoStr);
+	                        
+	                        return (fechaRecibido.equals(fechaDesde) || fechaRecibido.after(fechaDesde)) 
+	                            && (fechaRecibido.equals(fechaHasta) || fechaRecibido.before(fechaHasta));
+	                    } catch (ParseException e) {
+	                        return false; // En caso de error al parsear la fecha
+	                    }
+	                }
+	            });
+	        }
+	        
+	        if (filtros.isEmpty()) {
+	            trsfiltroCodigo.setRowFilter(null);  
+	        } else {
+	            RowFilter<Object, Object> combinedFilter = RowFilter.andFilter(filtros);
+	            trsfiltroCodigo.setRowFilter(combinedFilter);
+	        }
+	    }
+	    
+		
 
  
         

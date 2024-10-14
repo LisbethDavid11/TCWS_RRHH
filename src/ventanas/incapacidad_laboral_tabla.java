@@ -66,10 +66,10 @@ public class incapacidad_laboral_tabla extends JFrame {
 
         txtbuscar = new JTextField();
         txtbuscar.setFont(new Font("Tahoma", Font.PLAIN, 10));
-        txtbuscar.setBounds(68, 10, 230, 27);
+        txtbuscar.setBounds(68, 10, 216, 27);
         panelbusqueda.add(txtbuscar);
 
-        final String placeHolderText = "Id empleado, nombres, apellidos e identidad";
+        final String placeHolderText = "Nombres, apellidos, identidad y sexo";
 
         txtbuscar.setText(placeHolderText);
         txtbuscar.setForeground(Color.GRAY);
@@ -106,32 +106,33 @@ public class incapacidad_laboral_tabla extends JFrame {
         lblbuscar.setBounds(10, 10, 66, 26);
         panelbusqueda.add(lblbuscar);
 
-        cbxbusquedaCargo = new JComboBox<>(new String[] { "Director", "Administrador", "Docente", "Supervisor", "Mantenimiento" });
-        cbxbusquedaCargo.setSelectedIndex(-1);
-        cbxbusquedaCargo.setFont(new Font("Tahoma", Font.BOLD, 11));
-        cbxbusquedaCargo.setBounds(365, 12, 111, 26);
-        panelbusqueda.add(cbxbusquedaCargo);
-        cbxbusquedaCargo.addActionListener(e -> aplicarFiltros());
-
+        cbxbusquedaCargo = new JComboBox<String>();
+		cbxbusquedaCargo.setModel(new DefaultComboBoxModel<String>(new String[] {"Director general", "Director", "Gerente financiero", "Administrador", "Asistente", "Cobros", "Enfermero", "Psicologo", "Supervisor", "Consejero", "Docente", "Docente auxiliar", "Soporte técnico", "Marketing", "Aseo", "Mantenimiento", "Conserje", " "}));
+		cbxbusquedaCargo.setSelectedIndex(-1);
+		cbxbusquedaCargo.setFont(new Font("Tahoma", Font.BOLD, 11));
+		cbxbusquedaCargo.setBounds(347, 12, 111, 26);
+		panelbusqueda.add(cbxbusquedaCargo);
+		
+		
         JLabel lblCargo = new JLabel("Cargo");
         lblCargo.setHorizontalAlignment(SwingConstants.LEFT);
         lblCargo.setForeground(Color.BLACK);
         lblCargo.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        lblCargo.setBounds(308, 10, 66, 26);
+        lblCargo.setBounds(294, 11, 66, 26);
         panelbusqueda.add(lblCargo);
 
-        cbxbusquedaarea = new JComboBox<>(new String[] { "Administrativa", "Financiera", "Docencia", "Mantenimiento" });
-        cbxbusquedaarea.setSelectedIndex(-1);
-        cbxbusquedaarea.setFont(new Font("Tahoma", Font.BOLD, 11));
-        cbxbusquedaarea.setBounds(534, 12, 111, 26);
-        panelbusqueda.add(cbxbusquedaarea);
-        cbxbusquedaarea.addActionListener(e -> aplicarFiltros());
+        cbxbusquedaarea = new JComboBox<String>();
+		cbxbusquedaarea.setModel(new DefaultComboBoxModel<>(new String[] { "Administrativa", "Financiera", "Pre basica", "Primaria", "Secundaria", "Logistica", "Aseo", "Mantenimiento", " " }));
+		cbxbusquedaarea.setSelectedIndex(-1);
+		cbxbusquedaarea.setFont(new Font("Tahoma", Font.BOLD, 11));
+		cbxbusquedaarea.setBounds(516, 12, 111, 26);
+		panelbusqueda.add(cbxbusquedaarea);
 
         JLabel lblarea = new JLabel("Área");
         lblarea.setHorizontalAlignment(SwingConstants.LEFT);
         lblarea.setForeground(Color.BLACK);
         lblarea.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        lblarea.setBounds(486, 10, 56, 26);
+        lblarea.setBounds(468, 10, 56, 26);
         panelbusqueda.add(lblarea);
 
         desde_buscar = new JDateChooser();
@@ -183,7 +184,7 @@ public class incapacidad_laboral_tabla extends JFrame {
         });
         btnregresar.setFont(new Font("Tahoma", Font.BOLD, 10));
         btnregresar.setToolTipText("Regresar al menú principal");
-        btnregresar.setBounds(22, 17, 90, 23);
+        btnregresar.setBounds(10, 17, 90, 23);
         panelbotones.add(btnregresar);
 
         btnnuevo = new JButton("Nuevo");
@@ -200,11 +201,15 @@ public class incapacidad_laboral_tabla extends JFrame {
         });
         btnnuevo.setFont(new Font("Tahoma", Font.BOLD, 10));
         btnnuevo.setToolTipText("Nuevo registro");
-        btnnuevo.setBounds(363, 17, 90, 23);
+        btnnuevo.setBounds(351, 17, 90, 23);
         panelbotones.add(btnnuevo);
 
         btneliminar = new JButton("Eliminar");
-        /*btneliminar.addActionListener(new ActionListener() {
+        btneliminar.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        	}
+        });
+        btneliminar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int filaSeleccionada;
                 try {
@@ -221,7 +226,7 @@ public class incapacidad_laboral_tabla extends JFrame {
 
                             consultas_incapacidad_laboral consulta = new consultas_incapacidad_laboral();
 
-                            if (consulta.eliminar_incapacidad(Integer.parseInt(id))) {
+                            if (consulta.eliminar_incapacidad_laboral(Integer.parseInt(id))) {
                                 ((DefaultTableModel) table.getModel()).removeRow(filaSeleccionada);
                                 JOptionPane.showMessageDialog(null, "El registro ha sido eliminado correctamente de la tabla y la base de datos.");
                             } else {
@@ -233,10 +238,10 @@ public class incapacidad_laboral_tabla extends JFrame {
                     JOptionPane.showMessageDialog(null, "Error: " + ex + "\nInténtelo nuevamente", "Error en la operación", JOptionPane.ERROR_MESSAGE);
                 }
             }
-        });*/
+        });
         btneliminar.setFont(new Font("Tahoma", Font.BOLD, 10));
         btneliminar.setToolTipText("Eliminar registro");
-        btneliminar.setBounds(263, 17, 90, 23);
+        btneliminar.setBounds(251, 17, 90, 23);
         panelbotones.add(btneliminar);
 
         JLabel lblPermisosAusenciaLaboral = new JLabel("INCAPACIDADES POR AUSENCIA LABORAL");
@@ -246,12 +251,26 @@ public class incapacidad_laboral_tabla extends JFrame {
         getContentPane().add(lblPermisosAusenciaLaboral);
 
         construirTabla(); // Construir la tabla al iniciar
+        
+        cbxbusquedaCargo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                aplicarFiltros();
+            }
+        });
+
+        cbxbusquedaarea.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                aplicarFiltros();
+            }
+        });
     }
 
     private void filtro() {
         String filtroTexto = txtbuscar.getText();
         if (trsfiltroCodigo != null) {
-            trsfiltroCodigo.setRowFilter(RowFilter.regexFilter("(?i)" + filtroTexto, 2, 3, 4));  // Filtro en columnas Nombres, Apellidos, Identidad
+            trsfiltroCodigo.setRowFilter(RowFilter.regexFilter("(?i)" + filtroTexto, 1, 2, 3, 4));  
         }
     }
 
@@ -328,71 +347,73 @@ public class incapacidad_laboral_tabla extends JFrame {
             datos[i][20] = dateFormat.format(incapacidad.getFecha_actual());
             datos[i][21] = incapacidad.getHora_actual().toString();
         }
-
         	return datos;  
     }
     
     
-    // Declarar la ventana como variable estática para controlar si está abierta
-    private static incapacidad_laboral_nuevo formulario = null;
-    
     private void pasarDatosAlFormulario(int fila) {
-        int filaModelo = table.convertRowIndexToModel(fila);  
+        // Convertir el índice de la fila seleccionada a índice del modelo
+        int filaModelo = table.convertRowIndexToModel(fila);
 
-        if (formulario == null || !formulario.isShowing()) {
-            formulario = new incapacidad_laboral_nuevo();  
+        // Inicializar el formulario solo si aún no está visible
+        incapacidad_laboral_nuevo formulario = new incapacidad_laboral_nuevo();  
 
-            formulario.cbxnombres.setSelectedItem(table.getModel().getValueAt(filaModelo, 2).toString());
-            formulario.txtapellidos.setText(table.getModel().getValueAt(filaModelo, 3).toString());
-            formulario.txtidentidad.setText(table.getModel().getValueAt(filaModelo, 4).toString());
-            formulario.txttel.setText(table.getModel().getValueAt(filaModelo, 5).toString());
-            formulario.txtcorreo.setText(table.getModel().getValueAt(filaModelo, 6).toString());
-            formulario.txtcargo.setText(table.getModel().getValueAt(filaModelo, 7).toString());
-            formulario.txtarea.setText(table.getModel().getValueAt(filaModelo, 8).toString());
-            formulario.txtsexo.setText(table.getModel().getValueAt(filaModelo, 9).toString());
-            formulario.txtedad.setText(table.getModel().getValueAt(filaModelo, 10).toString());
-            formulario.txariesgo.setText(table.getModel().getValueAt(filaModelo, 11).toString());
+        // Recuperar los datos de la tabla y establecerlos en los campos correspondientes del formulario
+        formulario.cbxnombres.setSelectedItem(table.getModel().getValueAt(filaModelo, 2).toString());
+        formulario.txtapellidos.setText(table.getModel().getValueAt(filaModelo, 3).toString());
+        formulario.txtidentidad.setText(table.getModel().getValueAt(filaModelo, 4).toString());
+        formulario.txttel.setText(table.getModel().getValueAt(filaModelo, 5).toString());
+        formulario.txtcorreo.setText(table.getModel().getValueAt(filaModelo, 6).toString());
+        formulario.txtcargo.setText(table.getModel().getValueAt(filaModelo, 7).toString());
+        formulario.txtarea.setText(table.getModel().getValueAt(filaModelo, 8).toString());
+        formulario.txtsexo.setText(table.getModel().getValueAt(filaModelo, 9).toString());
+        formulario.txtedad.setText(table.getModel().getValueAt(filaModelo, 10).toString());
+        formulario.txariesgo.setText(table.getModel().getValueAt(filaModelo, 11).toString());
 
-            formulario.txtid_incapacidad.setText(table.getModel().getValueAt(filaModelo, 0).toString());
+        formulario.txtid_incapacidad.setText(table.getModel().getValueAt(filaModelo, 0).toString());
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
-            try {
-                formulario.fecha_inicio.setDate(dateFormat.parse(table.getModel().getValueAt(filaModelo, 12).toString()));
-                formulario.fecha_finalizacion.setDate(dateFormat.parse(table.getModel().getValueAt(filaModelo, 13).toString()));
-                formulario.fecha_expedicion.setDate(dateFormat.parse(table.getModel().getValueAt(filaModelo, 17).toString()));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            formulario.txttotal_dias.setText(table.getModel().getValueAt(filaModelo, 14).toString());
-            formulario.txttipo.setText(table.getModel().getValueAt(filaModelo, 15).toString());
-            formulario.txtreposo.setText(table.getModel().getValueAt(filaModelo, 16).toString());
-            formulario.txtnumero.setText(table.getModel().getValueAt(filaModelo, 19).toString());
-
-            String horaExpedicionStr = table.getModel().getValueAt(filaModelo, 18).toString();
-            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-            try {
-                Date horaExpedicion = timeFormat.parse(horaExpedicionStr);
-                formulario.hora_expedicion.setValue(horaExpedicion);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            formulario.txtfecha_actual.setText(table.getModel().getValueAt(filaModelo, 20).toString());
-            formulario.txthora_actual.setText(table.getModel().getValueAt(filaModelo, 21).toString());
-
-            formulario.setVisible(true);
-            formulario.setLocationRelativeTo(null);
-            formulario.btnactualizar.setVisible(false);  
-            formulario.btnguardar.setVisible(false);    
-            formulario.btnlimpiar.setVisible(false);
-        } else {
-            formulario.toFront();
-            formulario.requestFocus();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
+        try {
+            formulario.fecha_inicio.setDate(dateFormat.parse(table.getModel().getValueAt(filaModelo, 12).toString()));
+            formulario.fecha_finalizacion.setDate(dateFormat.parse(table.getModel().getValueAt(filaModelo, 13).toString()));
+            formulario.fecha_expedicion.setDate(dateFormat.parse(table.getModel().getValueAt(filaModelo, 17).toString()));
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+
+        formulario.txttotal_dias.setText(table.getModel().getValueAt(filaModelo, 14).toString());
+        formulario.txttipo.setText(table.getModel().getValueAt(filaModelo, 15).toString());
+        formulario.txtreposo.setText(table.getModel().getValueAt(filaModelo, 16).toString());
+        formulario.txtnumero.setText(table.getModel().getValueAt(filaModelo, 19).toString());
+
+        // Procesar la hora
+        String horaExpedicionStr = table.getModel().getValueAt(filaModelo, 18).toString();
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+        try {
+            Date horaExpedicion = timeFormat.parse(horaExpedicionStr);
+            formulario.hora_expedicion.setValue(horaExpedicion);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        // Establecer las fechas actual y la hora actual en el formulario
+        formulario.txtfecha_actual.setText(table.getModel().getValueAt(filaModelo, 20).toString());
+        formulario.txthora_actual.setText(table.getModel().getValueAt(filaModelo, 21).toString());
+
+        // Desactivar los componentes que no deben ser editables
+        desactivarComponentes(formulario);
+        formulario.btnactualizar.setVisible(false);
+        formulario.btnlimpiar.setVisible(false);
+        formulario.btnguardar.setVisible(false);
+
+        // Mostrar el formulario
+        formulario.setVisible(true);
+        formulario.setLocationRelativeTo(null);
     }
 
-    // Simulación del método de búsqueda en la base de datos
+
+
+
     public static ArrayList<incapacidad_laboral> buscarIncapacidades() {
         ArrayList<incapacidad_laboral> lista = new ArrayList<>();
         conexion con = new conexion();
@@ -425,7 +446,6 @@ public class incapacidad_laboral_tabla extends JFrame {
                 incapacidad.setNumero_certificado(rs.getString("numero_certificado"));
                 incapacidad.setFecha_actual(rs.getDate("fecha_actual"));
                 incapacidad.setHora_actual(rs.getTime("hora_actual"));
-
                 lista.add(incapacidad);
             }
 
@@ -436,32 +456,56 @@ public class incapacidad_laboral_tabla extends JFrame {
         return lista;
     }
 
-    // Método para aplicar filtros
     private void aplicarFiltros() {
         List<RowFilter<Object, Object>> filtros = new ArrayList<>();
-        if (cbxbusquedaCargo.getSelectedItem() != null && !cbxbusquedaCargo.getSelectedItem().toString().isEmpty()) {
-            filtros.add(RowFilter.regexFilter(cbxbusquedaCargo.getSelectedItem().toString(), 7)); // Columna de cargo
+
+        String filtroTexto = txtbuscar.getText().trim();
+        if (!filtroTexto.isEmpty() && !filtroTexto.equals("Nombres, apellidos, identidad, sexo")) {
+            filtros.add(RowFilter.regexFilter("(?i)" + filtroTexto,  2, 3, 4, 10)); 
         }
-        if (cbxbusquedaarea.getSelectedItem() != null && !cbxbusquedaarea.getSelectedItem().toString().isEmpty()) {
-            filtros.add(RowFilter.regexFilter(cbxbusquedaarea.getSelectedItem().toString(), 8)); // Columna de área
-        }
-        if (desde_buscar.getDate() != null && hasta_buscar.getDate() != null) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
-            String fechaDesde = dateFormat.format(desde_buscar.getDate());
-            String fechaHasta = dateFormat.format(hasta_buscar.getDate());
-            filtros.add(RowFilter.dateFilter(RowFilter.ComparisonType.AFTER, desde_buscar.getDate(), 12)); // Inicio incapacidad
-            filtros.add(RowFilter.dateFilter(RowFilter.ComparisonType.BEFORE, hasta_buscar.getDate(), 13)); // Fin incapacidad
+        String filtroCargo = (String) cbxbusquedaCargo.getSelectedItem();
+        if (filtroCargo != null && !filtroCargo.trim().isEmpty() && !filtroCargo.equals(" ")) {
+            filtros.add(RowFilter.regexFilter("(?i)" + filtroCargo, 7)); 
         }
 
+        String filtroArea = (String) cbxbusquedaarea.getSelectedItem();
+        if (filtroArea != null && !filtroArea.trim().isEmpty() && !filtroArea.equals(" ")) {
+            filtros.add(RowFilter.regexFilter("(?i)" + filtroArea, 8)); 
+        }
+
+        if (desde_buscar.getDate() != null && hasta_buscar.getDate() != null) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
+
+            filtros.add(new RowFilter<Object, Object>() {
+                @Override
+                public boolean include(Entry<? extends Object, ? extends Object> entry) {
+                    try {
+                        String fechaInicioStr = entry.getStringValue(12); 
+                        String fechaFinStr = entry.getStringValue(13);   
+                        Date fechaInicio = dateFormat.parse(fechaInicioStr);
+                        Date fechaFin = dateFormat.parse(fechaFinStr);
+
+                        Date fechaDesde = desde_buscar.getDate();
+                        Date fechaHasta = hasta_buscar.getDate();
+
+                        return (fechaInicio.equals(fechaDesde) || fechaInicio.after(fechaDesde))
+                                && (fechaFin.equals(fechaHasta) || fechaFin.before(fechaHasta));
+                    } catch (ParseException e) {
+                        return false;
+                    }
+                }
+            });
+        }
         if (!filtros.isEmpty()) {
-            trsfiltroCodigo.setRowFilter(RowFilter.andFilter(filtros));
+            RowFilter<Object, Object> filtroCombinado = RowFilter.andFilter(filtros);
+            trsfiltroCodigo.setRowFilter(filtroCombinado); 
         } else {
             trsfiltroCodigo.setRowFilter(null); 
         }
     }
 
-    
-    private void desactivarComponentes(incapacidad_laboral_nuevo formulario) {
+    @SuppressWarnings("unused")
+	private void desactivarComponentes(incapacidad_laboral_nuevo formulario) {
         formulario.cbxnombres.setEnabled(false);
         formulario.txtapellidos.setEditable(false);
         formulario.txtidentidad.setEditable(false);
