@@ -354,7 +354,7 @@ public class reporte_empleado_especial extends JFrame{
 	        ex.printStackTrace();
 	        JOptionPane.showMessageDialog(null, "Error al generar el reporte: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 	    } finally {
-	        conex.desconectar();
+	        conex.desconectar(null);
 	    }
 	}
 	

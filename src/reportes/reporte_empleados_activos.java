@@ -164,7 +164,7 @@ public class reporte_empleados_activos {
 	                JOptionPane.showMessageDialog(null, "Error al guardar el reporte: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
 	            } finally {
-	                conex.desconectar();
+	                conex.desconectar(null);
 	            }
 	        }
 

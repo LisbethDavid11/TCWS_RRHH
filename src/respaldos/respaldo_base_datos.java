@@ -50,7 +50,7 @@ public class respaldo_base_datos {
 	        }
 	    }
 	    
-	    conex.desconectar();
+	    conex.desconectar(conn);
 	}
 
 	private void respaldarTabla(Connection conn, PrintWriter writer, String nombreTabla) {

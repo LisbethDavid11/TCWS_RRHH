@@ -178,7 +178,7 @@ public class reporte_empleados_individual {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Error al generar el reporte: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } finally {
-            conex.desconectar();
+            conex.desconectar(null);
         }
     }
 }

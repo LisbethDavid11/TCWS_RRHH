@@ -17,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,6 +45,8 @@ import com.toedter.calendar.JDateChooser;
 import clases.empleado;
 import clases.validaciones;
 import conexion.conexion;
+import consultas.consultas_areas;
+import consultas.consultas_cargos;
 import consultas.consultas_empleado;
 import javax.swing.JCheckBox;
 
@@ -406,7 +409,7 @@ public class empleado_nuevo extends JFrame{
 		panel_datos.add(lblcargo);
 		
 		cbxcargo = new JComboBox<String>();
-		cbxcargo.setModel(new DefaultComboBoxModel(new String[] {"Director general", "Director", "Gerente financiero", "Administrador", "Asistente ", "Cobros", "Enfermero", "Psicologo", "Supervisor ", "Consejero", "Docente", "Docente auxiliar", "Soporte técnico", "Marketing", "Aseo ", "Mantenimiento", "Conserje"}));
+		//cbxcargo.setModel(new DefaultComboBoxModel(new String[] {"Director general", "Director", "Gerente financiero", "Administrador", "Asistente ", "Cobros", "Enfermero", "Psicologo", "Supervisor ", "Consejero", "Docente", "Docente auxiliar", "Soporte técnico", "Marketing", "Aseo ", "Mantenimiento", "Conserje"}));
 		cbxcargo.setToolTipText("Seleccione");
 		cbxcargo.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		cbxcargo.setBackground(Color.WHITE);
@@ -599,7 +602,10 @@ public class empleado_nuevo extends JFrame{
 		Calendar fechaMinimo = Calendar.getInstance();
 		fechaMinimo.set(2012, Calendar.JANUARY, 1);
 		fecha_renuncia.setMinSelectableDate(fechaMinimo.getTime()); 
-		fecha_renuncia.setMaxSelectableDate(fechaActual);       
+		fecha_renuncia.setMaxSelectableDate(fechaActual); 
+		
+		 cargarCargosEnComboBox();
+		 cargarAreasEnComboBox();
 
 
 	}///////////////////FIN CLASS/////////////////////
@@ -725,7 +731,7 @@ public class empleado_nuevo extends JFrame{
 		        JOptionPane.showMessageDialog(null, "Error, ya existe un empleado con el mismo " + campoDuplicado, "Error de duplicado", JOptionPane.ERROR_MESSAGE);
 		    } else {
 		        if (consulta.guardar_empleado(clase, fechaSeleccionada, fechaSeleccionada2, fechaSeleccionada3)) {
-		            JOptionPane.showMessageDialog(null, "El empleado se ha registrado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+		            JOptionPane.showMessageDialog(null, "El empleado se ha guardado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 		            empleado_tabla tabla = new empleado_tabla();
 		            tabla.setLocationRelativeTo(null);
 		            tabla.setVisible(true);
@@ -1025,6 +1031,35 @@ public class empleado_nuevo extends JFrame{
 		        JOptionPane.showMessageDialog(null, "Ocurrió un error inesperado", "Error", JOptionPane.ERROR_MESSAGE);
 		        ex.printStackTrace();
 		    }
+		}
+		
+		
+		private void cargarCargosEnComboBox() {
+		    consultas_cargos consultas = new consultas_cargos();
+		    List<String> cargos = consultas.obtenerCargos();
+		    cbxcargo.removeAllItems();
+		    cbxcargo.addItem(" ");
+		    
+		    for (String cargo : cargos) {
+		        cbxcargo.addItem(cargo);
+		    }
+		    
+		    cbxcargo.setSelectedIndex(0);
+		}
+
+		
+
+		private void cargarAreasEnComboBox() {
+		    consultas_areas c = new consultas_areas();
+		    List<String> areas = c.obtenerAreas();
+		    cbxarea.removeAllItems();
+		    cbxarea.addItem(" ");
+		    
+		    for (String area : areas) {
+		        cbxarea.addItem(area);
+		    }
+		    
+		    cbxarea.setSelectedIndex(0);
 		}
 
 

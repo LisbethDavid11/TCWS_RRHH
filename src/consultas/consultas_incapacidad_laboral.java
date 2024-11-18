@@ -124,7 +124,7 @@ public class consultas_incapacidad_laboral extends conexion {
 	            e.printStackTrace();
 	            return false;
 	        } finally {
-	            con.desconectar();
+	            con.desconectar(cn);
 	        }
 	    }
 	

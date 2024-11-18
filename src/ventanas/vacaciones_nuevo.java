@@ -726,10 +726,10 @@ public class vacaciones_nuevo extends JFrame {
 	            ultimoAno = rs.getInt("ultimo_ano");
 	        }
 	    } catch (SQLException e) {
-	        JOptionPane.showMessageDialog(null, "Error al obtener el último año de vacaciones: " + e.getMessage());
+	        JOptionPane.showMessageDialog(null, "Error al obtener el último año de vacaciones" , "Error", JOptionPane.ERROR_MESSAGE);
 	    } finally {
 	        if (con != null) {
-	            new conexion().desconectar();
+	            new conexion().desconectar(con);
 	        }
 	    }
 

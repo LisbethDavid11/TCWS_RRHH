@@ -648,7 +648,7 @@ public class incapacidad_laboral_nuevo extends JFrame {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Error al llenar la lista de Nombres" , "Error", JOptionPane.ERROR_MESSAGE);
         } finally {
-            con.desconectar();
+            con.desconectar(cn);
         }
     }
 
@@ -697,7 +697,7 @@ public class incapacidad_laboral_nuevo extends JFrame {
         } finally {
             try {
                 if (cn != null && !cn.isClosed()) {
-                    con.desconectar();
+                    con.desconectar(cn);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();

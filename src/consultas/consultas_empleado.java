@@ -130,7 +130,7 @@ public class consultas_empleado extends conexion {
 
             rs.close(); // Cerramos ResultSet y PreparedStatement.
             pst.close();
-            conex.desconectar(); // Desconectamos la conexión.
+            conex.desconectar(null); // Desconectamos la conexión.
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -200,7 +200,7 @@ public class consultas_empleado extends conexion {
             try {
                 if (rs != null) rs.close();
                 if (ps != null) ps.close();
-                desconectar(); 
+                desconectar(con); 
             } catch (SQLException e) {
                 e.printStackTrace();
             }

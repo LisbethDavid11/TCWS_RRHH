@@ -160,7 +160,7 @@ public class reporte_incapacidad_general {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Error al generar el reporte: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } finally {
-            conex.desconectar();
+            conex.desconectar(null);
         }
     }
 }

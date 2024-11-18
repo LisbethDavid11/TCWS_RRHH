@@ -22,7 +22,16 @@ public class permiso_ausencia_laboral {
 	int total_fecha;
 	String nombres_recibe;
 	Date fecha_recibe;
+	String nombres_extiende;
 	
+	public String getNombres_extiende() {
+		return nombres_extiende;
+	}
+
+	public void setNombres_extiende(String nombres_extiende) {
+		this.nombres_extiende = nombres_extiende;
+	}
+
 	public int getId_permisos() {
 		return id_permisos;
 	}

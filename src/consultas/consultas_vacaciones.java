@@ -142,7 +142,7 @@ public class consultas_vacaciones extends conexion {
 	            }
 	        }
 	        if (con != null) {
-	            new conexion().desconectar();
+	            new conexion().desconectar(con);
 	        }
 	    }
 	}

@@ -257,28 +257,23 @@ public class vacaciones_tabla extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int filaSeleccionada = table.getSelectedRow();
                 
-                // Validar que se haya seleccionado una fila
                 if (filaSeleccionada == -1) {
                 	JOptionPane.showMessageDialog(null, "¡No se ha seleccionado ninguna fila!", "Advertencia", JOptionPane.WARNING_MESSAGE);
-                	return; // Si no se selecciona una fila, detenemos el proceso
+                	return; 
                 }
 
-                // Confirmar eliminación
                 int confirmacion = JOptionPane.showConfirmDialog(null, 
 	                    "¿Está seguro de que desea eliminar el registro seleccionado?\nEsto también lo eliminará permanentemente de la base de datos", 
-	                    "Confirmar eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);if (confirmacion == JOptionPane.YES_OPTION) {
+	                    "Confirmar eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);if (confirmacion == JOptionPane.YES_OPTION) {
                     try {
-                        // Obtener el id_vacaciones de la fila seleccionada
                         int idVacaciones = Integer.parseInt(table.getValueAt(filaSeleccionada, 0).toString());  // Suponiendo que la columna 0 es el id
 
-                        // Llamar al método de eliminar de la clase consultas_vacaciones
                         consultas_vacaciones consulta = new consultas_vacaciones();
                         boolean resultado = consulta.eliminarVacaciones(idVacaciones);
 
                         if (resultado) {
                             JOptionPane.showMessageDialog(null, "El registro ha sido eliminado correctamente de\nla tabla y la base de datos", "Éxito", JOptionPane.INFORMATION_MESSAGE );
                             
-                            // Remover la fila de la tabla en la interfaz
                             ((DefaultTableModel) table.getModel()).removeRow(filaSeleccionada);
                         } else {
                             JOptionPane.showMessageDialog(null, "Error al eliminar las vacaciones.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -460,10 +455,10 @@ public class vacaciones_tabla extends JFrame {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Error al obtener los registros de vacaciones: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al obtener los registros de vacaciones", "Error", JOptionPane.ERROR_MESSAGE);
         } finally {
             if (cn != null) {
-                con.desconectar();
+                con.desconectar(cn);
             }
         }
 

@@ -219,7 +219,7 @@ public class incapacidad_laboral_tabla extends JFrame {
                     } else {
                         int confirmacion = JOptionPane.showConfirmDialog(null,
                                 "¿Está seguro de que desea eliminar el registro seleccionado?\nEsto también lo eliminará permanentemente de la base de datos.",
-                                "Confirmar eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+                                "Confirmar eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
                         if (confirmacion == JOptionPane.YES_OPTION) {
                             String id = table.getValueAt(filaSeleccionada, 0).toString();

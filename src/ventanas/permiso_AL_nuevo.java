@@ -92,7 +92,11 @@ public class permiso_AL_nuevo extends JFrame {
 	public JButton btncomprobante;
 	public JCheckBox chxeditar;
 	public JTextField txtnumero;
-	
+	public JLabel lblextiende;
+	public JTextField txtextiende;
+	private JLabel lblc_1;
+	public JComboBox<String> cbxcargo_extiende;
+	public JComboBox<String> cbxcargo_recibe;
 	
 	public permiso_AL_nuevo() {
 		
@@ -282,22 +286,22 @@ public class permiso_AL_nuevo extends JFrame {
 		txttotal_horas.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txttotal_horas.setEditable(false);
 		txttotal_horas.setColumns(10);
-		txttotal_horas.setBounds(731, 434, 67, 33);
+		txttotal_horas.setBounds(731, 449, 67, 33);
 		panel_datos.add(txttotal_horas);
 		
 		JLabel lbltotal2 = new JLabel("Total de horas");
 		lbltotal2.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lbltotal2.setBounds(599, 438, 126, 25);
+		lbltotal2.setBounds(599, 453, 126, 25);
 		panel_datos.add(lbltotal2);
 		
 		JLabel lbldesde_1 = new JLabel("Desde");
 		lbldesde_1.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lbldesde_1.setBounds(507, 385, 61, 25);
+		lbldesde_1.setBounds(507, 400, 61, 25);
 		panel_datos.add(lbldesde_1);
 		
 		JLabel lblhasta_1 = new JLabel("Hasta");
 		lblhasta_1.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblhasta_1.setBounds(731, 385, 61, 25);
+		lblhasta_1.setBounds(731, 400, 61, 25);
 		panel_datos.add(lblhasta_1);
 		
 		Calendar calendarHoraInicio = Calendar.getInstance();
@@ -310,7 +314,7 @@ public class permiso_AL_nuevo extends JFrame {
 		JSpinner.DateEditor editorHoraInicio = new JSpinner.DateEditor(spinnerHoraInicio, "HH:mm");
 		spinnerHoraInicio.setEditor(editorHoraInicio);
 		spinnerHoraInicio.setFont(new Font("Tahoma", Font.BOLD, 14));
-		spinnerHoraInicio.setBounds(567, 385, 133, 30);
+		spinnerHoraInicio.setBounds(567, 400, 133, 30);
 		panel_datos.add(spinnerHoraInicio);
 		
 		Calendar calendarHoraFin = Calendar.getInstance();
@@ -323,14 +327,14 @@ public class permiso_AL_nuevo extends JFrame {
 		JSpinner.DateEditor editorHoraFin = new JSpinner.DateEditor(spinnerHoraFin, "HH:mm");
 		spinnerHoraFin.setEditor(editorHoraFin);
 		spinnerHoraFin.setFont(new Font("Tahoma", Font.BOLD, 14));
-		spinnerHoraFin.setBounds(791, 383, 133, 30);
+		spinnerHoraFin.setBounds(791, 398, 133, 30);
 		panel_datos.add(spinnerHoraFin);
         
         lblDatosDel = new JLabel("---- Horas --------------------------------------------------------");
         lblDatosDel.setHorizontalAlignment(SwingConstants.LEFT);
         lblDatosDel.setForeground(Color.GRAY);
         lblDatosDel.setFont(new Font("Tahoma", Font.BOLD, 14));
-        lblDatosDel.setBounds(507, 353, 484, 28);
+        lblDatosDel.setBounds(507, 368, 484, 28);
         panel_datos.add(lblDatosDel);
         
         lblDas = new JLabel("---- Días ----------------------------------------------------------");
@@ -347,9 +351,9 @@ public class permiso_AL_nuevo extends JFrame {
         lblDatosDel_1.setBounds(30, 10, 919, 28);
         panel_datos.add(lblDatosDel_1);
         
-        JLabel lblNombreDeQuien = new JLabel("Nombre de quien recibe");
+        JLabel lblNombreDeQuien = new JLabel("Nombre de quien recibe ");
         lblNombreDeQuien.setFont(new Font("Tahoma", Font.BOLD, 15));
-        lblNombreDeQuien.setBounds(32, 409, 221, 25);
+        lblNombreDeQuien.setBounds(32, 361, 208, 25);
         panel_datos.add(lblNombreDeQuien);
         
         txtnombres_recibe = new JTextField();
@@ -361,10 +365,10 @@ public class permiso_AL_nuevo extends JFrame {
         });
         txtnombres_recibe.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txtnombres_recibe.setColumns(10);
-        txtnombres_recibe.setBounds(30, 431, 276, 33);
+        txtnombres_recibe.setBounds(30, 383, 232, 33);
         panel_datos.add(txtnombres_recibe);
         
-        btncomprobante = new JButton("Comprobante");
+        btncomprobante = new JButton("Generar comprobante");
         btncomprobante.setToolTipText("Generar comprobante");
         btncomprobante.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
@@ -381,7 +385,7 @@ public class permiso_AL_nuevo extends JFrame {
         });
         btncomprobante.setFont(new Font("Tahoma", Font.BOLD, 8));
         btncomprobante.setBackground(UIManager.getColor("Button.highlight"));
-        btncomprobante.setBounds(340, 434, 103, 25);
+        btncomprobante.setBounds(823, 456, 126, 25);
         panel_datos.add(btncomprobante);
         
         txamotivo = new JTextArea();
@@ -396,17 +400,17 @@ public class permiso_AL_nuevo extends JFrame {
         txamotivo.setLineWrap(true);
         txamotivo.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txamotivo.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-        txamotivo.setBounds(30, 291, 413, 108);
+        txamotivo.setBounds(30, 272, 413, 79);
         panel_datos.add(txamotivo);
         
         JLabel lblmotivo = new JLabel("Motivo de ausencia");
         lblmotivo.setFont(new Font("Tahoma", Font.BOLD, 15));
-        lblmotivo.setBounds(30, 266, 232, 25);
+        lblmotivo.setBounds(30, 247, 232, 25);
         panel_datos.add(lblmotivo);
         
         JLabel lblid_permiso = new JLabel("Permiso No.");
         lblid_permiso.setFont(new Font("Tahoma", Font.BOLD, 15));
-        lblid_permiso.setBounds(30, 224, 116, 25);
+        lblid_permiso.setBounds(30, 212, 116, 25);
         panel_datos.add(lblid_permiso);
         
         txtnumero_permiso = new JTextField();
@@ -416,13 +420,13 @@ public class permiso_AL_nuevo extends JFrame {
         txtnumero_permiso.setFont(new Font("Tahoma", Font.BOLD, 14));
         txtnumero_permiso.setEditable(false);
         txtnumero_permiso.setColumns(10);
-        txtnumero_permiso.setBounds(137, 220, 61, 33);
+        txtnumero_permiso.setBounds(137, 208, 61, 33);
         panel_datos.add(txtnumero_permiso);
         
         JLabel lblhoy_es = new JLabel("Fecha actual:");
         lblhoy_es.setForeground(SystemColor.inactiveCaptionText);
         lblhoy_es.setFont(new Font("Tahoma", Font.BOLD, 15));
-        lblhoy_es.setBounds(222, 227, 111, 25);
+        lblhoy_es.setBounds(222, 215, 111, 25);
         panel_datos.add(lblhoy_es);
         
         txtFecha = new JTextField();
@@ -432,7 +436,7 @@ public class permiso_AL_nuevo extends JFrame {
         txtFecha.setEditable(false);
         txtFecha.setColumns(10);
         txtFecha.setBackground(SystemColor.menu);
-        txtFecha.setBounds(340, 223, 103, 33);
+        txtFecha.setBounds(340, 211, 103, 33);
         panel_datos.add(txtFecha);
         
         lblDatosDel_2 = new JLabel("_______ Datos del permiso__________________________________________________________________________________");
@@ -557,6 +561,40 @@ public class permiso_AL_nuevo extends JFrame {
 		txtnumero.setBounds(955, 5, 2, 9);
 		panel_datos.add(txtnumero);
 		
+		lblextiende = new JLabel("Nombre de quien extiende");
+		lblextiende.setFont(new Font("Tahoma", Font.BOLD, 15));
+		lblextiende.setBounds(32, 426, 232, 25);
+		panel_datos.add(lblextiende);
+		
+		txtextiende = new JTextField();
+		txtextiende.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		txtextiende.setColumns(10);
+		txtextiende.setBounds(30, 449, 232, 33);
+		panel_datos.add(txtextiende);
+		
+		JLabel lblc = new JLabel("Cargo");
+		lblc.setFont(new Font("Tahoma", Font.BOLD, 15));
+		lblc.setBounds(277, 359, 166, 25);
+		panel_datos.add(lblc);
+		
+		cbxcargo_recibe = new JComboBox<String>();
+		cbxcargo_recibe.setSelectedIndex(-1);
+		cbxcargo_recibe.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		cbxcargo_recibe.setBounds(276, 383, 166, 33);
+		panel_datos.add(cbxcargo_recibe);
+		
+		lblc_1 = new JLabel("Cargo");
+		lblc_1.setFont(new Font("Tahoma", Font.BOLD, 15));
+		lblc_1.setBounds(277, 425, 166, 25);
+		panel_datos.add(lblc_1);
+		
+		cbxcargo_extiende = new JComboBox<String>();
+		cbxcargo_extiende.setSelectedIndex(-1);
+		cbxcargo_extiende.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		cbxcargo_extiende.setBounds(276, 449, 166, 33);
+		panel_datos.add(cbxcargo_extiende);
+		
+		
 		
         inicializarFormulario(); 
         habilitarEdicion();
@@ -597,7 +635,8 @@ public class permiso_AL_nuevo extends JFrame {
 	    private void cargarDatosEmpleado(String nombre) {
 	        try {
 	            Connection conn = new conexion().conectar();
-	            String sql = "SELECT apellidos_empleado, correo_empleado, cargo_empleado, area_empleado, tel_empleado, identidad_empleado, id_empleado FROM empleados WHERE nombres_empleado = ?";
+	            String sql = "SELECT apellidos_empleado, correo_empleado, cargo_empleado, area_empleado, tel_empleado, identidad_empleado, "
+	            		+ "id_empleado FROM empleados WHERE nombres_empleado = ?";
 	            PreparedStatement pst = conn.prepareStatement(sql);
 	            pst.setString(1, nombre);
 	            ResultSet rs = pst.executeQuery();
@@ -631,27 +670,11 @@ public class permiso_AL_nuevo extends JFrame {
 	        txtid.setText("");
 	    }
 	    
-	    ///////////////////////////////////////////////////////////////////////////////////////
-	    //Metodo para establecer el rango de fechas de los JDateChooser
-	    /*private void establecerRangoFechas() {
-	
-	        Calendar cal = Calendar.getInstance();//fecha actual
-	        Date fechaActual = cal.getTime();
-	        
-	        date_desde.setMinSelectableDate(fechaActual); //minimo hoy
-
-	        cal.add(Calendar.MONTH, 6); // maxima tres meses despues
-	        Date fechaMaxima = cal.getTime();
-
-	        date_desde.setMaxSelectableDate(fechaMaxima);
-	        date_hasta.setMinSelectableDate(fechaActual);
-	        date_hasta.setMaxSelectableDate(fechaMaxima);
-	    }*/
 	    
-	 // Método para establecer el rango de fechas de los JDateChooser
+	 // rango de fechas de los JDateChooser
 	    private void establecerRangoFechas() {
 	        Calendar cal = Calendar.getInstance(); 
-	        Date fechaActual = cal.getTime(); // Fecha actual
+	        Date fechaActual = cal.getTime(); 
 
 	        
 	        cal.add(Calendar.MONTH, -3);
@@ -687,7 +710,7 @@ public class permiso_AL_nuevo extends JFrame {
 	        }
 	    }
 	    
-	    // Método para calcular la diferencia entre horas
+	    
 	    public void calcularHorasTranscurridas() {
 	        try {
 	            Date horaInicio = (Date) spinnerHoraInicio.getValue();
@@ -741,27 +764,28 @@ public class permiso_AL_nuevo extends JFrame {
 	            JOptionPane.showMessageDialog(null, "El campo 'Nombre de quien recibe' está vacío", "Advertencia", JOptionPane.WARNING_MESSAGE);
 	            return false;
 	        }
+	        if (txtextiende.getText().trim().isEmpty()) {
+	            JOptionPane.showMessageDialog(null, "El campo 'Nombre de quien extiende' está vacío", "Advertencia", JOptionPane.WARNING_MESSAGE);
+	            return false;
+	        }
 
 	        return true;
 	    }
 
-	    // Método adicional para validar el rango de horas
 	    private boolean validarRangoHoras(String totalHorasStr) {
 	        try {
 	            String[] tiempo = totalHorasStr.split(":");
 	            int horas = Integer.parseInt(tiempo[0]);
 	            int minutos = Integer.parseInt(tiempo[1]);
 
-	            // Validar que las horas estén en el rango correcto
 	            if (horas < 1 || horas > 23) {
 	                return false;
 	            }
-	            // Validar que los minutos estén en un rango válido
 	            if (minutos < 0 || minutos >= 60) {
 	                return false;
 	            }
 	        } catch (Exception e) {
-	            return false; // Cualquier excepción durante la validación debe devolver false
+	            return false; 
 	        }
 	        return true;
 	    }
@@ -785,30 +809,26 @@ public class permiso_AL_nuevo extends JFrame {
 	        permiso.setArea_empleado(txtarea.getText());
 	        permiso.setMotivo_ausencia(txamotivo.getText());
 	        permiso.setNombres_recibe(txtnombres_recibe.getText());
+	        permiso.setNombres_extiende(txtextiende.getText());
 
-	        // Guardar las fechas
 	        Date desdeFecha = date_desde.getDate();
 	        Date hastaFecha = date_hasta.getDate();
 	        Date fechaRecibe = new Date();
 
-	        // Obtener las horas desde los JSpinner
 	        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 	        String horaInicioStr = timeFormat.format(spinnerHoraInicio.getValue());
 	        String horaFinStr = timeFormat.format(spinnerHoraFin.getValue());
 
-	        // Convertir las horas a Time
 	        Time desdeHora = Time.valueOf(horaInicioStr); 
 	        Time hastaHora = Time.valueOf(horaFinStr);   
-	        
-	        // Verificar si total_horas es válido
+
 	        String totalHorasStr = txttotal_horas.getText().trim();
 	        if (totalHorasStr.isEmpty() || totalHorasStr.equals("00:00")) {
 	            JOptionPane.showMessageDialog(null, "El total de horas no puede estar vacío o ser 00:00", "Error", JOptionPane.ERROR_MESSAGE);
 	            return; 
 	        }
 	        
-	        // Convertir el valor de total_horas a Time
-	        Time totalHoras = Time.valueOf(totalHorasStr + ":00"); // Asegurar formato "HH:mm:ss"
+	        Time totalHoras = Time.valueOf(totalHorasStr + ":00");
 
 	        permiso.setTotal_horas(totalHoras);
 	        consultas_permiso_ausencia_laboral consulta = new consultas_permiso_ausencia_laboral();
@@ -836,7 +856,7 @@ public class permiso_AL_nuevo extends JFrame {
 
 	            rs.close();
 	            estatuto.close();
-	            conex.desconectar();
+	            conex.desconectar(null);
 	        } catch (SQLException e) {
 	            e.printStackTrace();
 	            JOptionPane.showMessageDialog(null, "Error al obtener el último Id de permiso", "Error", JOptionPane.ERROR_MESSAGE);
@@ -893,8 +913,8 @@ public class permiso_AL_nuevo extends JFrame {
 	            @SuppressWarnings("deprecation")
 				Time horaFinTime = new Time(calendarHoraFin.get(Calendar.HOUR_OF_DAY), calendarHoraFin.get(Calendar.MINUTE), 0);
 
-	            Date fechaSeleccionada3 = date_desde.getDate(); // Fecha desde
-	            Date fechaSeleccionada4 = date_hasta.getDate();  // Fecha hasta
+	            Date fechaSeleccionada3 = date_desde.getDate(); 
+	            Date fechaSeleccionada4 = date_hasta.getDate();  
 
 	            String fechaActualTexto = txtFecha.getText();
 	            SimpleDateFormat formatoFecha = new SimpleDateFormat("dd-MM-yy");
@@ -914,23 +934,21 @@ public class permiso_AL_nuevo extends JFrame {
 	            clase.setCargo_empleado(txtcargo.getText());
 	            clase.setArea_empleado(txtarea.getText());
 
-	            // Almacenar las horas de inicio y fin
 	            clase.setDesde_hora(horaInicioTime); 
 	            clase.setHasta_hora(horaFinTime);    
 
-	            // Calcular el total de horas desde txttotal_horas
 	            String[] tiempo = txttotal_horas.getText().split(":");
 	            int horas = Integer.parseInt(tiempo[0]);
 	            int minutos = Integer.parseInt(tiempo[1]);
 	            Time totalHoras = new Time(horas, minutos, 0); 
 	            clase.setTotal_horas(totalHoras); 
 
-	            // Establecer los demás datos
 	            clase.setMotivo_ausencia(txamotivo.getText());
 	            clase.setDesde_fecha(fechaSeleccionada3);
 	            clase.setHasta_fecha(fechaSeleccionada4);
 	            clase.setTotal_fecha(Integer.parseInt(txttotal_dias.getText()));
 	            clase.setNombres_recibe(txtnombres_recibe.getText());
+	            clase.setNombres_extiende(txtextiende.getText());
 	            clase.setFecha_recibe(fechaSQL);
 
 	            if (consulta.actualizar_permiso_ausencia_laboral(clase, horaInicioTime, horaFinTime, fechaSeleccionada3, fechaSeleccionada4, fechaSQL)) {
@@ -1092,6 +1110,7 @@ public class permiso_AL_nuevo extends JFrame {
 	        txttotal_horas.setEditable(false);
 	        txamotivo.setEditable(false);
 	        txtnombres_recibe.setEditable(false);
+	        txtextiende.setEditable(false);
 	    }
 
 	    
@@ -1138,6 +1157,7 @@ public class permiso_AL_nuevo extends JFrame {
 	                    spinnerHoraFin.setEnabled(true);
 	                    btnactualizar.setVisible(true);
 	                    btnlimpiar.setVisible(true);
+	                    txtextiende.setEditable(true);
 	                } else {
 	                    cbxnombres.setEnabled(false);
 	                    txamotivo.setEditable(false);
@@ -1148,10 +1168,10 @@ public class permiso_AL_nuevo extends JFrame {
 	                    spinnerHoraFin.setEnabled(false);
 	                    btnactualizar.setVisible(false);
 	                    btnlimpiar.setVisible(false);
+	                    txtextiende.setEditable(false);
 	                }
 	            }
 	        });
 	    }
-
 }//end
 

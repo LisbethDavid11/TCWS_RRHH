@@ -45,6 +45,7 @@ import javax.swing.table.TableRowSorter;
 
 import clases.empleado;
 import conexion.conexion;
+import consultas.consultas_cargos;
 import consultas.consultas_empleado;
 import principal.menu_principal;
 import reportes.reporte_empleados_individual;
@@ -72,25 +73,8 @@ public class empleado_tabla extends JFrame {
     public JComboBox<String> cbxbusquedaarea;
     public JComboBox<String> cbxbusquedasexo;
     public JButton btneliminar;
-
-    private final String placeHolderText = "Nombres, apellidos, identidad, estado civil y teléfono"; 
-
     public JPanel panelbusqueda;
-
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    empleado_tabla frame = new empleado_tabla();
-                    frame.setVisible(true);
-                    frame.setLocationRelativeTo(null);
-                    frame.construirTabla(); 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
+    private final String placeHolderText = "Nombres, apellidos, identidad, estado civil y teléfono"; 
 
     public empleado_tabla() {
     	setType(Type.UTILITY);
@@ -159,9 +143,9 @@ public class empleado_tabla extends JFrame {
 
         cbxbusquedaCargo = new JComboBox<>();
         cbxbusquedaCargo.setFont(new Font("Tahoma", Font.BOLD, 12));
-        cbxbusquedaCargo.setModel(new DefaultComboBoxModel<String>(new String[] {"Director general", "Director", 
+        /*cbxbusquedaCargo.setModel(new DefaultComboBoxModel<String>(new String[] {"Director general", "Director", 
         		"Gerente financiero", "Administrador", "Asistente", "Cobros", "Enfermero", "Psicologo", "Supervisor", 
-        		"Consejero", "Docente", "Docente auxiliar", "Soporte técnico", "Marketing", "Aseo", "Mantenimiento", "Conserje", " "}));
+        		"Consejero", "Docente", "Docente auxiliar", "Soporte técnico", "Marketing", "Aseo", "Mantenimiento", "Conserje", " "}));*/
         cbxbusquedaCargo.setBounds(438, 9, 136, 26);
         cbxbusquedaCargo.setSelectedIndex(-1);
         panelbusqueda.add(cbxbusquedaCargo);
@@ -297,8 +281,8 @@ public class empleado_tabla extends JFrame {
                         } else {
         	            
         	            int confirmacion = JOptionPane.showConfirmDialog(null, 
-        	                    "¿Está seguro de que desea eliminar el registro seleccionado?\nEsto también lo eliminará permanentemente de la base de datos.", 
-        	                    "Confirmar eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.ERROR_MESSAGE);
+        	                    "¿Está seguro de que desea eliminar el registro seleccionado?\nEsto también lo eliminará permanentemente de la base de datos", 
+        	                    "Confirmar eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         	            
         	            if (confirmacion == JOptionPane.YES_OPTION) {
         	                
@@ -309,7 +293,8 @@ public class empleado_tabla extends JFrame {
         	                if (consulta.eliminar_empleado(Integer.parseInt(id))) {
         	                   
         	                    ((DefaultTableModel) table.getModel()).removeRow(filaSeleccionada);
-        	                    JOptionPane.showMessageDialog(null, "El registro ha sido eliminado correctamente de la tabla y la base de datos", "Éxito", JOptionPane.INFORMATION_MESSAGE );
+        	                    JOptionPane.showMessageDialog(null, "El registro ha sido eliminado correctamente de la tabla y la base de datos", 
+        	                    		"Éxito", JOptionPane.INFORMATION_MESSAGE );
         	                } else {
         	                    
         	                    JOptionPane.showMessageDialog(null, "Error al eliminar el registro de la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -323,6 +308,7 @@ public class empleado_tabla extends JFrame {
 
         });
 
+        cargarCargosEnComboBox();
         
         // Configuracion para los JComboBox
         cbxbusquedaCargo.addActionListener(new ActionListener() {
@@ -368,6 +354,10 @@ public class empleado_tabla extends JFrame {
                 }
             }
         });
+        
+        
+        
+        
         
     }//class
 
@@ -564,7 +554,7 @@ public class empleado_tabla extends JFrame {
             }
             rs.close();
             estatuto.close();
-            conex.desconectar();
+            conex.desconectar(null);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             JOptionPane.showMessageDialog(null, "Error al consultar la base de datos", "Error", JOptionPane.ERROR_MESSAGE);
@@ -581,5 +571,19 @@ public class empleado_tabla extends JFrame {
 		if (JOptionPane.showConfirmDialog(rootPane, "¿Desea salir del sistema?", "Salir del sistema",
 				JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
 			System.exit(0);
+	}
+    
+    
+    private void cargarCargosEnComboBox() {
+	    consultas_cargos consultas = new consultas_cargos();
+	    List<String> cargos = consultas.obtenerCargos();
+	    cbxbusquedaCargo.removeAllItems();
+	    cbxbusquedaCargo.addItem(" ");
+	    
+	    for (String cargo : cargos) {
+	    	cbxbusquedaCargo.addItem(cargo);
+	    }
+	    
+	    cbxbusquedaCargo.setSelectedIndex(0);
 	}
 }//end
