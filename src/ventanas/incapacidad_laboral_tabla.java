@@ -13,6 +13,8 @@ import javax.swing.table.*;
 import com.toedter.calendar.JDateChooser;
 import conexion.conexion;
 import clases.incapacidad_laboral;
+import consultas.consultas_areas;
+import consultas.consultas_cargos;
 import consultas.consultas_incapacidad_laboral;
 import principal.menu_principal;
 import java.awt.Window.Type;
@@ -107,7 +109,6 @@ public class incapacidad_laboral_tabla extends JFrame {
         panelbusqueda.add(lblbuscar);
 
         cbxbusquedaCargo = new JComboBox<String>();
-		cbxbusquedaCargo.setModel(new DefaultComboBoxModel<String>(new String[] {"Director general", "Director", "Gerente financiero", "Administrador", "Asistente", "Cobros", "Enfermero", "Psicologo", "Supervisor", "Consejero", "Docente", "Docente auxiliar", "Soporte técnico", "Marketing", "Aseo", "Mantenimiento", "Conserje", " "}));
 		cbxbusquedaCargo.setSelectedIndex(-1);
 		cbxbusquedaCargo.setFont(new Font("Tahoma", Font.BOLD, 11));
 		cbxbusquedaCargo.setBounds(347, 12, 111, 26);
@@ -122,7 +123,7 @@ public class incapacidad_laboral_tabla extends JFrame {
         panelbusqueda.add(lblCargo);
 
         cbxbusquedaarea = new JComboBox<String>();
-		cbxbusquedaarea.setModel(new DefaultComboBoxModel<>(new String[] { "Administrativa", "Financiera", "Pre basica", "Primaria", "Secundaria", "Logistica", "Aseo", "Mantenimiento", " " }));
+		//cbxbusquedaarea.setModel(new DefaultComboBoxModel<>(new String[] { "Administrativa", "Financiera", "Pre basica", "Primaria", "Secundaria", "Logistica", "Aseo", "Mantenimiento", " " }));
 		cbxbusquedaarea.setSelectedIndex(-1);
 		cbxbusquedaarea.setFont(new Font("Tahoma", Font.BOLD, 11));
 		cbxbusquedaarea.setBounds(516, 12, 111, 26);
@@ -194,7 +195,6 @@ public class incapacidad_laboral_tabla extends JFrame {
                 nuevo.setVisible(true);
                 nuevo.setLocationRelativeTo(null);
                 nuevo.btnactualizar.setVisible(false);
-                nuevo.btnlimpiar.setVisible(false);
                 nuevo.chxeditar.setVisible(false);
                 dispose();
             }
@@ -215,10 +215,12 @@ public class incapacidad_laboral_tabla extends JFrame {
                 try {
                     filaSeleccionada = table.getSelectedRow();
                     if (filaSeleccionada == -1) {
-                        JOptionPane.showMessageDialog(null, "¡No se ha seleccionado ninguna fila!", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para continuar", 
+                        		"Advertencia", JOptionPane.WARNING_MESSAGE);
                     } else {
                         int confirmacion = JOptionPane.showConfirmDialog(null,
-                                "¿Está seguro de que desea eliminar el registro seleccionado?\nEsto también lo eliminará permanentemente de la base de datos.",
+                                "¿Está seguro de que desea eliminar el registro seleccionado?\nEsto también lo "
+                                + "eliminará permanentemente de la base de datos.",
                                 "Confirmar eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
                         if (confirmacion == JOptionPane.YES_OPTION) {
@@ -235,7 +237,7 @@ public class incapacidad_laboral_tabla extends JFrame {
                         }
                     }
                 } catch (HeadlessException ex) {
-                    JOptionPane.showMessageDialog(null, "Error: " + ex + "\nInténtelo nuevamente", "Error en la operación", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Error, inténtelo nuevamente", "Error en la operación", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -265,7 +267,13 @@ public class incapacidad_laboral_tabla extends JFrame {
                 aplicarFiltros();
             }
         });
-    }
+        
+        
+        cargarAreasEnComboBox();
+        cargarCargosEnComboBox();
+        
+        
+    }//class
 
     private void filtro() {
         String filtroTexto = txtbuscar.getText();
@@ -290,6 +298,13 @@ public class incapacidad_laboral_tabla extends JFrame {
             }
         };
         table.setModel(modeloTabla);
+        
+     // Configurar propiedades de la tabla
+        table.setRowHeight(25);
+        table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
+        table.getTableHeader().setOpaque(false);
+        table.getTableHeader().setBackground(new Color(32, 136, 203));
+        table.getTableHeader().setForeground(Color.WHITE);
 
         table.getColumnModel().getColumn(0).setPreferredWidth(50); 
         table.getColumnModel().getColumn(1).setPreferredWidth(60);  
@@ -352,13 +367,9 @@ public class incapacidad_laboral_tabla extends JFrame {
     
     
     private void pasarDatosAlFormulario(int fila) {
-        // Convertir el índice de la fila seleccionada a índice del modelo
         int filaModelo = table.convertRowIndexToModel(fila);
 
-        // Inicializar el formulario solo si aún no está visible
         incapacidad_laboral_nuevo formulario = new incapacidad_laboral_nuevo();  
-
-        // Recuperar los datos de la tabla y establecerlos en los campos correspondientes del formulario
         formulario.cbxnombres.setSelectedItem(table.getModel().getValueAt(filaModelo, 2).toString());
         formulario.txtapellidos.setText(table.getModel().getValueAt(filaModelo, 3).toString());
         formulario.txtidentidad.setText(table.getModel().getValueAt(filaModelo, 4).toString());
@@ -369,7 +380,6 @@ public class incapacidad_laboral_tabla extends JFrame {
         formulario.txtsexo.setText(table.getModel().getValueAt(filaModelo, 9).toString());
         formulario.txtedad.setText(table.getModel().getValueAt(filaModelo, 10).toString());
         formulario.txariesgo.setText(table.getModel().getValueAt(filaModelo, 11).toString());
-
         formulario.txtid_incapacidad.setText(table.getModel().getValueAt(filaModelo, 0).toString());
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
@@ -396,17 +406,13 @@ public class incapacidad_laboral_tabla extends JFrame {
             e.printStackTrace();
         }
 
-        // Establecer las fechas actual y la hora actual en el formulario
         formulario.txtfecha_actual.setText(table.getModel().getValueAt(filaModelo, 20).toString());
         formulario.txthora_actual.setText(table.getModel().getValueAt(filaModelo, 21).toString());
 
-        // Desactivar los componentes que no deben ser editables
         desactivarComponentes(formulario);
         formulario.btnactualizar.setVisible(false);
         formulario.btnlimpiar.setVisible(false);
         formulario.btnguardar.setVisible(false);
-
-        // Mostrar el formulario
         formulario.setVisible(true);
         formulario.setLocationRelativeTo(null);
     }
@@ -457,20 +463,25 @@ public class incapacidad_laboral_tabla extends JFrame {
     }
 
     private void aplicarFiltros() {
+        String filtroCargo = (String) cbxbusquedaCargo.getSelectedItem();
+        String filtroArea = (String) cbxbusquedaarea.getSelectedItem();
         List<RowFilter<Object, Object>> filtros = new ArrayList<>();
 
-        String filtroTexto = txtbuscar.getText().trim();
-        if (!filtroTexto.isEmpty() && !filtroTexto.equals("Nombres, apellidos, identidad, sexo")) {
-            filtros.add(RowFilter.regexFilter("(?i)" + filtroTexto,  2, 3, 4, 10)); 
-        }
-        String filtroCargo = (String) cbxbusquedaCargo.getSelectedItem();
-        if (filtroCargo != null && !filtroCargo.trim().isEmpty() && !filtroCargo.equals(" ")) {
+        if (filtroCargo != null && !filtroCargo.trim().isEmpty()) {
             filtros.add(RowFilter.regexFilter("(?i)" + filtroCargo, 7)); 
         }
 
-        String filtroArea = (String) cbxbusquedaarea.getSelectedItem();
-        if (filtroArea != null && !filtroArea.trim().isEmpty() && !filtroArea.equals(" ")) {
+        if (filtroArea != null && !filtroArea.trim().isEmpty()) {
             filtros.add(RowFilter.regexFilter("(?i)" + filtroArea, 8)); 
+        }
+        
+
+        if (filtros.isEmpty()) {
+            trsfiltroCodigo.setRowFilter(null); 
+        } else {
+        	
+            RowFilter<Object, Object> combinedFilter = RowFilter.andFilter(filtros);
+            trsfiltroCodigo.setRowFilter(combinedFilter);
         }
 
         if (desde_buscar.getDate() != null && hasta_buscar.getDate() != null) {
@@ -532,6 +543,35 @@ public class incapacidad_laboral_tabla extends JFrame {
 		if (JOptionPane.showConfirmDialog(rootPane, "¿Desea salir del sistema?", "Salir del sistema",
 				JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
 			System.exit(0);
+	}
+    
+    
+    private void cargarCargosEnComboBox() {
+	    consultas_cargos consultas = new consultas_cargos();
+	    List<String> cargos = consultas.obtenerCargos();
+	    cbxbusquedaCargo.removeAllItems();
+	    cbxbusquedaCargo.addItem(" ");
+	    
+	    for (String cargo : cargos) {
+	    	cbxbusquedaCargo.addItem(cargo);
+	    }
+	    
+	    cbxbusquedaCargo.setSelectedIndex(0);
+	}
+    
+    
+    
+    private void cargarAreasEnComboBox() {
+	    consultas_areas consultas = new consultas_areas();
+	    List<String> areas = consultas.obtenerAreas();
+	    cbxbusquedaarea.removeAllItems();
+	    cbxbusquedaarea.addItem(" ");
+	    
+	    for (String area : areas) {
+	    	cbxbusquedaarea.addItem(area);
+	    }
+	    
+	    cbxbusquedaarea.setSelectedIndex(0);
 	}
     
 }

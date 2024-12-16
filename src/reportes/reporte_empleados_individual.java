@@ -60,7 +60,7 @@ public class reporte_empleados_individual {
                 // Generar el nombre del archivo con nombre, apellidos y fecha actual
                 String nombreArchivo = "Reporte_" + nombres.replace(" ", "_") + "_" + apellidos.replace(" ", "_") + "_" + fechaFormateada + ".pdf";
 
-                // Mostrar JFileChooser para que el usuario seleccione dónde guardar el PDF
+                // Mostrar JFileChooser para que el usuarioC seleccione dónde guardar el PDF
                 JFileChooser fileChooser = new JFileChooser();
                 fileChooser.setDialogTitle("Guardar reporte individual del empleado");
                 FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos PDF", "pdf");
@@ -92,7 +92,7 @@ public class reporte_empleados_individual {
                             if (result == JOptionPane.YES_OPTION) {
                                 archivoValido = true;  // Sobrescribir archivo
                             } else if (result == JOptionPane.NO_OPTION) {
-                                // Permitir al usuario elegir un nuevo nombre
+                                // Permitir al usuarioC elegir un nuevo nombre
                                 continue;
                             } else {
                                 // Cancelar la operación
@@ -103,7 +103,7 @@ public class reporte_empleados_individual {
                             archivoValido = true;
                         }
                     } else {
-                        // Si el usuario cancela
+                        // Si el usuarioC cancela
                         JOptionPane.showMessageDialog(null, "Generación de reporte cancelada", "Cancelado", JOptionPane.WARNING_MESSAGE);
                         return;
                     }

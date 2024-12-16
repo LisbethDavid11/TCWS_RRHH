@@ -10,26 +10,27 @@ public class conexion {
     private final String contrasena = "mendoza11.";
     private final String global = "localhost";
     private final String url = "jdbc:mysql://" + global + "/" + database;
-    public Connection conexion = null;
 
+    // Método para establecer conexión
     public Connection conectar() {
+        Connection conexion = null;
         try {
-            if (conexion == null || conexion.isClosed()) {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                conexion = DriverManager.getConnection(this.url, this.usuario, this.contrasena);
-            }
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conexion = DriverManager.getConnection(this.url, this.usuario, this.contrasena);
         } catch (Exception e) {
-            System.out.println("Error de conexión!");
+            System.out.println("Error al conectar a la base de datos!");
             e.printStackTrace();
         }
         return conexion;
     }
 
-    public void desconectar(Connection con) {
-        if (con != null) {
+    // Método para cerrar conexión
+    public void desconectar(Connection conexion) {
+        if (conexion != null) {
             try {
-                if (!con.isClosed()) {
-                    con.close();
+                if (!conexion.isClosed()) {
+                    conexion.close();
+                    System.out.println("Conexión cerrada correctamente.");
                 }
             } catch (SQLException e) {
                 System.out.println("Error al cerrar la conexión!");

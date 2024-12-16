@@ -23,6 +23,24 @@ public class permiso_ausencia_laboral {
 	String nombres_recibe;
 	Date fecha_recibe;
 	String nombres_extiende;
+	String cargo_extiende;
+	public String getCargo_extiende() {
+		return cargo_extiende;
+	}
+
+	public void setCargo_extiende(String cargo_extiende) {
+		this.cargo_extiende = cargo_extiende;
+	}
+
+	public String getCargo_recibe() {
+		return cargo_recibe;
+	}
+
+	public void setCargo_recibe(String cargo_recibe) {
+		this.cargo_recibe = cargo_recibe;
+	}
+
+	String cargo_recibe;
 	
 	public String getNombres_extiende() {
 		return nombres_extiende;

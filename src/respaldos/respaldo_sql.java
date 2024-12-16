@@ -1,5 +1,6 @@
 package respaldos;
 
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,7 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import conexion.conexion;
 
-public class respaldo_base_datos {
+public class respaldo_sql {
 
 	public void generarRespaldo() {
 	    conexion conex = new conexion();

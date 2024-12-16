@@ -16,6 +16,8 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -33,6 +35,8 @@ import com.toedter.calendar.JDateChooser;
 import clases.incapacidad_laboral;
 import clases.validaciones;
 import conexion.conexion;
+import consultas.consultas_areas;
+import consultas.consultas_cargos;
 import consultas.consultas_incapacidad_laboral;
 
 import javax.swing.JSpinner;
@@ -502,8 +506,6 @@ public class incapacidad_laboral_nuevo extends JFrame {
         txtid_incapacidad.setBounds(964, 10, 1, 6);
         panel_datos.add(txtid_incapacidad);
 
-        
-        
         fecha_inicio.getDateEditor().addPropertyChangeListener(evt -> calcularDias());
         fecha_finalizacion.getDateEditor().addPropertyChangeListener(evt -> calcularDias());
 
@@ -560,12 +562,9 @@ public class incapacidad_laboral_nuevo extends JFrame {
         Calendar fechaMinima = (Calendar) fechaActual.clone();
         Calendar fechaMaxima = (Calendar) fechaActual.clone();
 
-        // Restar 3 meses para el rango mínimo
         fechaMinima.add(Calendar.MONTH, -3);
-        // Sumar 3 meses para el rango máximo
         fechaMaxima.add(Calendar.MONTH, 3);
 
-        // Obtener la fecha mínima y máxima
         Date fechaMin = fechaMinima.getTime();
         Date fechaMax = fechaMaxima.getTime();
         fecha_expedicion.setMinSelectableDate(fechaMin);
@@ -672,23 +671,22 @@ public class incapacidad_laboral_nuevo extends JFrame {
                 txtarea.setText(rs.getString("area_empleado"));
                 txtsexo.setText(rs.getString("sexo_empleado"));
 
-                // Obtener y establecer la fecha de nacimiento
                 Date fechaNacimiento = rs.getDate("nacimiento_empleado");
                 if (fechaNacimiento != null) {
                     fecha_nacimiento.setDate(fechaNacimiento);
 
-                    // Calcular la edad si la fecha de nacimiento no es nula
                     int edad = calcularEdad(fechaNacimiento);
                     txtedad.setText(String.valueOf(edad));
                 } else {
-                    fecha_nacimiento.setDate(null); // En caso de que la fecha sea nula
-                    txtedad.setText(""); // Limpiar el campo de edad si no hay fecha
+                    fecha_nacimiento.setDate(null); 
+                    txtedad.setText(""); 
                     System.out.println("Fecha de nacimiento cargada: " + fechaNacimiento);
 
                 }
 
             } else {
-                JOptionPane.showMessageDialog(null, "No se encontraron datos para el empleado seleccionado", "Información", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "No se encontraron datos para el empleado seleccionado", 
+                		"Información", JOptionPane.INFORMATION_MESSAGE);
             }
 
         } catch (SQLException e) {
@@ -740,41 +738,33 @@ public class incapacidad_laboral_nuevo extends JFrame {
     
     
     public void guardar_incapacidad() {
-        // Obtener las fechas seleccionadas
         Date fechaInicio = fecha_inicio.getDate();
         Date fechaFinalizacion = fecha_finalizacion.getDate();
         Date fechaExpedicion = fecha_expedicion.getDate();
         Date fechaNacimiento = fecha_nacimiento.getDate(); 
 
-        // Verificar si la fecha de nacimiento es nula
         if (fechaNacimiento == null) {
             JOptionPane.showMessageDialog(null, "El campo 'Fecha de nacimiento' no puede estar vacio", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Verificar si las fechas no son nulas
         if (fechaInicio == null || fechaFinalizacion == null || fechaExpedicion == null) {
             JOptionPane.showMessageDialog(null, "Debe seleccionar las fechas de inicio, finalización y expedición", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Convertir las fechas de Date a LocalDate para el cálculo
         LocalDate localFechaInicio = fechaInicio.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate localFechaFinalizacion = fechaFinalizacion.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-        // Calcular los días transcurridos entre fechaInicio y fechaFinalizacion
         long diasTranscurridos = java.time.temporal.ChronoUnit.DAYS.between(localFechaInicio, localFechaFinalizacion);
 
-        // Verificar que la fecha de finalización sea posterior a la fecha de inicio
         if (diasTranscurridos < 0) {
             JOptionPane.showMessageDialog(null, "La fecha de finalización debe ser posterior a la fecha de inicio", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Establecer los días totales
         txttotal_dias.setText(String.valueOf(diasTranscurridos));
 
-        // Validar que todos los campos requeridos estén completos
         if (txtidentidad.getText().isEmpty() || txtapellidos.getText().isEmpty() || txtid_empleado.getText().isEmpty() ||
             txttel.getText().isEmpty() || txtcorreo.getText().isEmpty() || txtcargo.getText().isEmpty() ||
             txtarea.getText().isEmpty() || txtedad.getText().isEmpty() || txtsexo.getText().isEmpty() ||
@@ -813,11 +803,10 @@ public class incapacidad_laboral_nuevo extends JFrame {
             incapacidad.setHora_actual(horaActual);
             incapacidad.setTipo_reposo(txtreposo.getText());
 
-            // Guardar en la base de datos
             consultas_incapacidad_laboral consulta = new consultas_incapacidad_laboral();
             
             if (consulta.guardar_incapacidad(incapacidad, fechaExpedicion, fechaInicio, fechaFinalizacion)) {
-                JOptionPane.showMessageDialog(null, "Incapacidad registrada exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "La incapacidad laboral se ha guardado exitosamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
                 
                 incapacidad_laboral_tabla tabla = new incapacidad_laboral_tabla();
                 tabla.setVisible(true);
@@ -826,20 +815,20 @@ public class incapacidad_laboral_nuevo extends JFrame {
                 dispose();
                 
             } else {
-                JOptionPane.showMessageDialog(null, "Error al registrar la incapacidad. Verifique los datos.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Error al registrar la incapacidad, verifique los datos", 
+                		"Error", JOptionPane.ERROR_MESSAGE);
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Error en el formato de los números. Verifique los campos numéricos.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Error en el formato de los números. Verifique los campos numéricos", 
+            		"Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ocurrió un error inesperado. Verifique los datos.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Ocurrió un error inesperado. Verifique los datos", 
+            		"Error", JOptionPane.ERROR_MESSAGE);
+            
             e.printStackTrace();
         }
     }
 
-
-
-
-    
     public void calcularDias() {
         Date fechaSeleccionadaInicio = fecha_inicio.getDate();
         Date fechaSeleccionadaFin = fecha_finalizacion.getDate();
@@ -851,14 +840,12 @@ public class incapacidad_laboral_nuevo extends JFrame {
             txttotal_dias.setText(String.valueOf(diffInDays));
 
             if (diffInDays <= 0) {
-                //JOptionPane.showMessageDialog(null, "La fecha de finalización debe ser mayor que la de inicio.", "Error", JOptionPane.ERROR_MESSAGE);
                 txttotal_dias.setText(""); 
             }
         }
     }
     
     
- // Método para validar que todos los campos obligatorios estén completos
     public boolean validarCampos() {
         return !txttipo.getText().isEmpty() &&
                !txariesgo.getText().isEmpty() &&
@@ -872,116 +859,101 @@ public class incapacidad_laboral_nuevo extends JFrame {
     
     public void actualizarIncapacidad() {
         try {
-            // Primero validamos los campos
             if (!validarCampos()) {
-                return; // Si la validación falla, detener el proceso de actualización
+                return; 
             }
 
-            // Obtener los valores de los campos necesarios para la actualización
-            String idIncapacidadStr = txtid_incapacidad.getText().trim();
-            String idEmpleadoStr = txtid_empleado.getText().trim();
-            int idIncapacidad = Integer.parseInt(idIncapacidadStr);
-            int idEmpleado = Integer.parseInt(idEmpleadoStr);
+	            String idIncapacidadStr = txtid_incapacidad.getText().trim();
+	            String idEmpleadoStr = txtid_empleado.getText().trim();
+	            int idIncapacidad = Integer.parseInt(idIncapacidadStr);
+	            int idEmpleado = Integer.parseInt(idEmpleadoStr);
+	
+	            String nombresEmpleado = cbxnombres.getSelectedItem().toString().trim();
+	            String apellidosEmpleado = txtapellidos.getText().trim();
+	            String identidadEmpleado = txtidentidad.getText().trim();
+	            String telefonoEmpleado = txttel.getText().trim();
+	            String correoEmpleado = txtcorreo.getText().trim();
+	            String cargoEmpleado = txtcargo.getText().trim();
+	            String areaEmpleado = txtarea.getText().trim();
+	            String sexoEmpleado = txtsexo.getText().trim();
+	            int edadEmpleado = Integer.parseInt(txtedad.getText().trim());
+	            String riesgoIncapacidad = txariesgo.getText().trim();
+	            String tipoIncapacidad = txttipo.getText().trim();
+	            String tipoReposo = txtreposo.getText().trim();
+	            String numeroCertificado = txtnumero.getText().trim();
+	
+	            incapacidad_laboral incapacidadActualizada = new incapacidad_laboral();
+	            incapacidadActualizada.setId_incapacidad(idIncapacidad);
+	            incapacidadActualizada.setId_empleado(idEmpleado);
+	            incapacidadActualizada.setNombres_empleado(nombresEmpleado);
+	            incapacidadActualizada.setApellidos_empleado(apellidosEmpleado);
+	            incapacidadActualizada.setIdentidad_empleado(identidadEmpleado);
+	            incapacidadActualizada.setTel_empleado(telefonoEmpleado);
+	            incapacidadActualizada.setCorreo_empleado(correoEmpleado);
+	            incapacidadActualizada.setCargo_empleado(cargoEmpleado);
+	            incapacidadActualizada.setArea_empleado(areaEmpleado);
+	            incapacidadActualizada.setSexo_empleado(sexoEmpleado);
+	            incapacidadActualizada.setEdad_empleado(edadEmpleado);
+	            incapacidadActualizada.setRiesgo_incapacidad(riesgoIncapacidad);
+	            incapacidadActualizada.setTipo_incapacidad(tipoIncapacidad);
+	            incapacidadActualizada.setTipo_reposo(tipoReposo);
+	            incapacidadActualizada.setNumero_certificado(numeroCertificado);
+	
+	            LocalDate localFechaInicio = fecha_inicio.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	            LocalDate localFechaFin = fecha_finalizacion.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	
+	            long diasTranscurridos = java.time.temporal.ChronoUnit.DAYS.between(localFechaInicio, localFechaFin);
 
-            String nombresEmpleado = cbxnombres.getSelectedItem().toString().trim();
-            String apellidosEmpleado = txtapellidos.getText().trim();
-            String identidadEmpleado = txtidentidad.getText().trim();
-            String telefonoEmpleado = txttel.getText().trim();
-            String correoEmpleado = txtcorreo.getText().trim();
-            String cargoEmpleado = txtcargo.getText().trim();
-            String areaEmpleado = txtarea.getText().trim();
-            String sexoEmpleado = txtsexo.getText().trim();
-            int edadEmpleado = Integer.parseInt(txtedad.getText().trim());
-            String riesgoIncapacidad = txariesgo.getText().trim();
-            String tipoIncapacidad = txttipo.getText().trim();
-            String tipoReposo = txtreposo.getText().trim();
-            String numeroCertificado = txtnumero.getText().trim();
-
-            // Crear objeto incapacidad actualizado
-            incapacidad_laboral incapacidadActualizada = new incapacidad_laboral();
-            incapacidadActualizada.setId_incapacidad(idIncapacidad);
-            incapacidadActualizada.setId_empleado(idEmpleado);
-            incapacidadActualizada.setNombres_empleado(nombresEmpleado);
-            incapacidadActualizada.setApellidos_empleado(apellidosEmpleado);
-            incapacidadActualizada.setIdentidad_empleado(identidadEmpleado);
-            incapacidadActualizada.setTel_empleado(telefonoEmpleado);
-            incapacidadActualizada.setCorreo_empleado(correoEmpleado);
-            incapacidadActualizada.setCargo_empleado(cargoEmpleado);
-            incapacidadActualizada.setArea_empleado(areaEmpleado);
-            incapacidadActualizada.setSexo_empleado(sexoEmpleado);
-            incapacidadActualizada.setEdad_empleado(edadEmpleado);
-            incapacidadActualizada.setRiesgo_incapacidad(riesgoIncapacidad);
-            incapacidadActualizada.setTipo_incapacidad(tipoIncapacidad);
-            incapacidadActualizada.setTipo_reposo(tipoReposo);
-            incapacidadActualizada.setNumero_certificado(numeroCertificado);
-
-            // Convertir fechas desde JDateChooser a LocalDate para cálculos más precisos
-            LocalDate localFechaInicio = fecha_inicio.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            LocalDate localFechaFin = fecha_finalizacion.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
-            // Calcular los días transcurridos entre fechaInicio y fechaFin
-            long diasTranscurridos = java.time.temporal.ChronoUnit.DAYS.between(localFechaInicio, localFechaFin);
-
-            // Verificar que la fecha de finalización sea posterior a la fecha de inicio
             if (diasTranscurridos < 0) {
-                JOptionPane.showMessageDialog(null, "La fecha de finalización debe ser posterior a la fecha de inicio", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "La fecha de finalización debe ser posterior a la fecha de inicio",
+                		"Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            // Establecer los días totales
             incapacidadActualizada.setTotal_dias((int) diasTranscurridos);
-            txttotal_dias.setText(String.valueOf(diasTranscurridos));
-
-            // Convertir las fechas a java.sql.Date para guardar en la base de datos
-            java.sql.Date sqlFechaNacimiento = new java.sql.Date(fecha_nacimiento.getDate().getTime());
-            java.sql.Date sqlFechaInicio = java.sql.Date.valueOf(localFechaInicio);
-            java.sql.Date sqlFechaFin = java.sql.Date.valueOf(localFechaFin);
-            java.sql.Date sqlFechaExpedicion = new java.sql.Date(fecha_expedicion.getDate().getTime());
-
-            incapacidadActualizada.setNacimiento_empleado(sqlFechaNacimiento);
-            incapacidadActualizada.setInicio_incapacidad(sqlFechaInicio);
-            incapacidadActualizada.setFin_incapacidad(sqlFechaFin);
-            incapacidadActualizada.setFecha_expedicion(sqlFechaExpedicion);
-
-            // Convertir horas desde JSpinner a java.sql.Time
-            java.sql.Time sqlHoraExpedicion = new java.sql.Time(((Date) hora_expedicion.getValue()).getTime());
-            incapacidadActualizada.setHora_expedicion(sqlHoraExpedicion);
-
-            // Fecha y hora actuales
-            Date fechaActual = new Date();
-            java.sql.Date sqlFechaActual = new java.sql.Date(fechaActual.getTime());
-            java.sql.Time sqlHoraActual = new java.sql.Time(fechaActual.getTime());
-
-            incapacidadActualizada.setFecha_actual(sqlFechaActual);
-            incapacidadActualizada.setHora_actual(sqlHoraActual);
-
-            // Llamar a la clase de consultas para realizar la actualización
-            consultas_incapacidad_laboral consulta = new consultas_incapacidad_laboral();
-
-            // Lógica para actualizar la incapacidad en la base de datos
+	            txttotal_dias.setText(String.valueOf(diasTranscurridos));
+	
+	            java.sql.Date sqlFechaNacimiento = new java.sql.Date(fecha_nacimiento.getDate().getTime());
+	            java.sql.Date sqlFechaInicio = java.sql.Date.valueOf(localFechaInicio);
+	            java.sql.Date sqlFechaFin = java.sql.Date.valueOf(localFechaFin);
+	            java.sql.Date sqlFechaExpedicion = new java.sql.Date(fecha_expedicion.getDate().getTime());
+	
+	            incapacidadActualizada.setNacimiento_empleado(sqlFechaNacimiento);
+	            incapacidadActualizada.setInicio_incapacidad(sqlFechaInicio);
+	            incapacidadActualizada.setFin_incapacidad(sqlFechaFin);
+	            incapacidadActualizada.setFecha_expedicion(sqlFechaExpedicion);
+	        
+	            java.sql.Time sqlHoraExpedicion = new java.sql.Time(((Date) hora_expedicion.getValue()).getTime());
+	            incapacidadActualizada.setHora_expedicion(sqlHoraExpedicion);
+	
+	            Date fechaActual = new Date();
+	            java.sql.Date sqlFechaActual = new java.sql.Date(fechaActual.getTime());
+	            java.sql.Time sqlHoraActual = new java.sql.Time(fechaActual.getTime());
+	
+	            incapacidadActualizada.setFecha_actual(sqlFechaActual);
+	            incapacidadActualizada.setHora_actual(sqlHoraActual);
+	
+	            consultas_incapacidad_laboral consulta = new consultas_incapacidad_laboral();
+	        
             if (consulta.actualizarIncapacidad(incapacidadActualizada)) {
-                JOptionPane.showMessageDialog(null, "Incapacidad laboral actualizada correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "La incapacidad laboral se ha actualizado correctamente", 
+                		"Éxito", JOptionPane.INFORMATION_MESSAGE);
                 incapacidad_laboral_tabla tabla = new incapacidad_laboral_tabla();
                 tabla.setVisible(true);
                 tabla.setLocationRelativeTo(null);
-                tabla.construirTabla(); // Recargar la tabla con los nuevos datos
-                dispose(); // Cerrar la ventana actual
+                tabla.construirTabla(); 
+                dispose(); 
             } else {
                 JOptionPane.showMessageDialog(null, "Error al actualizar la incapacidad laboral", "Error", JOptionPane.ERROR_MESSAGE);
             }
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(null, "Error: Id de empleado no válido o vacío", "Error", JOptionPane.ERROR_MESSAGE);
+            	JOptionPane.showMessageDialog(null, "Id de empleado no válido o vacío", "Error", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Ocurrió un error inesperado", "Error", JOptionPane.ERROR_MESSAGE);
-            ex.printStackTrace();
+        		JOptionPane.showMessageDialog(null, "Ocurrió un error inesperado", "Error", JOptionPane.ERROR_MESSAGE);
+        		ex.printStackTrace();
         }
     }
-
-
-
-
-
-
-
+    
+   
 
 }

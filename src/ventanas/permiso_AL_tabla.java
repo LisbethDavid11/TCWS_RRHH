@@ -2,6 +2,7 @@ package ventanas;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.HeadlessException;
 import java.awt.Image;
@@ -13,6 +14,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,12 +22,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -33,6 +38,7 @@ import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -49,13 +55,24 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.properties.TextAlignment;
 import com.toedter.calendar.JDateChooser;
 
 import clases.permiso_ausencia_laboral;
 import conexion.conexion;
+import consultas.consultas_areas;
+import consultas.consultas_cargos;
 import consultas.consultas_permiso_ausencia_laboral;
 import principal.menu_principal;
+import reportes.encabezado_documentos;
+
 import javax.swing.UIManager;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import java.awt.SystemColor;
 
 public class permiso_AL_tabla extends JFrame {
@@ -81,6 +98,7 @@ public class permiso_AL_tabla extends JFrame {
 	public JDateChooser desde_buscar;
 	
 	private final String placeHolderText = "Id empleado, nombres, apellidos e identidad"; // Placeholder definido
+	private JButton btnimprimir;
 
 	
 	public permiso_AL_tabla() {
@@ -159,7 +177,9 @@ public class permiso_AL_tabla extends JFrame {
 		panelbusqueda.add(lblbuscar);
 		
 		cbxbusquedaCargo = new JComboBox<String>();
-		cbxbusquedaCargo.setModel(new DefaultComboBoxModel<String>(new String[] {"Director general", "Director", "Gerente financiero", "Administrador", "Asistente", "Cobros", "Enfermero", "Psicologo", "Supervisor", "Consejero", "Docente", "Docente auxiliar", "Soporte técnico", "Marketing", "Aseo", "Mantenimiento", "Conserje", " "}));
+		cbxbusquedaCargo.setModel(new DefaultComboBoxModel<String>(new String[] {"Director general", "Director", "Gerente financiero", 
+				"Administrador", "Asistente", "Cobros", "Enfermero", "Psicologo", "Supervisor", "Consejero", "Docente", "Docente auxiliar", 
+				"Soporte técnico", "Marketing", "Aseo", "Mantenimiento", "Conserje", " "}));
 		cbxbusquedaCargo.setSelectedIndex(-1);
 		cbxbusquedaCargo.setFont(new Font("Tahoma", Font.BOLD, 11));
 		cbxbusquedaCargo.setBounds(347, 12, 111, 26);
@@ -173,7 +193,8 @@ public class permiso_AL_tabla extends JFrame {
 		panelbusqueda.add(lblCargo);
 		
 		cbxbusquedaarea = new JComboBox<String>();
-		cbxbusquedaarea.setModel(new DefaultComboBoxModel<>(new String[] { "Administrativa", "Financiera", "Pre basica", "Primaria", "Secundaria", "Logistica", "Aseo", "Mantenimiento", " " }));
+		cbxbusquedaarea.setModel(new DefaultComboBoxModel<>(new String[] { "Administrativa", "Financiera", "Pre basica", "Primaria",
+				"Secundaria", "Logistica", "Aseo", "Mantenimiento", " " }));
 		cbxbusquedaarea.setSelectedIndex(-1);
 		cbxbusquedaarea.setFont(new Font("Tahoma", Font.BOLD, 11));
 		cbxbusquedaarea.setBounds(516, 12, 111, 26);
@@ -248,11 +269,13 @@ public class permiso_AL_tabla extends JFrame {
 	        	      
 	        	        filaSeleccionada = table.getSelectedRow();
 	        	        if (filaSeleccionada == -1) {
-	        	            JOptionPane.showMessageDialog(null, "¡No se ha seleccionado ninguna fila!", "Advertencia", JOptionPane.WARNING_MESSAGE);
+	        	            JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para continuar",
+	        	            		"Advertencia", JOptionPane.WARNING_MESSAGE);
 	        	        } else {
 	        	            
 	        	            int confirmacion = JOptionPane.showConfirmDialog(null, 
-	        	                    "¿Está seguro de que desea eliminar el registro seleccionado?\nEsto también lo eliminará permanentemente de la base de datos.", 
+	        	                    "¿Está seguro de que desea eliminar el registro seleccionado?\nEsto también lo eliminará "
+	        	                    + "permanentemente de la base de datos.", 
 	        	                    "Confirmar eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 	        	            
 	        	            if (confirmacion == JOptionPane.YES_OPTION) {
@@ -269,7 +292,7 @@ public class permiso_AL_tabla extends JFrame {
 	        	                    
 	        	                    JOptionPane.showMessageDialog(null, "Error al eliminar el registro de la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
 	        	                }
-	        	            } // Si el usuario elige "No", no se realiza ninguna acción
+	        	            } 
 	        	        }
 	        	    } catch (HeadlessException ex) {
 	        	        JOptionPane.showMessageDialog(null, "Error: " + ex + "\nInténtelo nuevamente", "Error en la operación", JOptionPane.ERROR_MESSAGE);
@@ -280,6 +303,108 @@ public class permiso_AL_tabla extends JFrame {
 		btneliminar.setToolTipText("Eliminar registro");
 		btneliminar.setBounds(263, 17, 90, 23);
 		panelbotones.add(btneliminar);
+		
+		btnimprimir = new JButton("Imprimir");
+		btnimprimir.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        int filaSeleccionada = table.getSelectedRow();
+		        if (filaSeleccionada == -1) {
+		            JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para continuar", "Advertencia", JOptionPane.WARNING_MESSAGE);
+		            return;
+		        }
+
+		        try {
+		            // Validar el número de columnas en la tabla
+		            if (table.getColumnCount() < 21) {
+		                JOptionPane.showMessageDialog(null, "La tabla no contiene las columnas necesarias para generar el PDF.", "Error", JOptionPane.ERROR_MESSAGE);
+		                return;
+		            }
+
+		            // Datos seleccionados directamente de la tabla
+		            String nombreEmpleado = table.getValueAt(filaSeleccionada, 2).toString();
+		            String apellidosEmpleado = table.getValueAt(filaSeleccionada, 3).toString();
+		            String nombreExtiende = table.getValueAt(filaSeleccionada, 19).toString(); // Columna 19: Nombre de quien extiende
+		            String cargoExtiende = table.getValueAt(filaSeleccionada, 20) != null ? table.getValueAt(filaSeleccionada, 20).toString() : "Sin especificar"; // Columna 20: Cargo extiende
+
+		            String motivoAusencia = table.getValueAt(filaSeleccionada, 12).toString();
+		            String fechaInicio = table.getValueAt(filaSeleccionada, 13).toString();
+		            String totalDias = table.getValueAt(filaSeleccionada, 15).toString();
+		            String totalHoras = table.getValueAt(filaSeleccionada, 11).toString();
+
+		            String nombreRecibe = table.getValueAt(filaSeleccionada, 16).toString(); // Columna 16: Nombre de quien recibe
+		            String cargoRecibe = table.getValueAt(filaSeleccionada, 17) != null ? table.getValueAt(filaSeleccionada, 17).toString() : "Sin especificar"; // Columna 17: Cargo recibe
+
+		            // Validaciones
+		            if (cargoExtiende.trim().isEmpty()) cargoExtiende = "Sin especificar";
+		            if (cargoRecibe.trim().isEmpty()) cargoRecibe = "Sin especificar";
+
+		            // Fecha actual
+		            LocalDate fechaActual = LocalDate.now();
+		            String diaActual = String.valueOf(fechaActual.getDayOfMonth());
+		            String mesActual = fechaActual.getMonth().getDisplayName(TextStyle.FULL, new Locale("es", "ES"));
+		            String añoActual = String.valueOf(fechaActual.getYear());
+
+		            // Nombre del archivo
+		            String nombreArchivo = "Permiso_" + nombreEmpleado + " "+ apellidosEmpleado.replaceAll("\\s+", "_") + "_" +
+		                    fechaActual.format(DateTimeFormatter.ofPattern("dd-MM-yy")) + ".pdf";
+
+		            // Guardar ubicación con JFileChooser
+		            JFileChooser fileChooser = new JFileChooser();
+		            fileChooser.setSelectedFile(new File(nombreArchivo));
+		            int seleccion = fileChooser.showSaveDialog(null);
+
+		            if (seleccion == JFileChooser.APPROVE_OPTION) {
+		                File archivo = fileChooser.getSelectedFile();
+
+		                // Validar si el archivo ya existe
+		                if (archivo.exists()) {
+		                    int sobreescribir = JOptionPane.showConfirmDialog(null, "El archivo ya existe. ¿Desea sobreescribirlo?", "Archivo existente", JOptionPane.YES_NO_OPTION);
+		                    if (sobreescribir != JOptionPane.YES_OPTION) {
+		                        return;
+		                    }
+		                }
+
+		                // Generar el PDF
+		                PdfWriter writer = new PdfWriter(archivo.getAbsolutePath());
+		                PdfDocument pdf = new PdfDocument(writer);
+		                Document document = new Document(pdf);
+
+		                // Agregar encabezado
+		                encabezado_documentos encabezado = new encabezado_documentos();
+		                encabezado.agregarEncabezado(document);
+		                
+		                document.add(new Paragraph("Constancia de permiso por ausencia laboral")
+		    	                .setBold().setFontSize(16).setTextAlignment(TextAlignment.CENTER));
+		    	            document.add(new Paragraph("\n"));
+
+		                // Cuerpo del documento
+		                String texto = "Yo " + nombreExtiende + ", como el suscrito(a) " + cargoExtiende + " del Centro Educativo Cristiano Bilingüe “El Mundo de los Niños”, " +
+		                        "le autorizo ausentarse de la institución al empleado(a): " + nombreEmpleado + " " + apellidosEmpleado +
+		                        ", en la fecha de " + fechaInicio + " por un término de " + totalDias + " días y/o " + totalHoras + " horas, por motivo de: " + motivoAusencia + ".\n\n" +
+		                        "En constancia de lo anterior, se firma esta autorización a los " + diaActual + " días del mes de " + mesActual + " del año " + añoActual + ".\n\n\n\n\n" +
+		                        "Recibido por: " + nombreRecibe + "\nCargo: " + cargoRecibe;
+
+		                document.add(new Paragraph(texto).setFontSize(12).setTextAlignment(TextAlignment.LEFT));
+		                document.close();
+
+		                // Confirmación y apertura
+		                JOptionPane.showMessageDialog(null, "PDF generado correctamente: \n" + archivo.getAbsolutePath(), "Éxito", JOptionPane.INFORMATION_MESSAGE);
+		                Desktop.getDesktop().open(archivo);
+		            }
+
+		        } catch (Exception ex) {
+		            JOptionPane.showMessageDialog(null, "Error al generar el PDF: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		        }
+		    }
+		});
+
+
+
+		btnimprimir.setToolTipText("Imprimir registro");
+		btnimprimir.setFont(new Font("Tahoma", Font.BOLD, 10));
+		btnimprimir.setBounds(163, 18, 90, 23);
+		panelbotones.add(btnimprimir);
 		
 		JLabel lblPermisosAusenciaLaboral = new JLabel("PERMISOS POR AUSENCIA LABORAL ");
 		lblPermisosAusenciaLaboral.setHorizontalAlignment(SwingConstants.LEFT);
@@ -375,6 +500,10 @@ public class permiso_AL_tabla extends JFrame {
 	                filtro();
 	            }
 	        });
+	        
+	        
+	        cargarAreasEnComboBox();
+	        cargarCargosEnComboBox();
 	   
 		
 	}//class
@@ -390,24 +519,42 @@ public class permiso_AL_tabla extends JFrame {
 	
 		public void construirTabla() {
 			
-		    String[] titulos = { 
-		        "No", "Id", "Nombres", "Apellidos", "Identidad", "Teléfono", "Correo", "Cargo", "Área", 
-		        "HI", "HF", "Total horas", "Motivo", "Inicio", "Fin", "Días", 
-		        "Encargado", "Recibido", "Extiende" 
-		    };
+			// Definir los títulos de las columnas en el orden correcto
+			String[] titulos = { 
+				    "No", "Id", "Nombres", "Apellidos", "Identidad", "Teléfono", "Correo", 
+				    "Cargo", "Área", "HI", "HF", "Total H", "Motivo", "Inicio", 
+				    "Fin", "Días", "Encargado", "Cargo Recibe", "Recibe", "Extiende", "Cargo Extiende"
+				};
 
+		    // Obtener los datos desde la matriz
 		    String[][] informacion = obtenerMatriz(); 
 
-	        DefaultTableModel modeloTabla = new DefaultTableModel(informacion, titulos) {
-	            @Override
-	            public boolean isCellEditable(int row, int column) {
-	                return false; // Todas las celdas no serán editables
-	            }
-	        };
+		    // Configurar el modelo de la tabla
+		    DefaultTableModel modeloTabla = new DefaultTableModel(informacion, titulos) {
+		        @Override
+		        public boolean isCellEditable(int row, int column) {
+		            return false; // Hacer que todas las celdas sean no editables
+		        }
+		    };
 
-	        table.setModel(modeloTabla);
-	        scrollPane.setViewportView(table);
+		    // Aplicar el modelo a la tabla
+		    table.setModel(modeloTabla);
+		    scrollPane.setViewportView(table);
 
+		    // Personalización de la tabla
+		    table.getTableHeader().setBackground(new Color(32, 136, 203)); // Encabezado azul
+		    table.getTableHeader().setForeground(Color.WHITE);
+		    table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
+		    table.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+		    table.setRowHeight(25);
+
+		    // Ajuste del tamaño de columnas
+		    table.getColumnModel().getColumn(0).setPreferredWidth(30); // Columna "No"
+		    table.getColumnModel().getColumn(1).setPreferredWidth(30); // Columna "Id"
+		    table.getColumnModel().getColumn(15).setPreferredWidth(30); // Columna "Días"
+
+		  
+	        
 	        trsfiltroCodigo = new TableRowSorter<>(modeloTabla);
 	        table.setRowSorter(trsfiltroCodigo);
 		    table.getColumnModel().getColumn(0).setPreferredWidth(30); 
@@ -544,12 +691,12 @@ public class permiso_AL_tabla extends JFrame {
 
 		public static String[][] obtenerMatriz() {
 		    ArrayList<permiso_ausencia_laboral> miLista = buscarUsuariosConMatriz();
-		    String matrizInfo[][] = new String[miLista.size()][19]; 
+		    String matrizInfo[][] = new String[miLista.size()][21];
 		    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
-		    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm"); 
-		    
+		    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
 		    for (int i = 0; i < miLista.size(); i++) {
-		        permiso_ausencia_laboral permiso = miLista.get(i); 
+		        permiso_ausencia_laboral permiso = miLista.get(i);
 
 		        matrizInfo[i][0] = String.valueOf(permiso.getId_permisos());
 		        matrizInfo[i][1] = String.valueOf(permiso.getId_empleado());
@@ -561,6 +708,7 @@ public class permiso_AL_tabla extends JFrame {
 		        matrizInfo[i][7] = permiso.getCargo_empleado();
 		        matrizInfo[i][8] = permiso.getArea_empleado();
 
+		        // Horas y total horas
 		        Calendar calendar = Calendar.getInstance();
 		        calendar.setTime(permiso.getDesde_hora());
 		        LocalTime desdeHora = LocalTime.of(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
@@ -569,21 +717,36 @@ public class permiso_AL_tabla extends JFrame {
 		        calendar.setTime(permiso.getTotal_horas());
 		        LocalTime totalHoras = LocalTime.of(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
 
-		        matrizInfo[i][9] = desdeHora.format(timeFormatter); 
-		        matrizInfo[i][10] = hastaHora.format(timeFormatter); 
-		        matrizInfo[i][11] = totalHoras.format(timeFormatter); 
+		        matrizInfo[i][9] = desdeHora.format(timeFormatter);
+		        matrizInfo[i][10] = hastaHora.format(timeFormatter);
+		        matrizInfo[i][11] = totalHoras.format(timeFormatter);
 
 		        matrizInfo[i][12] = permiso.getMotivo_ausencia();
-		        matrizInfo[i][13] = dateFormat.format(permiso.getDesde_fecha()); 
-		        matrizInfo[i][14] = dateFormat.format(permiso.getHasta_fecha()); 
-		        matrizInfo[i][15] = String.valueOf(permiso.getTotal_fecha()); 
-		        matrizInfo[i][16] = permiso.getNombres_recibe(); 
-		        matrizInfo[i][17] = dateFormat.format(permiso.getFecha_recibe()); 
-		        matrizInfo[i][18] = permiso.getNombres_extiende(); 
+		        matrizInfo[i][13] = dateFormat.format(permiso.getDesde_fecha());
+		        matrizInfo[i][14] = dateFormat.format(permiso.getHasta_fecha());
+
+		        long diasTranscurridos = calcularDiasEntreFechas(permiso.getDesde_fecha(), permiso.getHasta_fecha());
+		        matrizInfo[i][15] = String.valueOf(diasTranscurridos);
+
+		        matrizInfo[i][16] = permiso.getNombres_recibe();
+		        matrizInfo[i][17] = permiso.getCargo_recibe();   // Aquí se asigna cargo_recibe correctamente
+		        matrizInfo[i][18] = dateFormat.format(permiso.getFecha_recibe());
+		        matrizInfo[i][19] = permiso.getNombres_extiende();
+		        matrizInfo[i][20] = permiso.getCargo_extiende(); // Aquí se asigna cargo_extiende
 		    }
 
 		    return matrizInfo;
 		}
+
+		
+		private static long calcularDiasEntreFechas(Date desde, Date hasta) {
+		    if (desde == null || hasta == null) {
+		        return 0; // Si alguna de las fechas es nula, retorna 0
+		    }
+		    long diferenciaMilisegundos = hasta.getTime() - desde.getTime();
+		    return diferenciaMilisegundos / (1000 * 60 * 60 * 24); // Convertir de milisegundos a días
+		}
+
 
 
 		public static ArrayList<permiso_ausencia_laboral> buscarUsuariosConMatriz() {
@@ -615,6 +778,10 @@ public class permiso_AL_tabla extends JFrame {
 		            permisos.setNombres_recibe(rs.getString("nombres_recibe"));
 		            permisos.setFecha_recibe(rs.getDate("fecha_recibe"));
 		            permisos.setNombres_extiende(rs.getString("nombres_extiende"));
+		            permisos.setCargo_recibe(rs.getString("cargo_recibe"));
+		            permisos.setCargo_extiende(rs.getString("cargo_extiende"));
+
+
 		            
 		            miLista.add(permisos);
 		        }
@@ -732,6 +899,33 @@ public class permiso_AL_tabla extends JFrame {
             ventanaPermiso.setLocationRelativeTo(null);
             ventanaPermiso.setVisible(true);
         }
-
-
+        
+        
+        private void cargarCargosEnComboBox() {
+    	    consultas_cargos consultas = new consultas_cargos();
+    	    List<String> cargos = consultas.obtenerCargos();
+    	    cbxbusquedaCargo.removeAllItems();
+    	    cbxbusquedaCargo.addItem(" ");
+    	    
+    	    for (String cargo : cargos) {
+    	    	cbxbusquedaCargo.addItem(cargo);
+    	    }
+    	    
+    	    cbxbusquedaCargo.setSelectedIndex(0);
+    	}
+        
+        
+        
+        private void cargarAreasEnComboBox() {
+    	    consultas_areas consultas = new consultas_areas();
+    	    List<String> areas = consultas.obtenerAreas();
+    	    cbxbusquedaarea.removeAllItems();
+    	    cbxbusquedaarea.addItem(" ");
+    	    
+    	    for (String area : areas) {
+    	    	cbxbusquedaarea.addItem(area);
+    	    }
+    	    
+    	    cbxbusquedaarea.setSelectedIndex(0);
+    	}
 }

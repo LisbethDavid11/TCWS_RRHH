@@ -79,7 +79,7 @@ public class reporte_incapacidad_general {
                         if (result == JOptionPane.YES_OPTION) {
                             archivoValido = true;  // Sobrescribir archivo
                         } else if (result == JOptionPane.NO_OPTION) {
-                            continue; // Permitir al usuario elegir un nuevo nombre
+                            continue; // Permitir al usuarioC elegir un nuevo nombre
                         } else {
                             JOptionPane.showMessageDialog(null, "Generación de reporte cancelada", "Cancelado", JOptionPane.WARNING_MESSAGE);
                             return;

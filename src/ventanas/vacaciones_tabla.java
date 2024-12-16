@@ -43,6 +43,8 @@ import com.toedter.calendar.JDateChooser;
 
 import clases.vacaciones;
 import conexion.conexion;
+import consultas.consultas_areas;
+import consultas.consultas_cargos;
 import consultas.consultas_vacaciones;
 import principal.menu_principal;
 
@@ -258,7 +260,7 @@ public class vacaciones_tabla extends JFrame {
                 int filaSeleccionada = table.getSelectedRow();
                 
                 if (filaSeleccionada == -1) {
-                	JOptionPane.showMessageDialog(null, "¡No se ha seleccionado ninguna fila!", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                	JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para continuar", "Advertencia", JOptionPane.WARNING_MESSAGE);
                 	return; 
                 }
 
@@ -292,6 +294,8 @@ public class vacaciones_tabla extends JFrame {
         panelbotones.add(btneliminar);
 
         construirTabla(); 
+        cargarCargosEnComboBox();
+        cargarAreasEnComboBox();
     }
 
     private void filtro() {
@@ -360,6 +364,13 @@ public class vacaciones_tabla extends JFrame {
             }
         };
         table.setModel(modeloTabla);
+        
+        // Configurar propiedades de la tabla
+        table.setRowHeight(25);
+        table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
+        table.getTableHeader().setOpaque(false);
+        table.getTableHeader().setBackground(new Color(32, 136, 203));
+        table.getTableHeader().setForeground(Color.WHITE);
 
         table.getColumnModel().getColumn(0).setPreferredWidth(40);  
         table.getColumnModel().getColumn(1).setPreferredWidth(40);  
@@ -534,4 +545,33 @@ public class vacaciones_tabla extends JFrame {
                 JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
             System.exit(0);
     }
+    
+    
+    private void cargarCargosEnComboBox() {
+	    consultas_cargos consultas = new consultas_cargos();
+	    List<String> cargos = consultas.obtenerCargos();
+	    cbxbusquedaCargo.removeAllItems();
+	    cbxbusquedaCargo.addItem(" ");
+	    
+	    for (String cargo : cargos) {
+	    	cbxbusquedaCargo.addItem(cargo);
+	    }
+	    
+	    cbxbusquedaCargo.setSelectedIndex(0);
+	}
+    
+    
+    
+    private void cargarAreasEnComboBox() {
+	    consultas_areas consultas = new consultas_areas();
+	    List<String> areas = consultas.obtenerAreas();
+	    cbxbusquedaarea.removeAllItems();
+	    cbxbusquedaarea.addItem(" ");
+	    
+	    for (String area : areas) {
+	    	cbxbusquedaarea.addItem(area);
+	    }
+	    
+	    cbxbusquedaarea.setSelectedIndex(0);
+	}
 }

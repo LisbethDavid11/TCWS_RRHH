@@ -240,6 +240,13 @@ public class areas_tabla extends JFrame{
 	    scrollPane.setViewportView(tablaAreas);
 	    trsfiltroCodigo = new TableRowSorter<>(modeloTabla); 
 	    
+	    // Configurar propiedades de la tabla
+	    tablaAreas.setRowHeight(25);
+	    tablaAreas.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
+	    tablaAreas.getTableHeader().setOpaque(false);
+	    tablaAreas.getTableHeader().setBackground(new Color(32, 136, 203));
+	    tablaAreas.getTableHeader().setForeground(Color.WHITE);
+	    
 	    tablaAreas.setRowSorter(trsfiltroCodigo);
 	    tablaAreas.getColumnModel().getColumn(0).setPreferredWidth(20);
 	    tablaAreas.getColumnModel().getColumn(1).setPreferredWidth(50);

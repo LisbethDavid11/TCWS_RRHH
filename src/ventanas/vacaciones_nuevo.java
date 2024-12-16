@@ -414,6 +414,7 @@ public class vacaciones_nuevo extends JFrame {
         panel_botones.add(btnguardar);
         
         btnactualizar = new JButton("Actualizar");
+        btnactualizar.setToolTipText("Actualizar registro");
         btnactualizar.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		actualizarVacaciones();

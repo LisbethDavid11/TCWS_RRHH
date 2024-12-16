@@ -409,7 +409,6 @@ public class empleado_nuevo extends JFrame{
 		panel_datos.add(lblcargo);
 		
 		cbxcargo = new JComboBox<String>();
-		//cbxcargo.setModel(new DefaultComboBoxModel(new String[] {"Director general", "Director", "Gerente financiero", "Administrador", "Asistente ", "Cobros", "Enfermero", "Psicologo", "Supervisor ", "Consejero", "Docente", "Docente auxiliar", "Soporte técnico", "Marketing", "Aseo ", "Mantenimiento", "Conserje"}));
 		cbxcargo.setToolTipText("Seleccione");
 		cbxcargo.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		cbxcargo.setBackground(Color.WHITE);
@@ -587,10 +586,7 @@ public class empleado_nuevo extends JFrame{
 				cerrar_ventana();
 			}
 			});
-		
 	
-		
-		
 		// Rango de años para los jdatechooser
 		Calendar fechaMin = Calendar.getInstance();
 		fechaMin.set(2012, Calendar.JANUARY, 1);
@@ -738,7 +734,7 @@ public class empleado_nuevo extends JFrame{
 		            tabla.construirTabla();
 		            dispose();
 		        } else {
-		            JOptionPane.showMessageDialog(null, "Error, empleado no guardado", "Error", JOptionPane.ERROR_MESSAGE);
+		            JOptionPane.showMessageDialog(null, "Error, el empleado no se ha guardado", "Error", JOptionPane.ERROR_MESSAGE);
 		        }
 		    }
 		}
@@ -765,11 +761,8 @@ public class empleado_nuevo extends JFrame{
 			lblfoto.setIcon(new ImageIcon(icono_fotografia.getImage().getScaledInstance(lblfoto.getWidth(),
 					lblfoto.getHeight(), Image.SCALE_SMOOTH)));
 
-	
 		}
 	
-		
-		
 		public void ver_empleado(String idEmpleado, String identidad, String nombres, String apellidos, String sexo, Date fechaNacimiento,
                 String estadoCivil, String direccion, String telefono, String correo, String cargo, String area, 
                 Date fechaInicio, Date fechaRenuncia, String fotografia, String cuenta) {
@@ -799,7 +792,6 @@ public class empleado_nuevo extends JFrame{
 			fecha_inicio.setDate(fechaInicio);
 			fecha_renuncia.setDate(fechaRenuncia);
 			
-			// Cargar la fotografía si está disponible
 			if (fotografia != null && !fotografia.isEmpty()) {
 				ImageIcon icon = new ImageIcon(fotografia);
 				Image img = icon.getImage().getScaledInstance(lblfoto.getWidth(), lblfoto.getHeight(), Image.SCALE_SMOOTH);
@@ -946,19 +938,13 @@ public class empleado_nuevo extends JFrame{
 
 		    return true;
 		}
-
-		
-
-		
 		
 		public void actualizarEmpleado() {
 		    try {
-		        // Primero validamos los campos
 		        if (!validarCamposEmpleado()) {
-		            return; // Si la validación falla, detener el proceso de actualización
+		            return; 
 		        }
-
-		        // Obtener los valores de los campos necesarios para la actualización
+		    
 		        String idOriginalStr = txtidOriginal.getText().trim();
 		        String idEmpleadoStr = txtid_empleado.getText().trim();
 		        int idOriginal = Integer.parseInt(idOriginalStr); 
@@ -973,7 +959,6 @@ public class empleado_nuevo extends JFrame{
 		        String direccionEmpleado = txadireccion.getText().trim();
 		        String sexoEmpleado = "";
 
-		        // Determinamos el sexo seleccionado
 		        if (buttonmasculino.isSelected()) {
 		            sexoEmpleado = "Masculino";
 		        } else if (buttonfemenino.isSelected()) {
@@ -982,7 +967,6 @@ public class empleado_nuevo extends JFrame{
 		            sexoEmpleado = "Otro";
 		        }
 
-		        // Crear objeto empleado actualizado
 		        empleado empleadoActualizado = new empleado();
 		        empleadoActualizado.setId_empleado(idEmpleado);
 		        empleadoActualizado.setIdentidad_empleado(identidadEmpleado);
@@ -1001,11 +985,9 @@ public class empleado_nuevo extends JFrame{
 		        empleadoActualizado.setFotografia_empleado(txtruta.getText().trim());
 		        empleadoActualizado.setCuenta_empleado(cuentaEmpleado);
 
-		        // Verificar si el idEmpleado o identidadEmpleado han cambiado
 		        boolean idModificado = idEmpleado != idOriginal;
 		        boolean identidadModificada = !identidadEmpleado.equals(consulta.obtenerIdentidadEmpleado(idOriginal));
 
-		        // Validar si el nuevo idEmpleado o identidadEmpleado ya existen en otro registro
 		        if ((idModificado && consulta.existeIdEmpleado(idEmpleado, idOriginal)) ||
 		            (identidadModificada && consulta.existeIdentidadEmpleado(identidadEmpleado, idOriginal))) {
 		            JOptionPane.showMessageDialog(null, "El ID o la Identidad ya están en uso por otro empleado.", "Advertencia", JOptionPane.WARNING_MESSAGE);
@@ -1016,14 +998,14 @@ public class empleado_nuevo extends JFrame{
 		        if (consulta.actualizar_empleado(empleadoActualizado, idOriginal, empleadoActualizado.getId_empleado(),
 		                                         empleadoActualizado.getNacimiento_empleado(), empleadoActualizado.getInicio_empleado(),
 		                                         empleadoActualizado.getRenuncia_empleado())) {
-		            JOptionPane.showMessageDialog(null, "Registro actualizado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+		            JOptionPane.showMessageDialog(null, "El empleado se ha actualizado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 		            empleado_tabla tabla = new empleado_tabla();
 		            tabla.setVisible(true);
 		            tabla.setLocationRelativeTo(null);
 		            tabla.construirTabla();
 		            dispose();
 		        } else {
-		            JOptionPane.showMessageDialog(null, "Error al actualizar el registro", "Error", JOptionPane.ERROR_MESSAGE);
+		            JOptionPane.showMessageDialog(null, "Error al actualizar el empleado", "Error", JOptionPane.ERROR_MESSAGE);
 		        }
 		    } catch (NumberFormatException ex) {
 		        JOptionPane.showMessageDialog(null, "Id de empleado no válido o vacío", "Error", JOptionPane.ERROR_MESSAGE);

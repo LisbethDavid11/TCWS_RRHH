@@ -45,6 +45,7 @@ import javax.swing.table.TableRowSorter;
 
 import clases.empleado;
 import conexion.conexion;
+import consultas.consultas_areas;
 import consultas.consultas_cargos;
 import consultas.consultas_empleado;
 import principal.menu_principal;
@@ -143,9 +144,6 @@ public class empleado_tabla extends JFrame {
 
         cbxbusquedaCargo = new JComboBox<>();
         cbxbusquedaCargo.setFont(new Font("Tahoma", Font.BOLD, 12));
-        /*cbxbusquedaCargo.setModel(new DefaultComboBoxModel<String>(new String[] {"Director general", "Director", 
-        		"Gerente financiero", "Administrador", "Asistente", "Cobros", "Enfermero", "Psicologo", "Supervisor", 
-        		"Consejero", "Docente", "Docente auxiliar", "Soporte técnico", "Marketing", "Aseo", "Mantenimiento", "Conserje", " "}));*/
         cbxbusquedaCargo.setBounds(438, 9, 136, 26);
         cbxbusquedaCargo.setSelectedIndex(-1);
         panelbusqueda.add(cbxbusquedaCargo);
@@ -158,8 +156,7 @@ public class empleado_tabla extends JFrame {
         panelbusqueda.add(lblCargo);
 
         cbxbusquedaarea = new JComboBox<>();
-        cbxbusquedaarea.setModel(new DefaultComboBoxModel<>(new String[] { "Administrativa", "Financiera", "Pre basica", "Primaria", 
-        		"Secundaria", "Logistica", "Aseo", "Mantenimiento", " " }));
+        cbxbusquedaarea.setModel(new DefaultComboBoxModel(new String[] {"", " "}));
         cbxbusquedaarea.setFont(new Font("Tahoma", Font.BOLD, 12));
         cbxbusquedaarea.setBounds(638, 9, 136, 26);
         cbxbusquedaarea.setSelectedIndex(-1);
@@ -258,7 +255,8 @@ public class empleado_tabla extends JFrame {
                 reporte_empleados_individual reporte = new reporte_empleados_individual();
                 reporte.generarReporteEmpleadoIndividual(idEmpleado);
             } else {
-                JOptionPane.showMessageDialog(null, "Por favor, selecciona una fila para continuar", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para continuar", 
+                		"Advertencia", JOptionPane.WARNING_MESSAGE);
             }
         });
 
@@ -277,7 +275,8 @@ public class empleado_tabla extends JFrame {
         	      
         	        filaSeleccionada = table.getSelectedRow();
         	        if (filaSeleccionada == -1) {
-        	        		JOptionPane.showMessageDialog(null, "¡No se ha seleccionado ninguna fila!", "Advertencia", JOptionPane.WARNING_MESSAGE);
+        	        		JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para continuar", 
+        	        				"Advertencia", JOptionPane.WARNING_MESSAGE);
                         } else {
         	            
         	            int confirmacion = JOptionPane.showConfirmDialog(null, 
@@ -297,18 +296,21 @@ public class empleado_tabla extends JFrame {
         	                    		"Éxito", JOptionPane.INFORMATION_MESSAGE );
         	                } else {
         	                    
-        	                    JOptionPane.showMessageDialog(null, "Error al eliminar el registro de la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
+        	                    JOptionPane.showMessageDialog(null, "Error al eliminar el registro de la base de datos.", 
+        	                    		"Error", JOptionPane.ERROR_MESSAGE);
         	                }
         	            } 
         	        }
         	    } catch (HeadlessException ex) {
-        	        JOptionPane.showMessageDialog(null, "Error, inténtelo nuevamente", "Error en la operación", JOptionPane.ERROR_MESSAGE);
+        	        JOptionPane.showMessageDialog(null, "Error, inténtelo nuevamente", 
+        	        		"Error en la operación", JOptionPane.ERROR_MESSAGE);
         	    }
         	}
 
         });
 
         cargarCargosEnComboBox();
+        cargarAreasEnComboBox();
         
         // Configuracion para los JComboBox
         cbxbusquedaCargo.addActionListener(new ActionListener() {
@@ -355,51 +357,71 @@ public class empleado_tabla extends JFrame {
             }
         });
         
-        
-        
-        
-        
     }//class
 
   
     
     public void construirTabla() {
-        String titulos[] = { "No", "Id", "Identidad", "Nombres", "Apellidos", "Sexo", "Nacimiento", "Estado civil", "Dirección", 
-        		"Teléfono", "Correo", "Cargo", "Área", "Inicio", "Renuncia", "Fotografía", "No.cuenta" };
-        String informacion[][] = obtenerMatriz();
-        
-        DefaultTableModel modeloTabla = new DefaultTableModel(informacion, titulos) { //modelo de tabla no editable
+        // Definir títulos de las columnas
+        String titulos[] = { 
+            "No", "Id", "Identidad", "Nombres", "Apellidos", "Sexo", "Nacimiento", 
+            "Estado civil", "Dirección", "Teléfono", "Correo", "Cargo", "Área", 
+            "Inicio", "Renuncia", "Fotografía", "No.cuenta" 
+        };
+
+        // Llamar a un método para obtener la matriz de datos desde la base de datos
+        String informacion[][] = obtenerMatriz(); // Método debe estar implementado en esta clase
+
+        // Crear modelo de tabla no editable
+        DefaultTableModel modeloTabla = new DefaultTableModel(informacion, titulos) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Todas las celdas no serán editables
+                return false; // Deshabilitar edición de celdas
             }
         };
-        
-        table = new JTable(modeloTabla);
-        scrollPane.setViewportView(table);
-        
-        trsfiltroCodigo = new TableRowSorter<>(table.getModel()); 
-        table.setRowSorter(trsfiltroCodigo); 
-        table.getColumnModel().getColumn(0).setPreferredWidth(30);
-        table.getColumnModel().getColumn(1).setPreferredWidth(40);
 
-        
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy"); 
+        // Inicializar la tabla con el modelo
+        table = new JTable(modeloTabla) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Celdas no editables
+            }
+        };
 
+        // Configurar propiedades de la tabla
+        table.setRowHeight(25);
+        table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
+        table.getTableHeader().setOpaque(false);
+        table.getTableHeader().setBackground(new Color(32, 136, 203));
+        table.getTableHeader().setForeground(Color.WHITE);
+
+        // Agregar la tabla al JScrollPane
+        scrollPane.setViewportView(table); // scrollPane debe estar inicializado en la clase
+
+        // Configurar sorter para el filtro de búsqueda
+        trsfiltroCodigo = new TableRowSorter<>(table.getModel());
+        table.setRowSorter(trsfiltroCodigo);
+
+        // Ajustar el ancho de las columnas
+        table.getColumnModel().getColumn(0).setPreferredWidth(30); // Número
+        table.getColumnModel().getColumn(1).setPreferredWidth(40); // ID
+
+        // Formato para las fechas
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
+
+        // Agregar evento de doble clic
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) { // Si se hace doble clic en una fila de la tabla
-	                	
-	                	
+                if (e.getClickCount() == 2) { // Doble clic
                     int filaSeleccionada = table.getSelectedRow();
-                    if (filaSeleccionada != -1) { // Si hay una fila seleccionada
-                        int fila = table.convertRowIndexToModel(filaSeleccionada); // Convertir al modelo si la tabla tiene ordenamiento
+                    if (filaSeleccionada != -1) { // Validar que hay una fila seleccionada
+                        int fila = table.convertRowIndexToModel(filaSeleccionada); // Convertir índice visual a modelo
 
-                        
                         try {
-                            String idOriginalStr = String.valueOf(table.getModel().getValueAt(fila, 0));  // El idOriginal es la clave primaria
-                            String idEmpleado = String.valueOf(table.getModel().getValueAt(fila, 1));  // El idEmpleado se mantiene como String
+                            // Obtener datos de la fila seleccionada
+                            String idOriginalStr = String.valueOf(table.getModel().getValueAt(fila, 0));
+                            String idEmpleado = String.valueOf(table.getModel().getValueAt(fila, 1));
                             String identidad = String.valueOf(table.getModel().getValueAt(fila, 2));
                             String nombres = String.valueOf(table.getModel().getValueAt(fila, 3));
                             String apellidos = String.valueOf(table.getModel().getValueAt(fila, 4));
@@ -408,7 +430,9 @@ public class empleado_tabla extends JFrame {
                             Date fechaNacimiento = null;
                             Date fechaInicio = null;
                             Date fechaRenuncia = null;
+
                             try {
+                                // Parsear fechas
                                 fechaNacimiento = dateFormat.parse(String.valueOf(table.getModel().getValueAt(fila, 6)));
                                 fechaInicio = dateFormat.parse(String.valueOf(table.getModel().getValueAt(fila, 13)));
                                 String fechaRenunciaStr = String.valueOf(table.getModel().getValueAt(fila, 14));
@@ -420,25 +444,30 @@ public class empleado_tabla extends JFrame {
                                 return;
                             }
 
+                            // Obtener otros datos
                             String estadoCivil = String.valueOf(table.getModel().getValueAt(fila, 7));
                             String direccion = String.valueOf(table.getModel().getValueAt(fila, 8));
-                            String telefono = String.valueOf(table.getModel().getValueAt(fila, 9));  
+                            String telefono = String.valueOf(table.getModel().getValueAt(fila, 9));
                             String correo = String.valueOf(table.getModel().getValueAt(fila, 10));
                             String cargo = String.valueOf(table.getModel().getValueAt(fila, 11));
                             String area = String.valueOf(table.getModel().getValueAt(fila, 12));
                             String fotografia = String.valueOf(table.getModel().getValueAt(fila, 15));
-                            String cuenta = String.valueOf(table.getModel().getValueAt(fila, 16));  
+                            String cuenta = String.valueOf(table.getModel().getValueAt(fila, 16));
 
+                            // Enviar datos a empleado_nuevo
                             empleado_nuevo ventanaNuevo = new empleado_nuevo();
                             ventanaNuevo.ver_empleado(idEmpleado, identidad, nombres, apellidos, sexo, fechaNacimiento, estadoCivil,
                                     direccion, telefono, correo, cargo, area, fechaInicio, fechaRenuncia, fotografia, cuenta);
 
-                            ventanaNuevo.txtidOriginal.setText(idOriginalStr);  
+                            ventanaNuevo.txtidOriginal.setText(idOriginalStr);
                             ventanaNuevo.setLocationRelativeTo(null);
-                            ventanaNuevo.btnguardar.setVisible(false); 
+
+                            // Configurar botones en empleado_nuevo
+                            ventanaNuevo.btnguardar.setVisible(false);
                             ventanaNuevo.btnactualizar.setVisible(false);
                             ventanaNuevo.btnlimpiar.setVisible(false);
-                            dispose(); 
+
+                            dispose(); // Cerrar la ventana actual
                         } catch (Exception ex) {
                             JOptionPane.showMessageDialog(null, "Error al procesar los datos", "Error", JOptionPane.ERROR_MESSAGE);
                             ex.printStackTrace();
@@ -447,10 +476,8 @@ public class empleado_tabla extends JFrame {
                 }
             }
         });
-
-
     }
-    
+
     
    
     private void aplicarFiltros() {
@@ -473,7 +500,7 @@ public class empleado_tabla extends JFrame {
         }
 
         if (filtros.isEmpty()) {
-            trsfiltroCodigo.setRowFilter(null); // Mostrar todos los registros si no hay filtros
+            trsfiltroCodigo.setRowFilter(null); 
         } else {
         	
             RowFilter<Object, Object> combinedFilter = RowFilter.andFilter(filtros);
@@ -586,4 +613,20 @@ public class empleado_tabla extends JFrame {
 	    
 	    cbxbusquedaCargo.setSelectedIndex(0);
 	}
+    
+    
+    
+    private void cargarAreasEnComboBox() {
+	    consultas_areas consultas = new consultas_areas();
+	    List<String> areas = consultas.obtenerAreas();
+	    cbxbusquedaarea.removeAllItems();
+	    cbxbusquedaarea.addItem(" ");
+	    
+	    for (String area : areas) {
+	    	cbxbusquedaarea.addItem(area);
+	    }
+	    
+	    cbxbusquedaarea.setSelectedIndex(0);
+	}
+    
 }//end

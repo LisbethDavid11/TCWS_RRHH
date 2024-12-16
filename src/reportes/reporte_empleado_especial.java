@@ -28,6 +28,8 @@ import com.itextpdf.layout.properties.UnitValue;
 import com.toedter.calendar.JDateChooser;
 
 import conexion.conexion;
+import consultas.consultas_areas;
+import consultas.consultas_cargos;
 import principal.menu_principal;
 
 import javax.swing.SwingConstants;
@@ -43,6 +45,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.UIManager;
@@ -123,8 +126,8 @@ public class reporte_empleado_especial extends JFrame{
 	panel_datos.add(lblCargo);
 	
 	cbxcargo = new JComboBox<String>();
-	cbxcargo.setModel(new DefaultComboBoxModel(new String[] {"Director general", "Director", "Gerente financiero", "Administrador", "Asistente ", "Cobros", "Enfermero", "Psicologo", "Supervisor ", "Consejero", "Docente", 
-															"Docente auxiliar", "Soporte técnico", "Marketing", "Aseo ", "Mantenimiento", "Conserje"}));
+	//cbxcargo.setModel(new DefaultComboBoxModel(new String[] {"Director general", "Director", "Gerente financiero", "Administrador", "Asistente ", "Cobros", "Enfermero", "Psicologo", "Supervisor ", "Consejero", "Docente", 
+															//"Docente auxiliar", "Soporte técnico", "Marketing", "Aseo ", "Mantenimiento", "Conserje"}));
 	cbxcargo.setSelectedIndex(-1);
 	cbxcargo.setFont(new Font("Tahoma", Font.PLAIN, 14));
 	cbxcargo.setBounds(361, 113, 217, 33);
@@ -234,6 +237,9 @@ public class reporte_empleado_especial extends JFrame{
 	btnregresar.setBackground(UIManager.getColor("Button.highlight"));
 	btnregresar.setBounds(917, 24, 90, 23);
 	getContentPane().add(btnregresar);
+	
+	 cargarCargosEnComboBox();
+	 cargarAreasEnComboBox();
 	
 	}
 	
@@ -364,6 +370,34 @@ public class reporte_empleado_especial extends JFrame{
 			System.exit(0);
 	}
 
+	
+	private void cargarCargosEnComboBox() {
+	    consultas_cargos consultas = new consultas_cargos();
+	    List<String> cargos = consultas.obtenerCargos();
+	    cbxcargo.removeAllItems();
+	    cbxcargo.addItem(" ");
+	    
+	    for (String cargo : cargos) {
+	        cbxcargo.addItem(cargo);
+	    }
+	    
+	    cbxcargo.setSelectedIndex(0);
+	}
+
+	
+
+	private void cargarAreasEnComboBox() {
+	    consultas_areas c = new consultas_areas();
+	    List<String> areas = c.obtenerAreas();
+	    cbxarea.removeAllItems();
+	    cbxarea.addItem(" ");
+	    
+	    for (String area : areas) {
+	        cbxarea.addItem(area);
+	    }
+	    
+	    cbxarea.setSelectedIndex(0);
+	}
 	
 	
 

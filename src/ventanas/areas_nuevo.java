@@ -12,6 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
 import clases.areas;
+import clases.validaciones;
 import consultas.consultas_areas;
 import javax.swing.JPanel;
 import java.awt.SystemColor;
@@ -19,6 +20,8 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
 import javax.swing.UIManager;
 
@@ -153,6 +156,13 @@ public class areas_nuevo extends JFrame {
 		panel_titulo_1_1.add(lblNombreDelCargo);
 		
 		txtarea = new JTextField(10);
+		txtarea.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+        	    validaciones.validarNombresyApellidos(e, txtarea, 70);
+        	}
+
+		});
 		txtarea.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtarea.setBounds(173, 95, 253, 33);
 		panel_titulo_1_1.add(txtarea);

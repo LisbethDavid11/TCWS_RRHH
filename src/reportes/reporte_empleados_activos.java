@@ -74,7 +74,7 @@ public class reporte_empleados_activos {
 	                            archivoValido = true;
 	                        }
 	                    } else {
-	                        // Si el usuario cancela, salimos del método
+	                        // Si el usuarioC cancela, salimos del método
 	                        JOptionPane.showMessageDialog(null, "Generación de reporte cancelada" , "Error", JOptionPane.ERROR_MESSAGE);
 	                        return;
 	                    }

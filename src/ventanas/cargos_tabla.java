@@ -240,6 +240,13 @@ public class cargos_tabla extends JFrame{
 	    scrollPane.setViewportView(tablaCargos);
 	    trsfiltroCodigo = new TableRowSorter<>(modeloTabla); 
 	    
+	    // Configurar propiedades de la tabla
+	    tablaCargos.setRowHeight(25);
+        tablaCargos.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
+        tablaCargos.getTableHeader().setOpaque(false);
+        tablaCargos.getTableHeader().setBackground(new Color(32, 136, 203));
+        tablaCargos.getTableHeader().setForeground(Color.WHITE);
+	    
 	    tablaCargos.setRowSorter(trsfiltroCodigo);
 	    tablaCargos.getColumnModel().getColumn(0).setPreferredWidth(20);
 	    tablaCargos.getColumnModel().getColumn(1).setPreferredWidth(50);
@@ -334,7 +341,7 @@ public class cargos_tabla extends JFrame{
     public void eliminar_cargos() {
         int filaSeleccionada = tablaCargos.getSelectedRow();
         if (filaSeleccionada == -1) {
-            JOptionPane.showMessageDialog(this, "Debe seleccionar una fila para continuar", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Por favor, seleccione una fila para continuar", "Advertencia", JOptionPane.WARNING_MESSAGE);
             return;
         }
 

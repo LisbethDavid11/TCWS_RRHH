@@ -12,6 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
 import clases.cargos;
+import clases.validaciones;
 import consultas.consultas_cargos;
 
 import javax.swing.JPanel;
@@ -20,6 +21,8 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
 import javax.swing.UIManager;
 
@@ -154,6 +157,13 @@ public class cargos_nuevo extends JFrame {
 		panel_titulo_1_1.add(lblNombreDelCargo);
 		
 		txtcargo = new JTextField(10);
+		txtcargo.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+        	    validaciones.validarNombresyApellidos(e, txtcargo, 70);
+        	}
+
+		});
 		txtcargo.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtcargo.setBounds(173, 95, 253, 33);
 		panel_titulo_1_1.add(txtcargo);
