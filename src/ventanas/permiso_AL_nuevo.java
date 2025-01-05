@@ -51,7 +51,8 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.property.TextAlignment;
+
 import com.toedter.calendar.JDateChooser;
 
 import clases.permiso_ausencia_laboral;
@@ -60,6 +61,8 @@ import conexion.conexion;
 import consultas.consultas_cargos;
 import consultas.consultas_permiso_ausencia_laboral;
 import reportes.encabezado_documentos;
+import reportes.reporte_permiso_individual;
+
 import javax.swing.JCheckBox;
 
 
@@ -375,17 +378,34 @@ public class permiso_AL_nuevo extends JFrame {
         btncomprobante = new JButton("Generar comprobante");
         btncomprobante.setToolTipText("Generar comprobante");
         btncomprobante.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
                 int numeroPermiso = Integer.parseInt(txtnumero_permiso.getText());
 
                 if (!permisoGuardadoEnBaseDeDatos(numeroPermiso)) {
-                    JOptionPane.showMessageDialog(null, "Debe guardar el permiso antes de generar el comprobante", 
-                                                  "Error", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Debe guardar el permiso antes de generar el comprobante",
+                            "Error", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
-                generarPDF();
+
+                // Llamar a la clase reporte_permiso_individual
+                reporte_permiso_individual reporte = new reporte_permiso_individual();
+                reporte.generarReporte(
+                        txtnumero_permiso.getText(),                             // Número de permiso
+                        cbxnombres.getSelectedItem().toString(),                // Nombre del empleado
+                        txtapellidos.getText(),                                 // Apellidos del empleado
+                        txtextiende.getText(),                                  // Nombre de quien extiende
+                        cbxcargo_extiende.getSelectedItem().toString(),         // Cargo de quien extiende
+                        txamotivo.getText(),                                    // Motivo de ausencia
+                        ((JTextField) date_desde.getDateEditor().getUiComponent()).getText(), // Fecha de inicio
+                        txttotal_dias.getText(),                                // Total de días
+                        txttotal_horas.getText(),                               // Total de horas
+                        txtnombres_recibe.getText(),                            // Nombre de quien recibe
+                        cbxcargo_recibe.getSelectedItem().toString()            // Cargo de quien recibe
+                );
             }
         });
+
         btncomprobante.setFont(new Font("Tahoma", Font.BOLD, 8));
         btncomprobante.setBackground(UIManager.getColor("Button.highlight"));
         btncomprobante.setBounds(823, 456, 126, 25);
@@ -574,6 +594,13 @@ public class permiso_AL_nuevo extends JFrame {
 		txtextiende.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtextiende.setColumns(10);
 		txtextiende.setBounds(30, 449, 232, 33);
+		txtextiende.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+        	    validaciones.validarNombresyApellidos(e, txtextiende, 70);
+        	}
+
+		});
 		panel_datos.add(txtextiende);
 		
 		JLabel lblc = new JLabel("Cargo");
@@ -1004,7 +1031,7 @@ public class permiso_AL_nuevo extends JFrame {
 	            }
 
 	        } catch (SQLException ex) {
-	            System.err.println("Error al verificar si el permiso ya existe en la base de datos para id_permisos" + numeroPermiso);
+	            System.err.println("Error al verificar si el permiso ya existe en la base de datos para id permisos" + numeroPermiso);
 	            ex.printStackTrace();
 	        }
 	        return existe;
@@ -1067,9 +1094,15 @@ public class permiso_AL_nuevo extends JFrame {
 	            PdfDocument pdf = new PdfDocument(writer);
 	            Document document = new Document(pdf);
 
+	            // Número de permiso
+	            document.add(new Paragraph("No. " + txtnumero_permiso.getText())
+	                .setFontSize(12).setTextAlignment(TextAlignment.LEFT));
+	            
 	            // Agregar encabezado
 	            encabezado_documentos encabezado = new encabezado_documentos();
 	            encabezado.agregarEncabezado(document);
+	            
+	        
 
 	            // Título
 	            document.add(new Paragraph("Constancia de permiso por ausencia laboral")

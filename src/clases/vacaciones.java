@@ -26,6 +26,8 @@ public class vacaciones {
     int total_dias ;
     int dias_pendientes ;
     String pagadas ;
+    String extendido;
+	String cargo_ext;
 	
 	int id_vacaciones;
 	public int getId_vacaciones() {
@@ -161,7 +163,18 @@ public class vacaciones {
 		this.pagadas = pagadas;
 	}
 	
-    
+	public String getExtendido() {
+		return extendido;
+	}
+	public void setExtendido(String extendido) {
+		this.extendido = extendido;
+	}
+	public String getCargo_ext() {
+		return cargo_ext;
+	}
+	public void setCargo_ext(String cargo_ext) {
+		this.cargo_ext = cargo_ext;
+	}
     
     
     

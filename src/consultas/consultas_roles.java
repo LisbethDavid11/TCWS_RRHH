@@ -201,48 +201,78 @@ public class consultas_roles extends conexion {
 
         return listaRoles;
     }
-
-    // Actualizar rol existente
+    
+    
+    
     public boolean actualizarRol(String usuario, String contrasena, String nombreRol, String descripcion,
-            boolean empleados, boolean permisos, boolean incapacidades, boolean vacaciones,
+            boolean empleados, boolean ausenciaLaboral, boolean incapacidades, boolean vacaciones,
             boolean cargos, boolean areas, boolean reportes, boolean respaldos, boolean usuarios) {
-			Connection con = null;
-			PreparedStatement ps = null;
-			
-			try {
-			con = conectar();
-			String sql = "UPDATE roles_usuarios SET contrasena = ?, nombre_rol = ?, descripcion = ?, empleados = ?, " +
-			   "permisos = ?, incapacidades = ?, vacaciones = ?, cargos = ?, areas = ?, reportes = ?, " +
-			   "respaldos = ?, usuarios = ? WHERE nombre_usuario = ?";
-			ps = con.prepareStatement(sql);
-			ps.setString(1, contrasena);
-			ps.setString(2, nombreRol);
-			ps.setString(3, descripcion);
-			ps.setBoolean(4, empleados);
-			ps.setBoolean(5, permisos);
-			ps.setBoolean(6, incapacidades);
-			ps.setBoolean(7, vacaciones);
-			ps.setBoolean(8, cargos);
-			ps.setBoolean(9, areas);
-			ps.setBoolean(10, reportes);
-			ps.setBoolean(11, respaldos);
-			ps.setBoolean(12, usuarios);
-			ps.setString(13, usuario);
-			
-			int filasActualizadas = ps.executeUpdate();
-			return filasActualizadas > 0; // Verificar si se actualizó alguna fila
-			} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-			} finally {
-			try {
-			if (ps != null) ps.close();
-			if (con != null) desconectar(con);
-			} catch (SQLException ex) {
-			ex.printStackTrace();
-			}
-			}
-			}
+    Connection con = null;
+    PreparedStatement ps = null;
+
+    try {
+        con = conectar(); // Método que retorna la conexión
+
+        // Consulta SQL corregida con los nombres de las columnas válidos
+        String sql = "UPDATE roles_usuarios SET contrasena = ?, nombre_rol = ?, descripcion_rol = ?, permisos_empleados = ?, " +
+                     "permisos_ausencia_laboral = ?, permisos_incapacidades = ?, permisos_vacaciones = ?, permisos_cargos = ?, " +
+                     "permisos_areas = ?, permisos_reportes = ?, permisos_respaldos = ?, permisos_usuarios = ? " +
+                     "WHERE nombre_usuario = ?";
+
+        ps = con.prepareStatement(sql);
+
+        // Asignar parámetros al PreparedStatement
+        ps.setString(1, contrasena);
+        ps.setString(2, nombreRol);
+        ps.setString(3, descripcion);
+        ps.setBoolean(4, empleados);          // permisos_empleados
+        ps.setBoolean(5, ausenciaLaboral);    // permisos_ausencia_laboral
+        ps.setBoolean(6, incapacidades);      // permisos_incapacidades
+        ps.setBoolean(7, vacaciones);         // permisos_vacaciones
+        ps.setBoolean(8, cargos);             // permisos_cargos
+        ps.setBoolean(9, areas);              // permisos_areas
+        ps.setBoolean(10, reportes);          // permisos_reportes
+        ps.setBoolean(11, respaldos);         // permisos_respaldos
+        ps.setBoolean(12, usuarios);          // permisos_usuarios
+        ps.setString(13, usuario);            // nombre_usuario (WHERE)
+
+        // Ejecutar la consulta
+        int filasActualizadas = ps.executeUpdate();
+
+        // Verificar si al menos una fila fue actualizada
+        return filasActualizadas > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    } finally {
+        // Cerrar recursos
+        try {
+            if (ps != null) ps.close();
+            if (con != null) desconectar(con);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+}
+
+
+
+   
+
+
+    
+    public boolean eliminarRol(String nombreUsuario) {
+        String query = "DELETE FROM roles_usuarios WHERE nombre_usuario = ?";
+        try (Connection con = conectar();
+             PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setString(1, nombreUsuario); // Usar el parámetro correcto
+            int filasAfectadas = ps.executeUpdate();
+            return filasAfectadas > 0; // Retorna true si se eliminó correctamente
+        } catch (SQLException e) {
+            System.err.println("Error al eliminar el rol: " + e.getMessage());
+            return false;
+        }
+    }
 
 
 }

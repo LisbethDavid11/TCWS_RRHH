@@ -44,8 +44,9 @@ public class usuario_tabla extends JFrame {
 	private TableRowSorter<DefaultTableModel> trsfiltroCodigo;
 	private JTextField txtbuscar;
 	public JTable tablaUsuarios;
-	final String placeHolderText = "Nombres, apellidos, identidad y sexo";
+	final String placeHolderText = "Usuario, nombres y apellidos";
 	private JScrollPane scrollPane;
+	public JLabel lblresultado_busqueda;
 	
 	public usuario_tabla() {
 		getContentPane().setBackground(new Color(255, 255, 255));
@@ -64,6 +65,9 @@ public class usuario_tabla extends JFrame {
 		lblUsuarios.setFont(new Font("Segoe UI", Font.BOLD, 26));
 		lblUsuarios.setBounds(23, 28, 534, 26);
 		getContentPane().add(lblUsuarios);
+		
+		
+
 		
 		JPanel panelbotones = new JPanel();
 		panelbotones.setLayout(null);
@@ -122,7 +126,7 @@ public class usuario_tabla extends JFrame {
 		getContentPane().add(panelbusqueda);
 		
 		txtbuscar = new JTextField();
-		txtbuscar.setText("Nombres, apellidos, identidad y sexo");
+		txtbuscar.setText("Usuario, nombres y apellidos");
 		txtbuscar.setForeground(Color.GRAY);
 		txtbuscar.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		txtbuscar.setBounds(68, 10, 379, 27);
@@ -144,8 +148,14 @@ public class usuario_tabla extends JFrame {
 		getContentPane().add(panel_tabla);
 		
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 10, 970, 420);
+		scrollPane.setBounds(10, 10, 970, 370);
 		panel_tabla.add(scrollPane);
+		
+		lblresultado_busqueda = new JLabel("Registros: 2");
+		lblresultado_busqueda.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblresultado_busqueda.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblresultado_busqueda.setBounds(746, 390, 222, 27);
+		panel_tabla.add(lblresultado_busqueda);
 		
 		setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 		addWindowListener(new java.awt.event.WindowAdapter() {
@@ -184,7 +194,8 @@ public class usuario_tabla extends JFrame {
 				
 		
 		scrollPane.setViewportView(tablaUsuarios);
-
+		
+		
 				
 	}//class
 	
@@ -197,24 +208,27 @@ public class usuario_tabla extends JFrame {
 			System.exit(0);
 	}
 	
-	private void filtro() {
-        String filtroTexto = txtbuscar.getText();
-        if (trsfiltroCodigo != null) {
-            trsfiltroCodigo.setRowFilter(RowFilter.regexFilter("(?i)" + filtroTexto, 1, 2));  
-        }
-    }
+	 private void actualizarConteoRegistros() {
+	        int registrosVisibles = tablaUsuarios.getRowCount(); // Obtiene el número de filas visibles en la tabla
+	        lblresultado_busqueda.setText("Registros: " + registrosVisibles);
+	    }
+
+	
+	
 	
 	
 	public void construirTabla() {
 	    // Crear modelo de la tabla
 	    DefaultTableModel modelo = new DefaultTableModel();
-	    modelo.addColumn("ID");
+	    modelo.addColumn("No.");
 	    modelo.addColumn("Usuario");
 	    modelo.addColumn("Nombres");
 	    modelo.addColumn("Apellidos");
 	    modelo.addColumn("Correo");
 	    modelo.addColumn("Contraseña");
 
+	    
+	    
 	    // Inicializar la tabla con el modelo
 	    tablaUsuarios = new JTable(modelo) {
 	        @Override
@@ -234,10 +248,14 @@ public class usuario_tabla extends JFrame {
 	    tablaUsuarios.getTableHeader().setOpaque(false);
 	    tablaUsuarios.getTableHeader().setBackground(new Color(32, 136, 203));
 	    tablaUsuarios.getTableHeader().setForeground(Color.WHITE);
+	    
+	    tablaUsuarios.getColumnModel().getColumn(0).setPreferredWidth(1); // Número
 
 	    // Usar la referencia directa al JScrollPane
 	    scrollPane.setViewportView(tablaUsuarios);
 
+	    actualizarConteoRegistros();
+	    
 	    // Agregar el MouseListener a la tabla
 	    tablaUsuarios.addMouseListener(new MouseAdapter() {
 	        @Override
@@ -301,6 +319,16 @@ public class usuario_tabla extends JFrame {
 	        }
 	    }
 	}
+	
+	
+	private void filtro() {
+        String filtroTexto = txtbuscar.getText();
+        if (trsfiltroCodigo != null) {
+            trsfiltroCodigo.setRowFilter(RowFilter.regexFilter("(?i)" + filtroTexto, 1, 2));  
+        }
+        actualizarConteoRegistros();
+        
+    }
 
 
 

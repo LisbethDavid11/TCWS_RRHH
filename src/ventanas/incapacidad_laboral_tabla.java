@@ -28,6 +28,7 @@ public class incapacidad_laboral_tabla extends JFrame {
     private JTextField txtbuscar;
     private TableRowSorter<DefaultTableModel> trsfiltroCodigo;
     public JButton btnactualizar, btnregresar, btnnuevo, btneliminar;
+    public JLabel lblresultado_busqueda;
 
     public incapacidad_laboral_tabla() {
     	getContentPane().setBackground(new Color(255, 255, 255));
@@ -54,11 +55,17 @@ public class incapacidad_laboral_tabla extends JFrame {
         getContentPane().add(panel_tabla);
 
         scrollPane = new JScrollPane();
-        scrollPane.setBounds(10, 10, 970, 420);
+        scrollPane.setBounds(10, 10, 970, 370);
         panel_tabla.add(scrollPane);
 
         table = new JTable();
         scrollPane.setViewportView(table);
+        
+        lblresultado_busqueda = new JLabel("");
+        lblresultado_busqueda.setHorizontalAlignment(SwingConstants.RIGHT);
+        lblresultado_busqueda.setFont(new Font("Tahoma", Font.BOLD, 13));
+        lblresultado_busqueda.setBounds(746, 390, 222, 27);
+        panel_tabla.add(lblresultado_busqueda);
 
         JPanel panelbusqueda = new JPanel();
         panelbusqueda.setLayout(null);
@@ -274,13 +281,26 @@ public class incapacidad_laboral_tabla extends JFrame {
         
         
     }//class
+    
+    
+    private void actualizarConteoRegistros() {
+        int registrosVisibles = table.getRowCount(); // Obtiene el número de filas visibles en la tabla
+        lblresultado_busqueda.setText("Registros: " + registrosVisibles);
+    }
+    
+    
+    
 
     private void filtro() {
         String filtroTexto = txtbuscar.getText();
         if (trsfiltroCodigo != null) {
             trsfiltroCodigo.setRowFilter(RowFilter.regexFilter("(?i)" + filtroTexto, 1, 2, 3, 4));  
         }
+        actualizarConteoRegistros();
+        
     }
+    
+    
 
     public void construirTabla() {
         String[] titulos = { 
@@ -314,6 +334,8 @@ public class incapacidad_laboral_tabla extends JFrame {
         table.setRowSorter(trsfiltroCodigo); 
 
         scrollPane.setViewportView(table);
+        
+        actualizarConteoRegistros();
 
         table.addMouseListener(new MouseAdapter() {
             @Override
@@ -513,6 +535,8 @@ public class incapacidad_laboral_tabla extends JFrame {
         } else {
             trsfiltroCodigo.setRowFilter(null); 
         }
+        
+        actualizarConteoRegistros();
     }
 
     @SuppressWarnings("unused")

@@ -47,6 +47,7 @@ import consultas.consultas_areas;
 import consultas.consultas_cargos;
 import consultas.consultas_vacaciones;
 import principal.menu_principal;
+import reportes.reporte_vacaciones_individual;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -68,6 +69,7 @@ public class vacaciones_tabla extends JFrame {
     public JButton btneliminar;
     
     private final String placeHolderText = "Id empleado, nombres, apellidos e identidad"; // Placeholder definido
+    public JLabel lblresultado_busqueda;
 
 
     @SuppressWarnings("unchecked")
@@ -94,11 +96,17 @@ public class vacaciones_tabla extends JFrame {
         getContentPane().add(panel_tabla);
 
         scrollPane = new JScrollPane();
-        scrollPane.setBounds(10, 10, 970, 420);
+        scrollPane.setBounds(10, 10, 970, 370);
         panel_tabla.add(scrollPane);
 
         table = new JTable();
         scrollPane.setViewportView(table);
+        
+        lblresultado_busqueda = new JLabel("Registros: 2");
+        lblresultado_busqueda.setHorizontalAlignment(SwingConstants.RIGHT);
+        lblresultado_busqueda.setFont(new Font("Tahoma", Font.BOLD, 13));
+        lblresultado_busqueda.setBounds(746, 390, 222, 27);
+        panel_tabla.add(lblresultado_busqueda);
 
         JPanel panelbusqueda = new JPanel();
         panelbusqueda.setLayout(null);
@@ -244,6 +252,7 @@ public class vacaciones_tabla extends JFrame {
                 formulario.setVisible(true);
                 formulario.setLocationRelativeTo(null);
                 formulario.chxeditar.setVisible(false);
+                formulario.lblmensaje.setVisible(false);
                 setVisible(false);
             }
         });
@@ -292,17 +301,63 @@ public class vacaciones_tabla extends JFrame {
         btneliminar.setFont(new Font("Tahoma", Font.BOLD, 10));
         btneliminar.setBounds(263, 17, 90, 23);
         panelbotones.add(btneliminar);
+        
+        JButton btnimprimir = new JButton("Imprimir");
+        btnimprimir.addActionListener(e -> {
+            int filaSeleccionada = table.getSelectedRow();
+            if (filaSeleccionada == -1) {
+                JOptionPane.showMessageDialog(null, "Por favor, seleccione una fila para continuar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // Obtener datos de la fila seleccionada
+            int filaModelo = table.convertRowIndexToModel(filaSeleccionada); // Convertir índice para respetar el filtro
+            String nombreEmpleado = table.getValueAt(filaModelo, 2).toString();
+            String apellidosEmpleado = table.getValueAt(filaModelo, 3).toString();
+            String identidadEmpleado = table.getValueAt(filaModelo, 4).toString();
+            String cargoEmpleado = table.getValueAt(filaModelo, 7).toString();
+            String areaEmpleado = table.getValueAt(filaModelo, 8).toString();
+            int diasCorrespondientes = Integer.parseInt(table.getValueAt(filaModelo, 11).toString());
+            String fechaInicio = table.getValueAt(filaModelo, 12).toString();
+            String fechaFinalizacion = table.getValueAt(filaModelo, 13).toString();
+            int totalDias = Integer.parseInt(table.getValueAt(filaModelo, 14).toString());
+            int diasPendientes = Integer.parseInt(table.getValueAt(filaModelo, 15).toString());
+            String pagadas = table.getValueAt(filaModelo, 18).toString();
+            String nombreExtiende = table.getValueAt(filaModelo, 19).toString(); // Nueva columna
+            String cargoExtiende = table.getValueAt(filaModelo, 20).toString();  // Nueva columna
+
+            // Generar el reporte
+            reporte_vacaciones_individual reporte = new reporte_vacaciones_individual();
+            reporte.generarReporte(nombreEmpleado, apellidosEmpleado, identidadEmpleado, cargoEmpleado, areaEmpleado,
+                    diasCorrespondientes, fechaInicio, fechaFinalizacion, totalDias, diasPendientes, pagadas, nombreExtiende, cargoExtiende);
+        });
+
+
+        btnimprimir.setToolTipText("Imprimir registro");
+        btnimprimir.setFont(new Font("Tahoma", Font.BOLD, 10));
+        btnimprimir.setBounds(163, 18, 90, 23);
+        panelbotones.add(btnimprimir);
 
         construirTabla(); 
         cargarCargosEnComboBox();
         cargarAreasEnComboBox();
     }
+    
+    
+    private void actualizarConteoRegistros() {
+        int registrosVisibles = table.getRowCount(); // Obtiene el número de filas visibles en la tabla
+        lblresultado_busqueda.setText("Registros: " + registrosVisibles);
+    }
+
+    
 
     private void filtro() {
         String filtroTexto = txtbuscar.getText();
         if (trsfiltroCodigo != null) {
             trsfiltroCodigo.setRowFilter(RowFilter.regexFilter("(?i)" + filtroTexto, 2, 3, 4));  // Filtro en columnas Nombres, Apellidos, Identidad
         }
+        
+        actualizarConteoRegistros();
     }
     
     
@@ -347,13 +402,18 @@ public class vacaciones_tabla extends JFrame {
  	            RowFilter<Object, Object> combinedFilter = RowFilter.andFilter(filtros);
  	            trsfiltroCodigo.setRowFilter(combinedFilter);
  	        }
+ 	        
+ 	       actualizarConteoRegistros();
  	    }
+ 		
+ 		
 
+    @SuppressWarnings("serial")
     public void construirTabla() {
         String[] titulos = { 
             "No", "Id", "Nombres", "Apellidos", "Identidad", "Teléfono", "Correo", "Cargo", "Área",
-            "Sexo", "Edad", "Correspondientes", "Inicio", "Fin", "Tomados", "Pendientes", "Fecha", 
-            "Hora", "Pagadas"
+            "Sexo", "Edad", "Correspondientes", "Inicio", "Fin", "Tomados", "Disponibles", "Fecha", 
+            "Hora", "Pagadas", "Nombre Extiende", "Cargo Extiende" // Nuevas columnas
         };
 
         String[][] datos = obtenerDatosVacaciones(); 
@@ -375,13 +435,14 @@ public class vacaciones_tabla extends JFrame {
         table.getColumnModel().getColumn(0).setPreferredWidth(40);  
         table.getColumnModel().getColumn(1).setPreferredWidth(40);  
         table.getColumnModel().getColumn(10).setPreferredWidth(50);
-        
 
         trsfiltroCodigo = new TableRowSorter<>(modeloTabla);
         table.setRowSorter(trsfiltroCodigo); 
 
         scrollPane.setViewportView(table);
 
+        actualizarConteoRegistros();
+        
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -397,7 +458,7 @@ public class vacaciones_tabla extends JFrame {
 
     public static String[][] obtenerDatosVacaciones() {
         ArrayList<vacaciones> lista = buscarVacaciones(); 
-        String[][] datos = new String[lista.size()][19]; 
+        String[][] datos = new String[lista.size()][21]; // Cambiar tamaño a 21 para incluir nuevas columnas
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
 
@@ -416,24 +477,27 @@ public class vacaciones_tabla extends JFrame {
             datos[i][9] = vacacion.getSexo_empleado();
             datos[i][10] = String.valueOf(vacacion.getEdad_empleado());
             datos[i][11] = String.valueOf(vacacion.getDias_correspondientes());
-            datos[i][12] = dateFormat.format(vacacion.getFecha_inicio_v());
-            datos[i][13] = dateFormat.format(vacacion.getFecha_finalizacion_v());
+            datos[i][12] = vacacion.getFecha_inicio_v() != null ? dateFormat.format(vacacion.getFecha_inicio_v()) : "";
+            datos[i][13] = vacacion.getFecha_finalizacion_v() != null ? dateFormat.format(vacacion.getFecha_finalizacion_v()) : "";
             datos[i][14] = String.valueOf(vacacion.getTotal_dias());
-            datos[i][15] = String.valueOf(vacacion.getDias_pendientes());
+            datos[i][15] = String.valueOf(vacacion.getDias_correspondientes() - vacacion.getTotal_dias());
             datos[i][16] = dateFormat.format(vacacion.getFecha_actual());
             datos[i][17] = vacacion.getHora_actual().toString();
             datos[i][18] = vacacion.getPagadas();
+            datos[i][19] = vacacion.getExtendido(); // Nueva columna
+            datos[i][20] = vacacion.getCargo_ext();  // Nueva columna
         }
 
         return datos;  
     }
+
     
     public static ArrayList<vacaciones> buscarVacaciones() {
         ArrayList<vacaciones> lista = new ArrayList<>();
         conexion con = new conexion();
         Connection cn = con.conectar();
 
-        String sql = "SELECT * FROM vacaciones";
+        String sql = "SELECT *, extendido, cargo_ext FROM vacaciones"; // Asegúrate de que estas columnas existen en la tabla
 
         try (Statement stmt = cn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -460,6 +524,8 @@ public class vacaciones_tabla extends JFrame {
                 vacacion.setFecha_actual(rs.getDate("fecha_actual"));
                 vacacion.setHora_actual(rs.getTime("hora_actual"));
                 vacacion.setPagadas(rs.getString("pagadas"));
+                vacacion.setExtendido(rs.getString("extendido")); // Nueva columna
+                vacacion.setCargo_ext(rs.getString("cargo_ext"));  // Nueva columna
 
                 lista.add(vacacion);
             }
@@ -475,6 +541,7 @@ public class vacaciones_tabla extends JFrame {
 
         return lista;
     }
+
 
 
     
@@ -505,17 +572,16 @@ public class vacaciones_tabla extends JFrame {
             String fechaFinalizacionStr = table.getModel().getValueAt(filaModelo, 13).toString();
 
             try {
-                if (fechaInicioStr != null && fechaInicioStr.length() >= 8) {
+                if (fechaInicioStr != null && !fechaInicioStr.isEmpty()) {
                     formulario.fecha_inicio_v.setDate(dateFormat.parse(fechaInicioStr));
                 }
-
-                if (fechaFinalizacionStr != null && fechaFinalizacionStr.length() >= 8) {
+                if (fechaFinalizacionStr != null && !fechaFinalizacionStr.isEmpty()) {
                     formulario.fecha_finalizacion_v.setDate(dateFormat.parse(fechaFinalizacionStr));
                 }
             } catch (ParseException e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Error al convertir la fecha. Verifique el formato de las fechas.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Error al convertir las fechas. Verifique el formato.", "Error", JOptionPane.ERROR_MESSAGE);
             }
+
 
             String pagadas = table.getModel().getValueAt(filaModelo, 17).toString();
             if ("Si".equalsIgnoreCase(pagadas)) {

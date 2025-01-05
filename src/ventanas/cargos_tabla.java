@@ -56,6 +56,8 @@ public class cargos_tabla extends JFrame{
 	public JTable tablaCargos; 
 	public JScrollPane scrollPane;
 	private final String placeHolderText = "Nombre del cargo y fecha";
+	public JLabel lblresultado_busqueda;
+	
 	
 	
 	
@@ -67,7 +69,7 @@ public class cargos_tabla extends JFrame{
 		getContentPane().setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		setBackground(Color.WHITE);
 		setForeground(Color.BLACK);
-		setBounds(100, 100, 684, 350);
+		setBounds(100, 100, 1050, 630);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(null);
 		getContentPane().setLayout(null);
@@ -83,13 +85,13 @@ public class cargos_tabla extends JFrame{
 		JLabel lbltitulo = new JLabel("CARGOS REGISTRADOS");
 		lbltitulo.setHorizontalAlignment(SwingConstants.LEFT);
 		lbltitulo.setFont(new Font("Segoe UI", Font.BOLD, 26));
-		lbltitulo.setBounds(10, 20, 304, 24);
+		lbltitulo.setBounds(10, 25, 360, 24);
 		getContentPane().add(lbltitulo);
 		
 		JPanel panelbotones = new JPanel();
 		panelbotones.setLayout(null);
 		panelbotones.setBackground(SystemColor.menu);
-		panelbotones.setBounds(314, 10, 346, 56);
+		panelbotones.setBounds(418, 10, 608, 56);
 		getContentPane().add(panelbotones);
 		
 		JButton btnMenu = new JButton("Menú");
@@ -104,7 +106,7 @@ public class cargos_tabla extends JFrame{
 		btnMenu.setToolTipText("Regresar al menú principal");
 		btnMenu.setFont(new Font("Tahoma", Font.BOLD, 10));
 		btnMenu.setBackground(UIManager.getColor("Button.highlight"));
-		btnMenu.setBounds(10, 17, 90, 23);
+		btnMenu.setBounds(32, 23, 90, 23);
 		panelbotones.add(btnMenu);
 		
 		JButton btnNuevoEmpleado = new JButton("Nuevo");
@@ -121,7 +123,7 @@ public class cargos_tabla extends JFrame{
 		btnNuevoEmpleado.setToolTipText("Nuevo registro");
 		btnNuevoEmpleado.setFont(new Font("Tahoma", Font.BOLD, 10));
 		btnNuevoEmpleado.setBackground(UIManager.getColor("Button.highlight"));
-		btnNuevoEmpleado.setBounds(246, 17, 90, 23);
+		btnNuevoEmpleado.setBounds(497, 23, 90, 23);
 		panelbotones.add(btnNuevoEmpleado);
 		
 		JButton btneliminar = new JButton("Eliminar");
@@ -133,20 +135,20 @@ public class cargos_tabla extends JFrame{
 		btneliminar.setToolTipText("Eliminar registro");
 		btneliminar.setFont(new Font("Tahoma", Font.BOLD, 10));
 		btneliminar.setBackground(UIManager.getColor("Button.highlight"));
-		btneliminar.setBounds(151, 17, 90, 23);
+		btneliminar.setBounds(402, 23, 90, 23);
 		panelbotones.add(btneliminar);
 		
 		JPanel panelbusqueda = new JPanel();
 		panelbusqueda.setLayout(null);
 		panelbusqueda.setBackground(SystemColor.menu);
-		panelbusqueda.setBounds(10, 66, 650, 46);
+		panelbusqueda.setBounds(10, 66, 1016, 46);
 		getContentPane().add(panelbusqueda);
 		
 		txtb = new JTextField();
 		txtb.setForeground(Color.GRAY);
 		txtb.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		txtb.setColumns(10);
-		txtb.setBounds(68, 10, 271, 27);
+		txtb.setBounds(68, 10, 311, 27);
 		panelbusqueda.add(txtb);
 		
 		
@@ -184,12 +186,18 @@ public class cargos_tabla extends JFrame{
 		JPanel panel_1 = new JPanel();
 		panel_1.setLayout(null);
 		panel_1.setBackground(SystemColor.menu);
-		panel_1.setBounds(10, 118, 650, 180);
+		panel_1.setBounds(10, 118, 1016, 452);
 		getContentPane().add(panel_1);
 		
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 10, 630, 160);
+		scrollPane.setBounds(10, 10, 996, 370);
 		panel_1.add(scrollPane);
+		
+		lblresultado_busqueda = new JLabel("");
+		lblresultado_busqueda.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblresultado_busqueda.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblresultado_busqueda.setBounds(785, 402, 210, 27);
+		panel_1.add(lblresultado_busqueda);
 		
 		
 		txtb.setText(placeHolderText);
@@ -252,6 +260,8 @@ public class cargos_tabla extends JFrame{
 	    tablaCargos.getColumnModel().getColumn(1).setPreferredWidth(50);
 
 	    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+	    
+	    actualizarConteoRegistros();
 
 	    tablaCargos.addMouseListener(new MouseAdapter() {
 	        @Override
@@ -331,11 +341,27 @@ public class cargos_tabla extends JFrame{
 
         return matrizCargos;
     }
+    
+    
+    
+    
+    private void actualizarConteoRegistros() {
+	    int registrosVisibles = tablaCargos.getRowCount(); // Obtiene el número de filas visibles en la tabla
+	    lblresultado_busqueda.setText("Registros: " + registrosVisibles);
+	}
+    
+    
+    
 
     public void filtro() {
         filtroCodigo = txtb.getText();
         trsfiltroCodigo.setRowFilter(RowFilter.regexFilter("(?i)" + filtroCodigo, 1,2));
+        actualizarConteoRegistros();
     }
+    
+    
+    
+    
 	
     
     public void eliminar_cargos() {

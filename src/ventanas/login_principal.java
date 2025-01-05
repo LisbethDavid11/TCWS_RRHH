@@ -136,6 +136,8 @@ public class login_principal extends JFrame {
 				r.setLocationRelativeTo(null);
 				dispose();
 				r.btnregresar_tabla.setVisible(false);
+				r.btnpermisos.setVisible(false);
+				r.chkeditar.setVisible(false);
 			}
 				
 		});

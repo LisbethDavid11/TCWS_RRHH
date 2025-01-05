@@ -76,6 +76,7 @@ public class empleado_tabla extends JFrame {
     public JButton btneliminar;
     public JPanel panelbusqueda;
     private final String placeHolderText = "Nombres, apellidos, identidad, estado civil y teléfono"; 
+    public JLabel lblresultado_busqueda;
 
     public empleado_tabla() {
     	setType(Type.UTILITY);
@@ -190,8 +191,14 @@ public class empleado_tabla extends JFrame {
         contentPane.add(panel_1);
 
         scrollPane = new JScrollPane();
-        scrollPane.setBounds(10, 10, 970, 420);
+        scrollPane.setBounds(10, 10, 970, 370);
         panel_1.add(scrollPane);
+        
+        lblresultado_busqueda = new JLabel("");
+        lblresultado_busqueda.setHorizontalAlignment(SwingConstants.RIGHT);
+        lblresultado_busqueda.setFont(new Font("Tahoma", Font.BOLD, 13));
+        lblresultado_busqueda.setBounds(744, 390, 222, 27);
+        panel_1.add(lblresultado_busqueda);
 
         JLabel lbltitulo = new JLabel("EMPLEADOS REGISTRADOS");
         lbltitulo.setHorizontalAlignment(SwingConstants.LEFT);
@@ -359,9 +366,15 @@ public class empleado_tabla extends JFrame {
         
     }//class
 
+    private void actualizarConteoRegistros() {
+        int registrosVisibles = table.getRowCount(); // Obtiene el número de filas visibles en la tabla
+        lblresultado_busqueda.setText("Registros: " + registrosVisibles);
+    }
+
   
     
-    public void construirTabla() {
+    @SuppressWarnings("serial")
+	public void construirTabla() {
         // Definir títulos de las columnas
         String titulos[] = { 
             "No", "Id", "Identidad", "Nombres", "Apellidos", "Sexo", "Nacimiento", 
@@ -373,7 +386,8 @@ public class empleado_tabla extends JFrame {
         String informacion[][] = obtenerMatriz(); // Método debe estar implementado en esta clase
 
         // Crear modelo de tabla no editable
-        DefaultTableModel modeloTabla = new DefaultTableModel(informacion, titulos) {
+        @SuppressWarnings("serial")
+		DefaultTableModel modeloTabla = new DefaultTableModel(informacion, titulos) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // Deshabilitar edición de celdas
@@ -408,6 +422,8 @@ public class empleado_tabla extends JFrame {
 
         // Formato para las fechas
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
+        
+        actualizarConteoRegistros();
 
         // Agregar evento de doble clic
         table.addMouseListener(new MouseAdapter() {
@@ -502,11 +518,14 @@ public class empleado_tabla extends JFrame {
         if (filtros.isEmpty()) {
             trsfiltroCodigo.setRowFilter(null); 
         } else {
-        	
             RowFilter<Object, Object> combinedFilter = RowFilter.andFilter(filtros);
             trsfiltroCodigo.setRowFilter(combinedFilter);
         }
+
+        // Actualizar el conteo de registros visibles
+        actualizarConteoRegistros();
     }
+
     
     
 
@@ -592,8 +611,12 @@ public class empleado_tabla extends JFrame {
     public void filtro() {
         filtroCodigo = txtb.getText();
         trsfiltroCodigo.setRowFilter(RowFilter.regexFilter("(?i)" + filtroCodigo, 2, 3, 4, 7, 9));
+
+        // Actualizar el conteo de registros visibles
+        actualizarConteoRegistros();
     }
     
+
     private void cerrar_ventana() {
 		if (JOptionPane.showConfirmDialog(rootPane, "¿Desea salir del sistema?", "Salir del sistema",
 				JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
@@ -628,5 +651,4 @@ public class empleado_tabla extends JFrame {
 	    
 	    cbxbusquedaarea.setSelectedIndex(0);
 	}
-    
 }//end

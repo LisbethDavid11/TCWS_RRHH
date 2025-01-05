@@ -16,29 +16,20 @@ import ventanas.vacaciones_nuevo;
 
 public class consultas_vacaciones extends conexion {
 	
-	public boolean guardarVacaciones(vacaciones claseVacaciones, Date fechaActual, Date fechaInicio) {
-	    PreparedStatement ps = null;
+	public boolean guardarVacaciones(vacaciones claseVacaciones) {
 	    Connection con = null;
+	    PreparedStatement ps = null;
 
 	    try {
-	        con = conectar();
-	        
-	        int diasTomadosPrevios = obtenerDiasTomados(claseVacaciones.getId_empleado());
-	        int diasCorrespondientes = claseVacaciones.getDias_correspondientes();
-	        int totalDiasNuevos = claseVacaciones.getTotal_dias();
-	        int diasPendientesActuales = diasCorrespondientes - diasTomadosPrevios - totalDiasNuevos;
-	        if (diasPendientesActuales < 0) {
-	            JOptionPane.showMessageDialog(null, "El empleado no tiene suficientes días disponibles.", "Error", JOptionPane.ERROR_MESSAGE);
-	            return false;
-	        }
-
-	        String sql = "INSERT INTO vacaciones (id_empleado, nombres_empleado, apellidos_empleado, identidad_empleado, "
-	                + "tel_empleado, correo_empleado, cargo_empleado, area_empleado, nacimiento_empleado, "
-	                + "sexo_empleado, edad_empleado, fecha_actual, hora_actual, antiguedad, dias_correspondientes, "
-	                + "fecha_inicio_v, fecha_finalizacion_v, total_dias, dias_pendientes, pagadas) "
-	                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	        con = new conexion().conectar();
+	        String sql = "INSERT INTO vacaciones (id_empleado, nombres_empleado, apellidos_empleado, identidad_empleado, " +
+	                     "tel_empleado, correo_empleado, cargo_empleado, area_empleado, nacimiento_empleado, sexo_empleado, " +
+	                     "edad_empleado, antiguedad, dias_correspondientes, total_dias, dias_pendientes, pagadas, " +
+	                     "fecha_inicio_v, fecha_finalizacion_v, extendido, cargo_ext, fecha_actual, hora_actual) " +
+	                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 	        ps = con.prepareStatement(sql);
+
 	        ps.setInt(1, claseVacaciones.getId_empleado());
 	        ps.setString(2, claseVacaciones.getNombres_empleado());
 	        ps.setString(3, claseVacaciones.getApellidos_empleado());
@@ -50,99 +41,79 @@ public class consultas_vacaciones extends conexion {
 	        ps.setDate(9, new java.sql.Date(claseVacaciones.getNacimiento_empleado().getTime()));
 	        ps.setString(10, claseVacaciones.getSexo_empleado());
 	        ps.setInt(11, claseVacaciones.getEdad_empleado());
-	        ps.setDate(12, new java.sql.Date(fechaActual.getTime()));
-	        ps.setTime(13, claseVacaciones.getHora_actual());
-	        ps.setInt(14, claseVacaciones.getAntiguedad());
-	        ps.setInt(15, diasCorrespondientes);  // Días correspondientes del empleado
-	        ps.setDate(16, new java.sql.Date(claseVacaciones.getFecha_inicio_v().getTime()));
-	        ps.setDate(17, new java.sql.Date(claseVacaciones.getFecha_finalizacion_v().getTime()));
-	        ps.setInt(18, totalDiasNuevos);  // Días que el empleado está tomando en esta ocasión
-	        ps.setInt(19, diasPendientesActuales);  // Días pendientes después de esta toma
-	        ps.setString(20, claseVacaciones.getPagadas());
+	        ps.setInt(12, claseVacaciones.getAntiguedad());
+	        ps.setInt(13, claseVacaciones.getDias_correspondientes());
+	        ps.setInt(14, claseVacaciones.getTotal_dias());
+	        ps.setInt(15, claseVacaciones.getDias_pendientes());
+	        ps.setString(16, claseVacaciones.getPagadas());
+	        ps.setDate(17, new java.sql.Date(claseVacaciones.getFecha_inicio_v().getTime()));
+	        ps.setDate(18, new java.sql.Date(claseVacaciones.getFecha_finalizacion_v().getTime()));
+	        ps.setString(19, claseVacaciones.getExtendido());
+	        ps.setString(20, claseVacaciones.getCargo_ext());
+	        ps.setDate(21, new java.sql.Date(claseVacaciones.getFecha_actual().getTime()));
+	        ps.setTime(22, claseVacaciones.getHora_actual());
+
 	        ps.executeUpdate();
 	        return true;
-
 	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        JOptionPane.showMessageDialog(null, "Error al guardar las vacaciones: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	        JOptionPane.showMessageDialog(null, "Error al guardar las vacaciones: " + e.getMessage());
 	        return false;
 	    } finally {
-	        try {
-	            if (ps != null) ps.close();
-	            if (con != null) con.close();
-	        } catch (SQLException ex) {
-	            ex.printStackTrace();
-	        }
+	        desconectar(con);
 	    }
 	}
 
 
-	// ESTA MAL ESTRUCTURADA LA CONSULTA
-	public boolean actualizarVacaciones(vacaciones_nuevo ventana) {
+	
+	
+	public boolean actualizarVacaciones(vacaciones claseVacaciones) {
 	    Connection con = null;
 	    PreparedStatement ps = null;
 
 	    try {
 	        con = new conexion().conectar();
-	        
-	        String sql = "UPDATE vacaciones SET " +
-	                     "id_empleado = ?, nombres_empleado = ?, apellidos_empleado = ?, identidad_empleado = ?, " +
-	                     "tel_empleado = ?, correo_empleado = ?, cargo_empleado = ?, area_empleado = ?, " +
-	                     "nacimiento_empleado = ?, sexo_empleado = ?, edad_empleado = ?, antiguedad = ?, " +
-	                     "dias_correspondientes = ?, fecha_inicio_v = ?, fecha_finalizacion_v = ?, total_dias = ?, " +
-	                     "dias_pendientes = ?, pagadas = ?, fecha_actual = ?, hora_actual = ? " +
-	                     "WHERE id_vacaciones = ?";
+	        String sql = "UPDATE vacaciones SET nombres_empleado = ?, apellidos_empleado = ?, identidad_empleado = ?, "
+	                   + "tel_empleado = ?, correo_empleado = ?, cargo_empleado = ?, area_empleado = ?, "
+	                   + "nacimiento_empleado = ?, sexo_empleado = ?, edad_empleado = ?, antiguedad = ?, "
+	                   + "dias_correspondientes = ?, total_dias = ?, dias_pendientes = ?, pagadas = ?, "
+	                   + "fecha_inicio_v = ?, fecha_finalizacion_v = ?, extendido = ?, cargo_ext = ?, "
+	                   + "fecha_actual = ?, hora_actual = ? WHERE id_empleado = ?";
 
 	        ps = con.prepareStatement(sql);
-	        ps.setInt(1, Integer.parseInt(ventana.txtid.getText()));  
-	        ps.setString(2, (String) ventana.cbxnombres.getSelectedItem());  
-	        ps.setString(3, ventana.txtapellidos.getText());  
-	        ps.setString(4, ventana.txtidentidad.getText()); 
-	        ps.setString(5, ventana.txttel.getText()); 
-	        ps.setString(6, ventana.txtcorreo.getText());  
-	        ps.setString(7, ventana.txtcargo.getText());  
-	        ps.setString(8, ventana.txtarea.getText());  
-	        ps.setDate(9, new java.sql.Date(ventana.fecha_nacimiento.getDate().getTime()));  
-	        ps.setString(10, ventana.txtsexo.getText()); 
-	        ps.setInt(11, Integer.parseInt(ventana.txtedad.getText()));  
-	        ps.setInt(12, Integer.parseInt(ventana.txtantiguedad.getText()));  
-	        ps.setInt(13, Integer.parseInt(ventana.txtdias_correspondientes.getText()));  
-	        ps.setDate(14, new java.sql.Date(ventana.fecha_inicio_v.getDate().getTime()));  
-	        ps.setDate(15, new java.sql.Date(ventana.fecha_finalizacion_v.getDate().getTime()));  
-	        ps.setInt(16, Integer.parseInt(ventana.txttotal_dias.getText()));  
-	        ps.setInt(17, Integer.parseInt(ventana.txtdias_pendientes.getText()));  
-	        
-	        // Manejo del campo "pagadas"
-	        ps.setString(18, ventana.radio_si.isSelected() ? "Si" : "No");
-	        
-	        ps.setDate(19, new java.sql.Date(new Date().getTime())); 
-	        ps.setTime(20, java.sql.Time.valueOf(ventana.txthora_actual.getText() + ":00")); 
-	        
-	        ps.setInt(21, Integer.parseInt(ventana.txtid_tabla.getText()));
+	        ps.setString(1, claseVacaciones.getNombres_empleado());
+	        ps.setString(2, claseVacaciones.getApellidos_empleado());
+	        ps.setString(3, claseVacaciones.getIdentidad_empleado());
+	        ps.setString(4, claseVacaciones.getTel_empleado());
+	        ps.setString(5, claseVacaciones.getCorreo_empleado());
+	        ps.setString(6, claseVacaciones.getCargo_empleado());
+	        ps.setString(7, claseVacaciones.getArea_empleado());
+	        ps.setDate(8, new java.sql.Date(claseVacaciones.getNacimiento_empleado().getTime()));
+	        ps.setString(9, claseVacaciones.getSexo_empleado());
+	        ps.setInt(10, claseVacaciones.getEdad_empleado());
+	        ps.setInt(11, claseVacaciones.getAntiguedad());
+	        ps.setInt(12, claseVacaciones.getDias_correspondientes());
+	        ps.setInt(13, claseVacaciones.getTotal_dias());
+	        ps.setInt(14, claseVacaciones.getDias_pendientes());
+	        ps.setString(15, claseVacaciones.getPagadas());
+	        ps.setDate(16, new java.sql.Date(claseVacaciones.getFecha_inicio_v().getTime()));
+	        ps.setDate(17, new java.sql.Date(claseVacaciones.getFecha_finalizacion_v().getTime()));
+	        ps.setString(18, claseVacaciones.getExtendido());
+	        ps.setString(19, claseVacaciones.getCargo_ext());
+	        ps.setDate(20, new java.sql.Date(claseVacaciones.getFecha_actual().getTime()));
+	        ps.setTime(21, claseVacaciones.getHora_actual());
+	        ps.setInt(22, claseVacaciones.getId_empleado());
 
-	        int resultado = ps.executeUpdate();
-
-	        if (resultado > 0) {
-	            JOptionPane.showMessageDialog(null, "Vacaciones actualizadas correctamente.");
-	            return true;
-	        } else {
-	            JOptionPane.showMessageDialog(null, "No se pudo actualizar el registro.");
-	            return false;
-	        }
-
+	        int rowsUpdated = ps.executeUpdate();
+	        return rowsUpdated > 0;
 	    } catch (SQLException e) {
-	        e.printStackTrace();
+	        JOptionPane.showMessageDialog(null, "Error al actualizar las vacaciones: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 	        return false;
 	    } finally {
-	        if (ps != null) {
-	            try {
-	                ps.close();
-	            } catch (SQLException e) {
-	                e.printStackTrace();
-	            }
-	        }
-	        if (con != null) {
-	            new conexion().desconectar(con);
+	        try {
+	            if (ps != null) ps.close();
+	            if (con != null) con.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
 	        }
 	    }
 	}
@@ -183,7 +154,7 @@ public class consultas_vacaciones extends conexion {
 	}
 
 	
-	public int cargarDiasPendientes(String nombreEmpleado) {
+	public int cargarDiasPendientes(int idEmpleado) {
 	    Connection con = null;
 	    PreparedStatement ps = null;
 	    ResultSet rs = null;
@@ -192,25 +163,20 @@ public class consultas_vacaciones extends conexion {
 	    try {
 	        con = new conexion().conectar();
 
-	        String sql = "SELECT SUM(total_dias) AS dias_tomados FROM vacaciones WHERE nombres_empleado = ?";
+	        // Obtener los días pendientes del último registro de vacaciones del empleado
+	        String sql = "SELECT dias_pendientes FROM vacaciones " +
+	                     "WHERE id_empleado = ? " +
+	                     "ORDER BY fecha_finalizacion_v DESC LIMIT 1";
 	        ps = con.prepareStatement(sql);
-	        ps.setString(1, nombreEmpleado);
+	        ps.setInt(1, idEmpleado);
 	        rs = ps.executeQuery();
 
-	        int diasTomados = 0;
 	        if (rs.next()) {
-	            diasTomados = rs.getInt("dias_tomados");
-	        }
-
-	        int diasCorrespondientes = obtenerDiasCorrespondientes(nombreEmpleado);
-	        diasPendientes = diasCorrespondientes - diasTomados;
-	        
-	        if (diasPendientes < 0) {
-	            diasPendientes = 0;
+	            diasPendientes = rs.getInt("dias_pendientes");
 	        }
 
 	    } catch (SQLException e) {
-	        JOptionPane.showMessageDialog(null, "Error al calcular los días pendientes: " + e.getMessage());
+	        JOptionPane.showMessageDialog(null, "Error al cargar los días pendientes: " + e.getMessage());
 	    } finally {
 	        try {
 	            if (rs != null) rs.close();
@@ -221,8 +187,9 @@ public class consultas_vacaciones extends conexion {
 	        }
 	    }
 
-	    return diasPendientes;  // Devolver el valor calculado
+	    return diasPendientes;
 	}
+
 
 	
 	
@@ -234,7 +201,7 @@ public class consultas_vacaciones extends conexion {
 	    ResultSet rs = null;
 
 	    try {
-	        con = new conexion().conectar();
+	        con = conectar();
 	        String sql = "SELECT SUM(total_dias) AS dias_tomados FROM vacaciones WHERE id_empleado = ?";
 	        ps = con.prepareStatement(sql);
 	        ps.setInt(1, idEmpleado);
@@ -245,6 +212,7 @@ public class consultas_vacaciones extends conexion {
 	        }
 	    } catch (SQLException e) {
 	        JOptionPane.showMessageDialog(null, "Error al obtener los días tomados: " + e.getMessage());
+	        e.printStackTrace();
 	    } finally {
 	        try {
 	            if (rs != null) rs.close();
@@ -257,6 +225,40 @@ public class consultas_vacaciones extends conexion {
 
 	    return diasTomados;
 	}
+	
+
+	public int obtenerDiasPendientesUltimoRegistro(int idEmpleado) {
+	    Connection con = null;
+	    int diasPendientes = -1;
+
+	    try {
+	        con = new conexion().conectar();
+
+	        // Consulta para obtener el último registro del empleado
+	        String sql = "SELECT dias_pendientes FROM vacaciones WHERE id_empleado = ? ORDER BY fecha_finalizacion_v DESC LIMIT 1";
+	        try (PreparedStatement ps = con.prepareStatement(sql)) {
+	            ps.setInt(1, idEmpleado);
+	            try (ResultSet rs = ps.executeQuery()) {
+	                if (rs.next()) {
+	                    diasPendientes = rs.getInt("dias_pendientes");
+	                }
+	            }
+	        }
+	    } catch (SQLException e) {
+	        JOptionPane.showMessageDialog(null, "Error al obtener los días pendientes del último registro: " + e.getMessage(),
+	                "Error", JOptionPane.ERROR_MESSAGE);
+	        e.printStackTrace();
+	    } finally {
+	       // cerrarConexion(con);
+	    }
+
+	    return diasPendientes;
+	}
+
+	
+	
+
+
 
 	    
 	    

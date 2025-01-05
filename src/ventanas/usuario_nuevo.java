@@ -21,12 +21,15 @@ import javax.swing.JButton;
 import javax.swing.UIManager;
 
 import clases.usuarioC;
+import clases.validaciones;
 import consultas.consultas_usuario;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
 import javax.swing.JCheckBox;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class usuario_nuevo extends JFrame {
 	public JTextField txtnombres;
@@ -107,6 +110,12 @@ public class usuario_nuevo extends JFrame {
 		panelDatos.add(lbln);
 		
 		txtnombres = new JTextField(10);
+		txtnombres.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+		       validaciones.validarNombresyApellidos(e, txtnombres, 70);
+			}
+		});
 		txtnombres.setBounds(228, 28, 212, 33);
 		txtnombres.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		panelDatos.add(txtnombres);
@@ -129,6 +138,12 @@ public class usuario_nuevo extends JFrame {
 		panelDatos.add(btnactualizar);
 		
 		txtapellidos = new JTextField(10);
+		txtapellidos.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				validaciones.validarNombresyApellidos(e, txtapellidos, 70);
+			}
+		});
 		txtapellidos.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtapellidos.setBounds(228, 71, 212, 33);
 		panelDatos.add(txtapellidos);
@@ -169,18 +184,6 @@ public class usuario_nuevo extends JFrame {
 		lbllineas.setFont(new Font("Tahoma", Font.BOLD, 14));
 		lbllineas.setBounds(21, 187, 454, 28);
 		panelDatos.add(lbllineas);
-		
-		JLabel lblnota1 = new JLabel("Nota: el correo electrónico es para la");
-		lblnota1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblnota1.setFont(new Font("Tahoma", Font.ITALIC, 9));
-		lblnota1.setBounds(228, 146, 212, 33);
-		panelDatos.add(lblnota1);
-		
-		JLabel lblnota2 = new JLabel("recuperación de la contraseña.");
-		lblnota2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblnota2.setFont(new Font("Tahoma", Font.ITALIC, 9));
-		lblnota2.setBounds(228, 163, 212, 23);
-		panelDatos.add(lblnota2);
 		
 		pscontra = new JPasswordField();
 		pscontra.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -239,6 +242,8 @@ public class usuario_nuevo extends JFrame {
 				roles_nuevo r = new roles_nuevo();
 				r.setVisible(true);
 				r.setLocationRelativeTo(null);
+				r.chxeditar.setVisible(false);
+				r.btnactualizar.setVisible(false);
 				dispose();
 
 			}
@@ -416,7 +421,7 @@ public class usuario_nuevo extends JFrame {
 
 	    // Verificar si el usuario ya existe en la base de datos
 	    if (consultas.usuarioExiste(usuario.getUsuario())) {
-	    	JOptionPane.showMessageDialog(this, "El usuario ya existe en otro registro", "Advertencia", JOptionPane.WARNING_MESSAGE);
+	    	//JOptionPane.showMessageDialog(this, "El usuario ya existe en otro registro", "Advertencia", JOptionPane.WARNING_MESSAGE);
 	        return;
 	    }
 

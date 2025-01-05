@@ -224,6 +224,11 @@ public class roles_nuevo extends JFrame{
 		panel_botones.add(btnactualizar);
 		
 		 btnlimpiar = new JButton("Limpiar");
+		 btnlimpiar.addActionListener(new ActionListener() {
+		 	public void actionPerformed(ActionEvent e) {
+		 		limpiarCampos();
+		 	}
+		 });
 		btnlimpiar.setToolTipText("Limpiar registro");
 		btnlimpiar.setFont(new Font("Tahoma", Font.BOLD, 10));
 		btnlimpiar.setBackground(UIManager.getColor("Button.light"));
@@ -251,7 +256,7 @@ public class roles_nuevo extends JFrame{
 		chxeditar.setBounds(164, 17, 105, 21);
 		panel_botones.add(chxeditar);
 		
-		JLabel lblRolesYPermisos = new JLabel("ROLES Y PERMISOS PARA USUARIOS");
+		JLabel lblRolesYPermisos = new JLabel("DATOS DE LOS ROLES Y PERMISOS");
 		lblRolesYPermisos.setHorizontalAlignment(SwingConstants.LEFT);
 		lblRolesYPermisos.setFont(new Font("Segoe UI", Font.BOLD, 26));
 		lblRolesYPermisos.setBackground(new Color(255, 153, 0));
@@ -396,10 +401,9 @@ public class roles_nuevo extends JFrame{
 	    }
 	    
 	    
-	    
 	    public void actualizarRol() {
 	        if (cbxusuario.getSelectedIndex() == 0) { // Verificar si se seleccionó un usuario válido
-	            JOptionPane.showMessageDialog(this, "Por favor, seleccione un usuario válido.");
+	            JOptionPane.showMessageDialog(this, "Por favor, seleccione un usuario válido.", "Error", JOptionPane.WARNING_MESSAGE);
 	            return;
 	        }
 
@@ -408,50 +412,67 @@ public class roles_nuevo extends JFrame{
 	        String contrasena = txtcontra.getText().trim();
 	        String nombreRol = txtrol.getText().trim();
 	        String descripcion = txadescripcion.getText().trim();
-	        boolean empleados = chkempleados.isSelected();
-	        boolean permisos = chkpermisos.isSelected();
-	        boolean incapacidades = chkincapacidades.isSelected();
-	        boolean vacaciones = chkvacaciones.isSelected();
-	        boolean cargos = chkcargos.isSelected();
-	        boolean areas = chkareas.isSelected();
-	        boolean reportes = chkreportes.isSelected();
-	        boolean respaldos = chkrespaldos.isSelected();
-	        boolean usuarios = chkusuarios.isSelected();
+	        boolean empleados = chkempleados.isSelected();            // permisos_empleados
+	        boolean ausenciaLaboral = chkpermisos.isSelected();       // permisos_ausencia_laboral
+	        boolean incapacidades = chkincapacidades.isSelected();    
+	        boolean vacaciones = chkvacaciones.isSelected();          
+	        boolean cargos = chkcargos.isSelected();                  
+	        boolean areas = chkareas.isSelected();                    
+	        boolean reportes = chkreportes.isSelected();              
+	        boolean respaldos = chkrespaldos.isSelected();           
+	        boolean usuarios = chkusuarios.isSelected();              
 
 	        // Validar campos obligatorios
 	        if (contrasena.isEmpty()) {
-	            JOptionPane.showMessageDialog(this, "La contraseña no puede estar vacía.", "Error", JOptionPane.ERROR_MESSAGE);
+	            JOptionPane.showMessageDialog(this, "La contraseña no puede estar vacía", "Error", JOptionPane.ERROR_MESSAGE);
 	            return;
 	        }
-	        if (nombreRol.isEmpty() || descripcion.isEmpty()) {
-	            JOptionPane.showMessageDialog(this, "Todos los campos obligatorios deben ser completados.", "Error", JOptionPane.ERROR_MESSAGE);
+	        if (nombreRol.isEmpty()) {
+	            JOptionPane.showMessageDialog(this, "Debe ingresar un nombre para el rol", "Error", JOptionPane.ERROR_MESSAGE);
 	            return;
 	        }
 
-	        // Llamar a la consulta para actualizar
+	        // Llamar al método de la consulta para actualizar
 	        consultas_roles consultas = new consultas_roles();
-	        boolean actualizado = consultas.actualizarRol(
-	            usuario,
-	            contrasena,
-	            nombreRol,
-	            descripcion,
-	            empleados,
-	            permisos,
-	            incapacidades,
-	            vacaciones,
-	            cargos,
-	            areas,
-	            reportes,
-	            respaldos,
-	            usuarios
-	        );
+	        boolean actualizado = consultas.actualizarRol(usuario, contrasena, nombreRol, descripcion, empleados, ausenciaLaboral, incapacidades, vacaciones, cargos,
+	            areas, reportes, respaldos, usuarios);
 
+	        // Mostrar mensaje de éxito o error
 	        if (actualizado) {
-	            JOptionPane.showMessageDialog(this, "El rol fue actualizado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-	            dispose(); // Cerrar el formulario
+	            JOptionPane.showMessageDialog(this, "El rol se ha actualizado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+	           roles_tabla t = new roles_tabla();
+	           t.setVisible(true);
+	           t.setLocationRelativeTo(null);
+	           t.construirTabla();
+	           dispose();
+	            
 	        } else {
-	            JOptionPane.showMessageDialog(this, "Error al actualizar el rol. Intente nuevamente.", "Error", JOptionPane.ERROR_MESSAGE);
+	            JOptionPane.showMessageDialog(this, "Error al actualizar el rol. Intente nuevamente", "Error", JOptionPane.ERROR_MESSAGE);
 	        }
+	    }
+
+	    
+	    
+	    private void limpiarCampos() {
+	        // Restablecer los campos de texto
+	        txtcontra.setText("");
+	        txtrol.setText("");
+	        txadescripcion.setText("");
+
+	        // Restablecer la selección del JComboBox
+	        cbxusuario.setSelectedIndex(0);
+
+	        // Desmarcar todos los JCheckBox
+	        chkempleados.setSelected(false);
+	        chkpermisos.setSelected(false);
+	        chkincapacidades.setSelected(false);
+	        chkvacaciones.setSelected(false);
+	        chkcargos.setSelected(false);
+	        chkareas.setSelected(false);
+	        chkreportes.setSelected(false);
+	        chkrespaldos.setSelected(false);
+	        chkusuarios.setSelected(false);
+
 	    }
 	    
 	    

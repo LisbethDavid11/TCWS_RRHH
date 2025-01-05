@@ -104,7 +104,7 @@ public class incapacidad_laboral_nuevo extends JFrame {
         
         
 
-        JLabel lblIncapacidadLaboral = new JLabel("INCAPACIDAD POR AUSENCIA LABORAL");
+        JLabel lblIncapacidadLaboral = new JLabel("DATOS DE LA INCAPACIDAD ");
         lblIncapacidadLaboral.setHorizontalAlignment(SwingConstants.LEFT);
         lblIncapacidadLaboral.setFont(new Font("Segoe UI", Font.BOLD, 26));
         lblIncapacidadLaboral.setBackground(new Color(255, 153, 0));

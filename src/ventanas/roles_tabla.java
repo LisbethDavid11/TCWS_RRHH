@@ -37,6 +37,8 @@ public class roles_tabla extends JFrame {
 	 private JTable tablaRoles;
 	    private DefaultTableModel modeloTabla;
 	    private JScrollPane scrollPane;
+	    
+	    
 	
 	public roles_tabla() {
 		getContentPane().setBackground(new Color(255, 255, 255));
@@ -125,6 +127,33 @@ public class roles_tabla extends JFrame {
 		panelbotones.add(btnNuevoEmpleado);
 		
 		JButton btneliminar = new JButton("Eliminar");
+		btneliminar.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        int filaSeleccionada = tablaRoles.getSelectedRow();
+		        
+		        if (filaSeleccionada == -1) {
+		            JOptionPane.showMessageDialog(null, "Por favor, seleccione un registro para eliminar.", "Error", JOptionPane.ERROR_MESSAGE);
+		            return;
+		        }
+
+		        // Confirmar eliminación
+		        int confirmacion = JOptionPane.showConfirmDialog(null, "¿Está seguro de que desea eliminar este registro?", "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+		        if (confirmacion == JOptionPane.YES_OPTION) {
+		            String usuario = (String) modeloTabla.getValueAt(filaSeleccionada, 1); // Columna del Usuario (ajustar índice si es necesario)
+
+		            consultas_roles consultas = new consultas_roles();
+		            boolean eliminado = consultas.eliminarRol(usuario);
+
+		            if (eliminado) {
+		                modeloTabla.removeRow(filaSeleccionada); // Eliminar de la tabla
+		                JOptionPane.showMessageDialog(null, "Registro eliminado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+		            } else {
+		                JOptionPane.showMessageDialog(null, "Error al eliminar el registro", "Error", JOptionPane.ERROR_MESSAGE);
+		            }
+		        }
+		    }
+		});
+
 		btneliminar.setToolTipText("Eliminar registro");
 		btneliminar.setFont(new Font("Tahoma", Font.BOLD, 10));
 		btneliminar.setBackground(UIManager.getColor("Button.highlight"));
@@ -148,7 +177,7 @@ public class roles_tabla extends JFrame {
 	@SuppressWarnings("serial")
 	public void construirTabla() {
 	    // Crear el modelo de la tabla
-	    DefaultTableModel modeloTabla = new DefaultTableModel(
+		 modeloTabla = new DefaultTableModel(
 	        new Object[] {
 	            "No.", "Usuario", "Rol", "Descripción", "Empleados", "Permisos",
 	            "Incapacidades", "Vacaciones", "Cargos", "Áreas", "Reportes", "Respaldos",
@@ -161,8 +190,8 @@ public class roles_tabla extends JFrame {
 	        }
 	    };
 
-	    // Crear la tabla
-	    JTable tablaRoles = new JTable(modeloTabla);
+	    // Asignar la tabla a la variable global
+	    tablaRoles = new JTable(modeloTabla);
 	    tablaRoles.getTableHeader().setBackground(new Color(32, 136, 203)); // Encabezado azul
 	    tablaRoles.getTableHeader().setForeground(Color.WHITE);
 	    tablaRoles.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));

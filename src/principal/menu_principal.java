@@ -31,6 +31,8 @@ import reportes.reporte_empleados_general;
 import reportes.reporte_incapacidad_general;
 import reportes.reporte_permisos_general;
 import reportes.reporte_vacaciones_general;
+import respaldos.respaldo_excel;
+import respaldos.respaldo_pdf;
 import respaldos.respaldo_sql;
 import ventanas.areas_nuevo;
 import ventanas.areas_tabla;
@@ -232,6 +234,7 @@ public class menu_principal extends JFrame{
 				nuevo.btnactualizar.setVisible(false);
 				nuevo.chxeditar.setVisible(false);
 				nuevo.chxeditar.setVisible(false);
+				nuevo.lblmensaje.setVisible(false);
 				dispose();
 			}
 		});
@@ -389,15 +392,16 @@ public class menu_principal extends JFrame{
 			}
 		});
 		
-		JMenuItem mntmNewMenuItem_5_1_1 = new JMenuItem("Exportar respaldo en archivo .pdf");
+		JMenuItem mntmNewMenuItem_5_1_1 = new JMenuItem("Exportar respaldo en archivo PDF\r\n");
+		mntmNewMenuItem_5_1_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				respaldo_pdf p = new respaldo_pdf();
+				p.generarReporteCompleto();
+			}
+		});
 		mntmNewMenuItem_5_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmNewMenuItem_5_1_1.setBackground(Color.WHITE);
 		menu_respaldos.add(mntmNewMenuItem_5_1_1);
-		
-		JMenuItem mntmNewMenuItem_5_1_1_1 = new JMenuItem("Exportar respaldo en archivo MS Excel\r\n");
-		mntmNewMenuItem_5_1_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mntmNewMenuItem_5_1_1_1.setBackground(Color.WHITE);
-		menu_respaldos.add(mntmNewMenuItem_5_1_1_1);
 		mntmNewMenuItem_5_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmNewMenuItem_5_1.setBackground(Color.WHITE);
 		menu_respaldos.add(mntmNewMenuItem_5_1);
@@ -428,7 +432,8 @@ public class menu_principal extends JFrame{
 				registro.setLocationRelativeTo(null);
 				dispose();
 				registro.btnregresar_login.setVisible(false);
-				registro.btnactualizar.setVisible(false);		
+				registro.btnactualizar.setVisible(false);	
+				registro.chkeditar.setVisible(false);
 			}
 		});
 		mntmNewMenuItem_4_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));

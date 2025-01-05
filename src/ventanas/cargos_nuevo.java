@@ -46,7 +46,7 @@ public class cargos_nuevo extends JFrame {
 		getContentPane().setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		setBackground(Color.WHITE);
 		setForeground(Color.BLACK);
-		setBounds(100, 100, 684, 350);
+		setBounds(100, 100, 1050, 630);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(null);
 		getContentPane().setLayout(null);
@@ -65,13 +65,13 @@ public class cargos_nuevo extends JFrame {
 		lblDatosDelCargo.setHorizontalAlignment(SwingConstants.LEFT);
 		lblDatosDelCargo.setFont(new Font("Segoe UI", Font.BOLD, 26));
 		lblDatosDelCargo.setBackground(new Color(255, 153, 0));
-		lblDatosDelCargo.setBounds(10, 20, 248, 33);
+		lblDatosDelCargo.setBounds(10, 20, 350, 33);
 		getContentPane().add(lblDatosDelCargo);
 		
 		JPanel panel_titulo_1 = new JPanel();
 		panel_titulo_1.setLayout(null);
 		panel_titulo_1.setBackground(SystemColor.menu);
-		panel_titulo_1.setBounds(256, 10, 409, 54);
+		panel_titulo_1.setBounds(370, 10, 656, 54);
 		getContentPane().add(panel_titulo_1);
 		
 		btnguardar = new JButton("Guardar");
@@ -83,7 +83,7 @@ public class cargos_nuevo extends JFrame {
 		btnguardar.setToolTipText("Guardar registro");
 		btnguardar.setFont(new Font("Tahoma", Font.BOLD, 10));
 		btnguardar.setBackground(UIManager.getColor("Button.highlight"));
-		btnguardar.setBounds(312, 17, 90, 23);
+		btnguardar.setBounds(552, 17, 90, 23);
 		panel_titulo_1.add(btnguardar);
 		
 		btnlimpiar = new JButton("Limpiar");
@@ -94,7 +94,7 @@ public class cargos_nuevo extends JFrame {
 		btnlimpiar.setToolTipText("Limpiar los campos");
 		btnlimpiar.setFont(new Font("Tahoma", Font.BOLD, 10));
 		btnlimpiar.setBackground(UIManager.getColor("Button.highlight"));
-		btnlimpiar.setBounds(217, 17, 90, 23);
+		btnlimpiar.setBounds(457, 17, 90, 23);
 		panel_titulo_1.add(btnlimpiar);
 		
 		btnactualizar = new JButton("Actualizar");
@@ -106,7 +106,7 @@ public class cargos_nuevo extends JFrame {
 		btnactualizar.setToolTipText("Actualizar registro");
 		btnactualizar.setFont(new Font("Tahoma", Font.BOLD, 10));
 		btnactualizar.setBackground(UIManager.getColor("Button.highlight"));
-		btnactualizar.setBounds(312, 17, 90, 23);
+		btnactualizar.setBounds(552, 17, 90, 23);
 		panel_titulo_1.add(btnactualizar);
 		
 		btnregresar = new JButton("Regresar");
@@ -122,7 +122,7 @@ public class cargos_nuevo extends JFrame {
 		btnregresar.setToolTipText("Regresar a la tabla");
 		btnregresar.setFont(new Font("Tahoma", Font.BOLD, 10));
 		btnregresar.setBackground(UIManager.getColor("Button.highlight"));
-		btnregresar.setBounds(10, 17, 90, 23);
+		btnregresar.setBounds(159, 17, 90, 23);
 		panel_titulo_1.add(btnregresar);
 		
 		chxeditar = new JCheckBox("Editar registro");
@@ -142,18 +142,18 @@ public class cargos_nuevo extends JFrame {
 			}
 		});
 		chxeditar.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		chxeditar.setBounds(106, 17, 105, 21);
+		chxeditar.setBounds(346, 17, 105, 21);
 		panel_titulo_1.add(chxeditar);
 		
 		JPanel panel_titulo_1_1 = new JPanel();
 		panel_titulo_1_1.setLayout(null);
 		panel_titulo_1_1.setBackground(SystemColor.menu);
-		panel_titulo_1_1.setBounds(10, 65, 655, 225);
+		panel_titulo_1_1.setBounds(10, 65, 1016, 518);
 		getContentPane().add(panel_titulo_1_1);
 		
 		JLabel lblNombreDelCargo = new JLabel("Nombre del cargo");
 		lblNombreDelCargo.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblNombreDelCargo.setBounds(22, 99, 141, 25);
+		lblNombreDelCargo.setBounds(88, 98, 141, 25);
 		panel_titulo_1_1.add(lblNombreDelCargo);
 		
 		txtcargo = new JTextField(10);
@@ -165,13 +165,13 @@ public class cargos_nuevo extends JFrame {
 
 		});
 		txtcargo.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtcargo.setBounds(173, 95, 253, 33);
+		txtcargo.setBounds(239, 94, 253, 33);
 		panel_titulo_1_1.add(txtcargo);
 		
 		JLabel lblhoy_es = new JLabel("Fecha de creación\r\n");
 		lblhoy_es.setForeground(SystemColor.inactiveCaptionText);
 		lblhoy_es.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblhoy_es.setBounds(367, 40, 143, 25);
+		lblhoy_es.setBounds(627, 102, 143, 25);
 		panel_titulo_1_1.add(lblhoy_es);
 		
 		txtfecha = new JTextField();
@@ -180,7 +180,7 @@ public class cargos_nuevo extends JFrame {
 		txtfecha.setEditable(false);
 		txtfecha.setColumns(10);
 		txtfecha.setBackground(SystemColor.menu);
-		txtfecha.setBounds(520, 36, 109, 33);
+		txtfecha.setBounds(780, 98, 109, 33);
 		panel_titulo_1_1.add(txtfecha);
 		
 		 setFechaActual(txtfecha);

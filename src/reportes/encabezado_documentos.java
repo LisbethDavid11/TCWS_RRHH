@@ -3,7 +3,8 @@ import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.property.TextAlignment;
+
 
 public class encabezado_documentos {
 	
@@ -32,7 +33,7 @@ public class encabezado_documentos {
                     .setTextAlignment(TextAlignment.CENTER)
                     .setBold();
 
-            Paragraph address = new Paragraph("Col. La Ceibita, 20mts hacia el norte del pavimento \n Danli, El Paraiso, Honduras")
+            Paragraph address = new Paragraph("Col. La Ceibita, \n Danli, El Paraiso, Honduras")
                     .setFontSize(12)
                     .setTextAlignment(TextAlignment.CENTER);
 

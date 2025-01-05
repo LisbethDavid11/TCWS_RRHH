@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Period;
@@ -42,6 +43,7 @@ import consultas.consultas_vacaciones;
 
 
 
+@SuppressWarnings("serial")
 public class vacaciones_nuevo extends JFrame {
 	public JTextField txtidentidad;
 	public JTextField txtapellidos;
@@ -58,6 +60,7 @@ public class vacaciones_nuevo extends JFrame {
 	public JTextField txtid_tabla;
 	public JTextField txtantiguedad;
 	public JTextField txtdias_correspondientes;
+	public JTextField txtdias_pendientes;
 	public JComboBox<String> cbxnombres;
 	public JDateChooser fecha_nacimiento;
 	public JDateChooser fecha_inicio;
@@ -72,12 +75,15 @@ public class vacaciones_nuevo extends JFrame {
 	public JButton btnregresar;
 	public JButton btnlimpiar;
 	public JCheckBox chxeditar;
-	public JTextField txtdias_pendientes;
+	public JTextField txtdias_disponibles;
 	public JLabel lblmensaje;
 	public JLabel lblultima;
 	
+	
 	LocalDate fechaActual = LocalDate.now();
-	private JTextField txtultima_fecha;
+	public JLabel lblExtendidoPor;
+	public JTextField txtextendido;
+	public JTextField txtcargo_ext;
 	
 	public vacaciones_nuevo() {
 		
@@ -183,7 +189,7 @@ public class vacaciones_nuevo extends JFrame {
         
         fecha_inicio_v = new JDateChooser();
         fecha_inicio_v.setDateFormatString("dd-MM-yy");
-        fecha_inicio_v.setBounds(188, 434, 166, 33);
+        fecha_inicio_v.setBounds(188, 434, 133, 33);
         validaciones.deshabilitarEscrituraJDateChooser(fecha_inicio_v);
         panel_datos.add(fecha_inicio_v);
         
@@ -194,7 +200,7 @@ public class vacaciones_nuevo extends JFrame {
         
         JLabel lblhasta = new JLabel("Fecha de finalización");
         lblhasta.setFont(new Font("Tahoma", Font.BOLD, 15));
-        lblhasta.setBounds(407, 411, 168, 25);
+        lblhasta.setBounds(360, 411, 168, 25);
         panel_datos.add(lblhasta);
         
         txttotal_dias = new JTextField();
@@ -202,12 +208,12 @@ public class vacaciones_nuevo extends JFrame {
         txttotal_dias.setFont(new Font("Tahoma", Font.PLAIN, 15));
         txttotal_dias.setEditable(false);
         txttotal_dias.setColumns(10);
-        txttotal_dias.setBounds(797, 393, 44, 33);
+        txttotal_dias.setBounds(693, 350, 44, 33);
         panel_datos.add(txttotal_dias);
         
         JLabel lbltotal1 = new JLabel("Total de días");
         lbltotal1.setFont(new Font("Tahoma", Font.BOLD, 15));
-        lbltotal1.setBounds(641, 395, 105, 29);
+        lbltotal1.setBounds(578, 352, 105, 29);
         panel_datos.add(lbltotal1);
         
         JLabel lblDatosDel_1 = new JLabel("_______ Datos del empleado__________________________________________________________________________________");
@@ -242,14 +248,14 @@ public class vacaciones_nuevo extends JFrame {
         
         fecha_finalizacion_v = new JDateChooser();
         fecha_finalizacion_v.setDateFormatString("dd-MM-yy");
-        fecha_finalizacion_v.setBounds(407, 434, 166, 33);
+        fecha_finalizacion_v.setBounds(360, 434, 133, 33);
         validaciones.deshabilitarEscrituraJDateChooser(fecha_finalizacion_v);
         panel_datos.add(fecha_finalizacion_v);
         
         JLabel lblhoy_es_1 = new JLabel("Hora actual");
         lblhoy_es_1.setForeground(SystemColor.inactiveCaptionText);
         lblhoy_es_1.setFont(new Font("Tahoma", Font.BOLD, 15));
-        lblhoy_es_1.setBounds(747, 307, 111, 25);
+        lblhoy_es_1.setBounds(534, 268, 111, 25);
         panel_datos.add(lblhoy_es_1);
         
         txthora_actual = new JTextField();
@@ -258,7 +264,7 @@ public class vacaciones_nuevo extends JFrame {
         txthora_actual.setEditable(false);
         txthora_actual.setColumns(10);
         txthora_actual.setBackground(SystemColor.menu);
-        txthora_actual.setBounds(855, 303, 95, 33);
+        txthora_actual.setBounds(642, 264, 95, 33);
         panel_datos.add(txthora_actual);
         
         JLabel lblEdad = new JLabel("Edad");
@@ -286,7 +292,7 @@ public class vacaciones_nuevo extends JFrame {
         panel_datos.add(txtsexo);
         
         txtcorreo = new JTextField();
-        txtcorreo.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        txtcorreo.setFont(new Font("Tahoma", Font.PLAIN, 13));
         txtcorreo.setEditable(false);
         txtcorreo.setColumns(10);
         txtcorreo.setBounds(266, 183, 208, 33);
@@ -374,20 +380,20 @@ public class vacaciones_nuevo extends JFrame {
         lblPagadas.setBounds(31, 411, 90, 25);
         panel_datos.add(lblPagadas);
         
-        JLabel lbldias_pendientes = new JLabel("Días pendientes");
+        JLabel lbldias_pendientes = new JLabel("Días disponibles");
         lbldias_pendientes.setFont(new Font("Tahoma", Font.BOLD, 15));
-        lbldias_pendientes.setBounds(641, 442, 133, 25);
+        lbldias_pendientes.setBounds(764, 354, 133, 25);
         panel_datos.add(lbldias_pendientes);
         
-        txtdias_pendientes = new JTextField();
-        txtdias_pendientes.setHorizontalAlignment(SwingConstants.CENTER);
-        txtdias_pendientes.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        txtdias_pendientes.setEditable(false);
-        txtdias_pendientes.setColumns(10);
-        txtdias_pendientes.setBounds(797, 434, 44, 33);
-        panel_datos.add(txtdias_pendientes);
+        txtdias_disponibles = new JTextField();
+        txtdias_disponibles.setHorizontalAlignment(SwingConstants.CENTER);
+        txtdias_disponibles.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        txtdias_disponibles.setEditable(false);
+        txtdias_disponibles.setColumns(10);
+        txtdias_disponibles.setBounds(906, 350, 44, 33);
+        panel_datos.add(txtdias_disponibles);
         
-        JLabel lblVacaciones = new JLabel("VACACIONES");
+        JLabel lblVacaciones = new JLabel("DATOS DE LAS VACACIONES");
         lblVacaciones.setHorizontalAlignment(SwingConstants.LEFT);
         lblVacaciones.setFont(new Font("Segoe UI", Font.BOLD, 26));
         lblVacaciones.setBackground(new Color(255, 153, 0));
@@ -405,6 +411,8 @@ public class vacaciones_nuevo extends JFrame {
         btnguardar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 guardarVacaciones();
+                calcularDiasPendientes();
+
             }
         });
 
@@ -418,6 +426,8 @@ public class vacaciones_nuevo extends JFrame {
         btnactualizar.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		actualizarVacaciones();
+        		calcularDiasPendientes();
+
         	}
         });
         btnactualizar.setFont(new Font("Tahoma", Font.BOLD, 10));
@@ -461,15 +471,37 @@ public class vacaciones_nuevo extends JFrame {
         lblmensaje.setVisible(false);
         panel_datos.add(lblmensaje);
         
-        txtultima_fecha = new JTextField();
-        txtultima_fecha.setHorizontalAlignment(SwingConstants.CENTER);
-        txtultima_fecha.setText("0");
-        txtultima_fecha.setFont(new Font("Tahoma", Font.PLAIN, 15));
-        txtultima_fecha.setEditable(false);
-        txtultima_fecha.setColumns(10);
-        txtultima_fecha.setBounds(404, 350, 44, 33);
-        txtultima_fecha.setVisible(false);
-        panel_datos.add(txtultima_fecha);
+        txtextendido = new JTextField();
+        txtextendido.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        txtextendido.setBounds(600, 434, 154, 33);
+        panel_datos.add(txtextendido);
+        
+        
+        JLabel lblCargo_ext = new JLabel("Cargo");
+        lblCargo_ext.setFont(new Font("Tahoma", Font.BOLD, 15));
+        lblCargo_ext.setBounds(796, 411, 133, 25);
+        panel_datos.add(lblCargo_ext);
+        
+        txtcargo_ext = new JTextField();
+        txtcargo_ext.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        txtcargo_ext.setColumns(10);
+        txtcargo_ext.setBounds(796, 434, 154, 33);
+        panel_datos.add(txtcargo_ext);
+        
+        lblExtendidoPor = new JLabel("Extendido por");
+        lblExtendidoPor.setFont(new Font("Tahoma", Font.BOLD, 15));
+        lblExtendidoPor.setBounds(600, 411, 137, 25);
+        panel_datos.add(lblExtendidoPor);
+        
+        txtdias_pendientes = new JTextField();
+        txtdias_pendientes.setHorizontalAlignment(SwingConstants.CENTER);
+        txtdias_pendientes.setText("0");
+        txtdias_pendientes.setFont(new Font("Tahoma", Font.PLAIN, 15));
+        txtdias_pendientes.setEditable(false);
+        txtdias_pendientes.setColumns(10);
+        txtdias_pendientes.setBounds(404, 350, 44, 33);
+        txtdias_pendientes.setVisible(false);
+        panel_datos.add(txtdias_pendientes);
         
         lblultima = new JLabel("Días pendientes a la última fecha de vacaciones");
         lblultima.setFont(new Font("Tahoma", Font.BOLD, 15));
@@ -510,34 +542,42 @@ public class vacaciones_nuevo extends JFrame {
 		 cargarNombresEmpleados();
 
 		 cbxnombres.addActionListener(e -> {
-			    Object selectedItem = cbxnombres.getSelectedItem();
-			    if (selectedItem == null || selectedItem.toString().trim().isEmpty()) {
-			        limpiarCampos(); // Limpiar los campos si no se selecciona ningún empleado
+			    String nombreEmpleado = cbxnombres.getSelectedItem().toString();
+			    if (nombreEmpleado == null || nombreEmpleado.trim().isEmpty()) {
+			        limpiarCampos();
 			    } else {
-			        llenarCamposEmpleado(selectedItem.toString()); // Cargar los datos del empleado seleccionado
-			        resetearCamposVacaciones(); // Resetear los campos de vacaciones
+			        llenarCamposEmpleado(nombreEmpleado);
+			        int idEmpleado = obtenerValorEntero(txtid.getText(), 0);
+			        verificarRegistrosAnteriores(idEmpleado);
 			    }
 			});
 
-		
-		fecha_finalizacion_v.addPropertyChangeListener(evt -> calcularDiasEntreFechas());
-		fecha_inicio_v.addPropertyChangeListener(evt -> calcularDiasEntreFechas());
-		
-		fecha_inicio_v.addPropertyChangeListener("date", evt -> calcularDiasTotalesYActualizarPendientes());
-        fecha_finalizacion_v.addPropertyChangeListener("date", evt -> calcularDiasTotalesYActualizarPendientes());
+		 
+		 
+		 //este siiii
+		 fecha_inicio_v.addPropertyChangeListener(evt -> {
+			    System.out.println("Evento disparado en fecha_inicio_v: " + evt.getPropertyName());
+			    calcularDiasEntreFechas();
+			    calcularDiasPendientes();
+			});
+
+			fecha_finalizacion_v.addPropertyChangeListener(evt -> {
+			    System.out.println("Evento disparado en fecha_finalizacion_v: " + evt.getPropertyName());
+			    calcularDiasEntreFechas();
+			    calcularDiasPendientes();
+			});
 
 
+
+        
 
 		asignarFechaActual();
         asignarHoraActual();
         
         
-        calcularDiasEntreFechas();  // Método que calcula los días entre fechas
-        calcularDiasPendientes();  
         
            int id = validateAndGetId();
            if (id == -1) {
-               //JOptionPane.showMessageDialog(null, "El campo Id está vacío o tiene un valor no válido", "Error", JOptionPane.ERROR_MESSAGE);
                return;
            }
         
@@ -546,21 +586,18 @@ public class vacaciones_nuevo extends JFrame {
         String nombreNuevo = cbxnombres.getSelectedItem().toString();
 
         if (!nombreOriginal.equals(nombreNuevo)) {
-            // Realizar la actualización del nombre y los días pendientes para el nombre original
             actualizarDiasPendientes(nombreOriginal);
         }
 
-        // Continuar con la actualización del registro con el nombre nuevo
         actualizarDiasPendientes(nombreNuevo);
-
-        
         int diasCorrespondientes1 = Integer.parseInt(txtdias_correspondientes.getText());
-        int diasTomados = obtenerDiasTomados(cbxnombres.getSelectedItem().toString()); // Método que obtiene los días tomados
+        int diasTomados = obtenerDiasTomados(cbxnombres.getSelectedItem().toString()); 
         int diasPendientes = diasCorrespondientes1 - diasTomados;
-
-        txtdias_pendientes.setText(String.valueOf(diasPendientes));
+        txtdias_disponibles.setText(String.valueOf(diasPendientes));
+        
+        
        
-        if (diasPendientes == 0) {
+       /* if (diasPendientes == 0) {
             lblmensaje.setVisible(true);  // Mostrar el mensaje de advertencia
             btnguardar.setEnabled(false);  // Desactivar el botón de guardar
             btnactualizar.setEnabled(false);  // Desactivar el botón de actualizar
@@ -568,20 +605,20 @@ public class vacaciones_nuevo extends JFrame {
             lblmensaje.setVisible(false);  // Ocultar el mensaje si tiene días pendientes
             btnguardar.setEnabled(true);   // Activar el botón de guardar
             btnactualizar.setEnabled(true);  // Activar el botón de actualizar
-        }
+        }*/
         
      // Cuando se calcule el total de días tomados
         obtenerDiasTomados(nombreNuevo); // Método donde calculas el total de días de vacaciones tomados
-        calcularDiasPendientes(); // Método para calcular los días pendientes, basado en el nuevo registro
+        validarTotalDias(); // Método para calcular los días pendientes, basado en el nuevo registro
 
      // Verificar si el empleado ya tiene registros anteriores
         if (diasTomados > 0) {
-            txtultima_fecha.setText(String.valueOf(diasPendientes)); // Mostrar días pendientes anteriores
-            txtultima_fecha.setVisible(true);
+            txtdias_pendientes.setText(String.valueOf(diasPendientes)); // Mostrar días pendientes anteriores
+            txtdias_pendientes.setVisible(true);
             lblultima.setVisible(true);
         } else {
-            txtultima_fecha.setText("0"); // Si no tiene registros, establecer en 0
-            txtultima_fecha.setVisible(false);
+            txtdias_pendientes.setText("0"); // Si no tiene registros, establecer en 0
+            txtdias_pendientes.setVisible(false);
             lblultima.setVisible(false);
         }
 
@@ -609,7 +646,7 @@ public class vacaciones_nuevo extends JFrame {
 
 	        cbxnombres.setSelectedIndex(0);
 	    } catch (SQLException e) {
-	        JOptionPane.showMessageDialog(null, "Error al cargar los nombres: " + e.getMessage());
+	        JOptionPane.showMessageDialog(null, "Error al cargar los nombres");
 	    } finally {
 	        if (con != null) {
 	            try {
@@ -621,76 +658,94 @@ public class vacaciones_nuevo extends JFrame {
 	    }
 	}
 	
-	// Método para calcular los días pendientes después de un nuevo registro
-	public void calcularDiasPendientes() {
+	
+	private boolean tieneRegistrosPrevios(int idEmpleado) {
+	    Connection con = null;
 	    try {
-	        String totalDiasStr = txttotal_dias.getText().trim();
-	        if (totalDiasStr.isEmpty()) {
-	            // Si el campo está vacío, mostrar un mensaje o asignar un valor predeterminado
-	            JOptionPane.showMessageDialog(null, "El campo de días totales está vacío", "Error", JOptionPane.ERROR_MESSAGE);
-	            return;  // Detener la ejecución del método si el campo está vacío
+	        con = new conexion().conectar();
+	        String sql = "SELECT COUNT(*) AS total FROM vacaciones WHERE id_empleado = ?";
+	        PreparedStatement ps = con.prepareStatement(sql);
+	        ps.setInt(1, idEmpleado);
+	        ResultSet rs = ps.executeQuery();
+
+	        if (rs.next()) {
+	            int total = rs.getInt("total");
+	            System.out.println("Registros previos encontrados: " + total); // Depuración
+	            return total > 0; // Retorna true si hay al menos un registro
+	        }
+	    } catch (SQLException e) {
+	        JOptionPane.showMessageDialog(this, "Error al verificar registros previos: " + e.getMessage(),
+	                "Error", JOptionPane.ERROR_MESSAGE);
+	    } finally {
+	        cerrarConexion(con);
+	    }
+	    return false; // Retorna false si no hay registros
+	}
+
+
+
+
+	
+	
+	// Método para calcular los días pendientes después de un nuevo registro
+	private void validarTotalDias() {
+	    try {
+	        int diasCorrespondientes = obtenerValorEntero(txtdias_correspondientes.getText(), 0);
+	        int diasTomados = obtenerValorEntero(txttotal_dias.getText(), 0);
+	        int diasPendientes = obtenerValorEntero(txtdias_disponibles.getText(), diasCorrespondientes);
+
+	        if (diasTomados > diasPendientes) {
+	            JOptionPane.showMessageDialog(this, "El total de días tomados no puede exceder los días pendientes.", "Error", JOptionPane.ERROR_MESSAGE);
+	            txttotal_dias.setText("0");
+	            return;
 	        }
 
-	        // Convertir el texto de totalDias a entero
-	        int totalDiasTomados = Integer.parseInt(totalDiasStr);
+	        int diasRestantes = diasPendientes - diasTomados;
+	        txtdias_disponibles.setText(String.valueOf(diasRestantes));
 
-	        if (txtultima_fecha.isVisible()) {
-	            String ultimaFechaStr = txtultima_fecha.getText().trim();
-
-	            if (ultimaFechaStr.isEmpty()) {
-	                JOptionPane.showMessageDialog(null, "El campo de días pendientes de la última fecha está vacío", "Error", JOptionPane.ERROR_MESSAGE);
-	                return;  // Detener la ejecución del método si el campo está vacío
-	            }
-
-	            // Convertir txtultima_fecha a entero
-	            int diasPendientesAnteriores = Integer.parseInt(ultimaFechaStr);
-
-	            // Calcular los días pendientes restantes
-	            int diasPendientesRestantes = diasPendientesAnteriores - totalDiasTomados;
-
-	            // Asegurarse de que los días pendientes no sean negativos
-	            if (diasPendientesRestantes < 0) {
-	                diasPendientesRestantes = 0;
-	            }
-
-	            // Asignar los días pendientes restantes al campo correspondiente
-	            txtdias_pendientes.setText(String.valueOf(diasPendientesRestantes));
-
+	        if (diasRestantes == 0) {
+	            lblmensaje.setVisible(true);
+	            btnguardar.setEnabled(false);
 	        } else {
-	            // Si no hay registros previos, hacer el cálculo normal con días correspondientes
-	            String diasCorrespondientesStr = txtdias_correspondientes.getText().trim();
-	            if (diasCorrespondientesStr.isEmpty()) {
-	                return;  // Detener la ejecución del método si el campo está vacío
-	            }
-
-	            int diasCorrespondientes = Integer.parseInt(diasCorrespondientesStr);
-	            int diasPendientesRestantes = diasCorrespondientes - totalDiasTomados;
-	            txtdias_pendientes.setText(String.valueOf(diasPendientesRestantes));
+	            lblmensaje.setVisible(false);
+	            btnguardar.setEnabled(true);
 	        }
-
 	    } catch (NumberFormatException e) {
-	        JOptionPane.showMessageDialog(null, "Error al convertir el número. Asegúrate de que los campos no estén vacíos y tengan valores válidos.", "Error", JOptionPane.ERROR_MESSAGE);
-	        e.printStackTrace();
+	        JOptionPane.showMessageDialog(this, "Error al calcular los días pendientes. Verifique los valores ingresados.", "Error", JOptionPane.ERROR_MESSAGE);
 	    }
 	}
 
 
 
+
+
+
+	
 
 	// Verificar si el empleado ya tiene registros anteriores y mostrar los días pendientes
 	public void verificarRegistrosAnteriores(int idEmpleado) {
-	    int diasPendientes = cargarDiasPendientes(idEmpleado);
-
-	    if (diasPendientes > 0) {
-	        txtultima_fecha.setText(String.valueOf(diasPendientes)); // Mostrar días pendientes anteriores
-	        txtultima_fecha.setVisible(true);
-	        lblultima.setVisible(true);
+	    if (!tieneRegistrosPrevios(idEmpleado)) {
+	        // Caso de nuevo registro
+	        lblmensaje.setVisible(false); // Ocultar advertencia
+	        btnguardar.setEnabled(true);  // Permitir guardar
+	        btnactualizar.setEnabled(false); // No permitir actualizar
+	        txtdias_disponibles.setText(txtdias_correspondientes.getText()); // Todos los días disponibles
+	        txtdias_pendientes.setVisible(false); // Ocultar días pendientes
+	        lblultima.setVisible(false); // Ocultar etiqueta de días pendientes
 	    } else {
-	        txtultima_fecha.setText("0"); // Si no tiene registros, establecer en 0
-	        txtultima_fecha.setVisible(false);
-	        lblultima.setVisible(false);
+	        // Caso de registros previos
+	        int diasPendientes = cargarDiasPendientesUltimoRegistro(idEmpleado);
+	        txtdias_disponibles.setText(String.valueOf(diasPendientes));
+	        txtdias_pendientes.setVisible(true);
+	        lblultima.setVisible(true);
+	        actualizarInterfazSegunDiasPendientes(diasPendientes);
 	    }
 	}
+
+
+
+
+
 
 	
 	
@@ -753,14 +808,31 @@ public class vacaciones_nuevo extends JFrame {
 	    return diasCorrespondientes; // Si no ha cambiado de año, solo regresamos los días correspondientes
 	}
 
+	
+	
+	
+	// Método 3: Calcular edad
+	private void calcularEdad(Date fechaNacimiento) {
+	    if (fechaNacimiento != null) {
+	        LocalDate nacimiento;
+	        if (fechaNacimiento instanceof java.sql.Date) {
+	            nacimiento = ((java.sql.Date) fechaNacimiento).toLocalDate();
+	        } else {
+	            nacimiento = fechaNacimiento.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	        }
+	        LocalDate ahora = LocalDate.now();
+	        txtedad.setText(String.valueOf(Period.between(nacimiento, ahora).getYears()));
+	    } else {
+	        txtedad.setText("");
+	    }
+	}
 
 
 
 
-	// Método 2: Llenar campos de empleado
+	// Método 1: Llenar campos de empleado
 	public void llenarCamposEmpleado(String nombreEmpleado) {
 	    Connection con = null;
-	    consultas_vacaciones consultaVacaciones = new consultas_vacaciones(); 
 
 	    try {
 	        con = new conexion().conectar();
@@ -770,74 +842,34 @@ public class vacaciones_nuevo extends JFrame {
 	        ResultSet rs = ps.executeQuery();
 
 	        if (rs.next()) {
-	            txtapellidos.setText(rs.getString("apellidos_empleado"));
-	            txtidentidad.setText(rs.getString("identidad_empleado"));
-	            txtsexo.setText(rs.getString("sexo_empleado"));
-	            txtid.setText(rs.getString("id_empleado"));
-	            txtcorreo.setText(rs.getString("correo_empleado"));
-	            txttel.setText(rs.getString("tel_empleado"));
-	            txtcargo.setText(rs.getString("cargo_empleado"));
-	            txtarea.setText(rs.getString("area_empleado"));
-	            fecha_inicio.setDate(rs.getDate("inicio_empleado"));
-	            fecha_nacimiento.setDate(rs.getDate("nacimiento_empleado"));
+	            // Llenar datos del empleado
+	            llenarDatosEmpleado(rs);
 
-	            Date fechaInicioEmpleado = rs.getDate("inicio_empleado");
-	            cargarAntiguedadEmpleado(fechaInicioEmpleado); // Cargar la antigüedad del empleado en meses
+	            // Calcular la edad
+	            calcularEdad(rs.getDate("nacimiento_empleado"));
 
-	            int antiguedadMeses = calcularAntiguedad(fechaInicioEmpleado); // Método que calcula la antigüedad en meses
-	            int diasCorrespondientes = calcularDiasCorrespondientes(antiguedadMeses); // Método que calcula los días correspondientes
+	            // Calcular antigüedad y días correspondientes
+	            int antiguedadMeses = calcularAntiguedad(rs.getDate("inicio_empleado"));
+	            int diasCorrespondientes = calcularDiasCorrespondientes(antiguedadMeses);
 	            txtdias_correspondientes.setText(String.valueOf(diasCorrespondientes));
 
-	            int diasTomados = consultaVacaciones.obtenerDiasTomados(rs.getInt("id_empleado")); // Obtener días tomados
-	            int diasPendientes = diasCorrespondientes - diasTomados;
-	            calcularEdad(fecha_nacimiento.getDate()); 
-	            verificarRegistrosAnteriores(rs.getInt("id_empleado")); 
-
-	            // Si los días pendientes son 0, mostrar el lblmensaje y no permitir guardar
-	            if (diasPendientes == 0) {
-	                lblmensaje.setVisible(true);
-	                btnguardar.setEnabled(false); // Desactivar el botón de guardar
-	            } else {
-	                lblmensaje.setVisible(false);
-	                btnguardar.setEnabled(true); // Activar el botón de guardar si hay días pendientes
-	            }
+	            // Calcular los días disponibles
+	            int idEmpleado = rs.getInt("id_empleado");
+	            calcularDiasDisponibles(idEmpleado);
 	        }
-
 	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        JOptionPane.showMessageDialog(null, "Error al cargar los datos del empleado: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	        JOptionPane.showMessageDialog(this, "Error al cargar los datos del empleado: " + e.getMessage(),
+	                "Error", JOptionPane.ERROR_MESSAGE);
 	    } finally {
-	        try {
-	            if (con != null) con.close();
-	        } catch (SQLException ex) {
-	            ex.printStackTrace();
-	        }
+	        cerrarConexion(con);
 	    }
 	}
+
+
+
+
 
 	
-	private void calcularDiasTotalesYActualizarPendientes() {
-	    // llamado a calcular el total de días entre las fechas seleccionadas
-	    calcularDiasEntreFechas();
-
-	    // Luego, calculo los días pendientes basados en los días totales tomados
-	    calcularDiasPendientes();
-	}
-
-
-
-
-	// Método 3: Calcular la edad
-	public void calcularEdad(Date fechaNacimiento) {
-	    if (fechaNacimiento != null) {
-	        LocalDate nacimiento = fechaNacimiento.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-	        LocalDate ahora = LocalDate.now();
-	        Period edad = Period.between(nacimiento, ahora);
-	        txtedad.setText(String.valueOf(edad.getYears()));  
-	    } else {
-	        txtedad.setText("");  // Si la fecha de nacimiento es nula, dejar el campo vacío
-	    }
-	}
 
 
 
@@ -884,130 +916,43 @@ public class vacaciones_nuevo extends JFrame {
 	private int calcularDiasCorrespondientes(int antiguedadMeses) {
 	    int diasCorrespondientes = 0;
 
-	    if (antiguedadMeses >= 48) {
+	    if (antiguedadMeses >= 48) {  // 4 años o más
 	        diasCorrespondientes = 20;
-	    } else if (antiguedadMeses >= 36) {
+	    } else if (antiguedadMeses >= 36) {  // 3 años
 	        diasCorrespondientes = 15;
-	    } else if (antiguedadMeses >= 24) {
+	    } else if (antiguedadMeses >= 24) {  // 2 años
 	        diasCorrespondientes = 12;
-	    } else if (antiguedadMeses >= 12) {
+	    } else if (antiguedadMeses >= 12) {  // 1 año
 	        diasCorrespondientes = 10;
-	    } else {
-	        diasCorrespondientes = antiguedadMeses;
+	    } else {  
+	        // Asignar proporcionalmente si es menor a 1 año (0.83 días por mes)
+	        diasCorrespondientes = (int) Math.ceil((antiguedadMeses / 12.0) * 10);
 	    }
-
 	    return diasCorrespondientes;
 	}
 
 
+
 	// Método 6: Obtener días tomados
-	public int obtenerDiasTomados(String nombreEmpleado) {
+	/*private int obtenerDiasTomadosPorId(int idEmpleado) {
 	    int diasTomados = 0;
-	    try {
-	        Connection con = new conexion().conectar();
-	        String sql = "SELECT SUM(total_dias) AS dias_tomados FROM vacaciones WHERE nombres_empleado = ?";
-	        PreparedStatement ps = con.prepareStatement(sql);
-	        ps.setString(1, nombreEmpleado);
-	        ResultSet rs = ps.executeQuery();
-
-	        if (rs.next()) {
-	            diasTomados = rs.getInt("dias_tomados");
-	        }
-
-	        con.close();
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        JOptionPane.showMessageDialog(null, "Error al obtener los días tomados: " + e.getMessage());
-	    }
-	    return diasTomados;
-	}
-
-	
-	
-	// Método 7: Actualizar días pendientes
-	private void actualizarDiasPendientes(String nombreEmpleado) {
-	    Connection con = null;
-	    try {
-	        con = new conexion().conectar();
-	        
-	        String sqlDiasCorrespondientes = "SELECT dias_correspondientes FROM vacaciones WHERE nombres_empleado = ? ORDER BY fecha_inicio_v DESC LIMIT 1";
-	        PreparedStatement psDiasCorrespondientes = con.prepareStatement(sqlDiasCorrespondientes);
-	        psDiasCorrespondientes.setString(1, nombreEmpleado);
-	        ResultSet rsDiasCorrespondientes = psDiasCorrespondientes.executeQuery();
-
-	        int diasCorrespondientes = 0;
-	        if (rsDiasCorrespondientes.next()) {
-	            diasCorrespondientes = rsDiasCorrespondientes.getInt("dias_correspondientes");
-	        }
-	        
-	        String sqlDiasTomados = "SELECT SUM(total_dias) AS dias_tomados FROM vacaciones WHERE nombres_empleado = ?";
-	        PreparedStatement psDiasTomados = con.prepareStatement(sqlDiasTomados);
-	        psDiasTomados.setString(1, nombreEmpleado);
-	        ResultSet rsDiasTomados = psDiasTomados.executeQuery();
-
-	        int diasTomados = 0;
-	        if (rsDiasTomados.next()) {
-	            diasTomados = rsDiasTomados.getInt("dias_tomados");
-	        }
-
-	        int diasPendientes = diasCorrespondientes - diasTomados;
-
-	        if (diasPendientes < 0) {
-	            diasPendientes = 0;
-	        }
-
-	        String sqlUpdatePendientes = "UPDATE vacaciones SET dias_pendientes = ? WHERE nombres_empleado = ?";
-	        PreparedStatement psUpdatePendientes = con.prepareStatement(sqlUpdatePendientes);
-	        psUpdatePendientes.setInt(1, diasPendientes);
-	        psUpdatePendientes.setString(2, nombreEmpleado);
-
-	        psUpdatePendientes.executeUpdate();
-
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        JOptionPane.showMessageDialog(null, "Error al actualizar los días pendientes: " + e.getMessage());
-	    } finally {
-	        if (con != null) {
-	            try {
-	                con.close();
-	            } catch (SQLException e) {
-	                e.printStackTrace();
-	            }
-	        }
-	    }
-	}
-
-
-	// Método 8: Cargar días pendientes
-	public int cargarDiasPendientes(int idEmpleado) {
 	    Connection con = null;
 	    PreparedStatement ps = null;
 	    ResultSet rs = null;
-	    int diasPendientes = 0;
 
 	    try {
 	        con = new conexion().conectar();
-
 	        String sql = "SELECT SUM(total_dias) AS dias_tomados FROM vacaciones WHERE id_empleado = ?";
 	        ps = con.prepareStatement(sql);
 	        ps.setInt(1, idEmpleado);
 	        rs = ps.executeQuery();
 
-	        int diasTomados = 0;
 	        if (rs.next()) {
 	            diasTomados = rs.getInt("dias_tomados");
 	        }
-	        
-	        int diasCorrespondientes = Integer.parseInt(txtdias_correspondientes.getText().trim());
-
-	        diasPendientes = diasCorrespondientes - diasTomados;
-
-	        if (diasPendientes < 0) {
-	            diasPendientes = 0;
-	        }
-
 	    } catch (SQLException e) {
-	        JOptionPane.showMessageDialog(null, "Error al calcular los días pendientes: " + e.getMessage());
+	        JOptionPane.showMessageDialog(this, "Error al obtener los días tomados: " + e.getMessage(),
+	                "Error", JOptionPane.ERROR_MESSAGE);
 	    } finally {
 	        try {
 	            if (rs != null) rs.close();
@@ -1018,217 +963,378 @@ public class vacaciones_nuevo extends JFrame {
 	        }
 	    }
 
-	    return diasPendientes;  
+	    return diasTomados;
+	}*/
+
+
+	
+	// Método 7: Actualizar días pendientes
+	private void actualizarDiasPendientes(String nombreEmpleado) {
+	    try {
+	        int diasCorrespondientes = obtenerValorEntero(txtdias_correspondientes.getText(), 0);
+	        int diasTomados = obtenerDiasTomados(nombreEmpleado);
+	        int diasPendientes = diasCorrespondientes - diasTomados;
+
+	        if (diasPendientes < 0) diasPendientes = 0;
+
+	        txtdias_disponibles.setText(String.valueOf(diasPendientes));
+	        txtdias_pendientes.setText(String.valueOf(diasTomados));
+	        lblultima.setVisible(diasTomados > 0);
+	        txtdias_pendientes.setVisible(diasTomados > 0);
+
+	        actualizarInterfazSegunDiasPendientes(diasPendientes);
+	    } catch (NumberFormatException e) {
+	        JOptionPane.showMessageDialog(this, "Error al actualizar los días pendientes.", "Error", JOptionPane.ERROR_MESSAGE);
+	    }
 	}
 
 
+	
+	private int obtenerDiasTomados(String nombreEmpleado) {
+	    int diasTomados = 0;
+	    Connection con = null;
+	    PreparedStatement ps = null;
+	    ResultSet rs = null;
+
+	    try {
+	        con = new conexion().conectar();
+	        String sql = "SELECT COALESCE(SUM(total_dias), 0) AS dias_tomados FROM vacaciones WHERE nombres_empleado = ?";
+	        ps = con.prepareStatement(sql);
+	        ps.setString(1, nombreEmpleado);
+	        rs = ps.executeQuery();
+
+	        if (rs.next()) {
+	            diasTomados = rs.getInt("dias_tomados");
+	        }
+	    } catch (SQLException e) {
+	        JOptionPane.showMessageDialog(this, "Error al obtener los días tomados: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	    } finally {
+	        cerrarConexion(con);
+	    }
+
+	    return diasTomados;
+	}
+
+	
+	
+	
+	 // Nuevo método: cargar días pendientes del último registro
+	private int cargarDiasPendientesUltimoRegistro(int idEmpleado) {
+	    Connection con = null;
+	    int diasPendientes = 0;
+
+	    try {
+	        con = new conexion().conectar();
+	        String sql = "SELECT dias_pendientes FROM vacaciones WHERE id_empleado = ? ORDER BY fecha_inicio_v DESC LIMIT 1";
+	        PreparedStatement ps = con.prepareStatement(sql);
+	        ps.setInt(1, idEmpleado);
+	        ResultSet rs = ps.executeQuery();
+
+	        if (rs.next()) {
+	            diasPendientes = rs.getInt("dias_pendientes");
+	        }
+	    } catch (SQLException e) {
+	        JOptionPane.showMessageDialog(this, "Error al cargar los días pendientes: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	    } finally {
+	        cerrarConexion(con);
+	    }
+
+	    return diasPendientes;
+	}
+
+
+
+
+
+	
+   
+
+
+ // Nuevo método: obtener valor entero seguro
+	private int obtenerValorEntero(String valor, int valorPorDefecto) {
+	    if (valor == null || valor.trim().isEmpty()) {
+	        return valorPorDefecto;
+	    }
+	    try {
+	        return Integer.parseInt(valor.trim());
+	    } catch (NumberFormatException e) {
+	        return valorPorDefecto;
+	    }
+	}
+	
+	
+
 	// Método 9: Calcular días entre fechas
 	private void calcularDiasEntreFechas() {
-	    Date fechaInicio = fecha_inicio_v.getDate();
-	    Date fechaFin = fecha_finalizacion_v.getDate();
+	    try {
+	        Date fechaInicio = fecha_inicio_v.getDate();
+	        Date fechaFin = fecha_finalizacion_v.getDate();
 
-	    if (fechaInicio != null && fechaFin != null) {
-	        LocalDate localFechaInicio = fechaInicio.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-	        LocalDate localFechaFin = fechaFin.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-	        long diasEntreFechas = ChronoUnit.DAYS.between(localFechaInicio, localFechaFin);
-
-	        if (diasEntreFechas <= 0) {
-	            JOptionPane.showMessageDialog(null, "La fecha de finalización debe ser posterior a la fecha de inicio.", "Error", JOptionPane.ERROR_MESSAGE);
+	        if (fechaInicio == null || fechaFin == null) {
 	            txttotal_dias.setText("0");
 	            return;
 	        }
 
+	        LocalDate localFechaInicio = fechaInicio.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	        LocalDate localFechaFin = fechaFin.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+	        if (localFechaFin.isBefore(localFechaInicio)) {
+	            JOptionPane.showMessageDialog(this, "La fecha de finalización debe ser posterior a la fecha de inicio.", "Error", JOptionPane.ERROR_MESSAGE);
+	            txttotal_dias.setText("0");
+	            return;
+	        }
+
+	        long diasEntreFechas = ChronoUnit.DAYS.between(localFechaInicio, localFechaFin) + 1;
 	        txttotal_dias.setText(String.valueOf(diasEntreFechas));
 
-	        if (!txtdias_correspondientes.getText().trim().isEmpty()) {
-	            int diasCorrespondientes = Integer.parseInt(txtdias_correspondientes.getText().trim());
-	            int diasPendientes = diasCorrespondientes - (int) diasEntreFechas;
-
-	            txtdias_pendientes.setText(String.valueOf(diasPendientes));
-	        } else {
-	            JOptionPane.showMessageDialog(null, "El campo de días correspondientes está vacío.", "Error", JOptionPane.ERROR_MESSAGE);
-	        }
-	    } else {
+	    } catch (Exception e) {
+	        JOptionPane.showMessageDialog(this, "Error al calcular los días entre fechas: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 	        txttotal_dias.setText("0");
 	    }
 	}
 
-	// Método 10: Validar campos antes de guardar/actualizar
-	public boolean validarCamposVacaciones() {
-	    if (cbxnombres.getSelectedIndex() == -1 || cbxnombres.getSelectedItem().toString().trim().isEmpty()) {
-	        JOptionPane.showMessageDialog(null, "Debe seleccionar un nombre.", "Validación", JOptionPane.ERROR_MESSAGE);
-	        return false;
-	    }
 
-	    if (!radio_si.isSelected() && !radio_no.isSelected()) {
-	        JOptionPane.showMessageDialog(null, "Debe seleccionar si las vacaciones son pagadas o no.", "Validación", JOptionPane.ERROR_MESSAGE);
-	        return false;
-	    }
+	
+	private void calcularDiasPendientes() {
+	    try {
+	        int diasCorrespondientes = obtenerValorEntero(txtdias_correspondientes.getText(), 0);
+	        int diasTomados = obtenerValorEntero(txttotal_dias.getText(), 0);
+	        int diasPendientes = diasCorrespondientes - diasTomados;
 
-	    if (fecha_inicio_v.getDate() == null) {
-	        JOptionPane.showMessageDialog(null, "Debe seleccionar una fecha de inicio.", "Validación", JOptionPane.ERROR_MESSAGE);
-	        return false;
-	    }
+	        if (diasPendientes < 0) diasPendientes = 0;
 
-	    if (fecha_finalizacion_v.getDate() == null) {
-	        JOptionPane.showMessageDialog(null, "Debe seleccionar una fecha de finalización.", "Validación", JOptionPane.ERROR_MESSAGE);
-	        return false;
-	    }
+	        txtdias_disponibles.setText(String.valueOf(diasPendientes));
 
-	    if (fecha_finalizacion_v.getDate().before(fecha_inicio.getDate())) {
-	        JOptionPane.showMessageDialog(null, "La 'Fecha de finalización' no puede ser anterior a la fecha de inicio.", "Validación", JOptionPane.ERROR_MESSAGE);
-	        return false;
+	        // Actualizar advertencias y botones
+	        actualizarInterfazSegunDiasPendientes(diasPendientes);
+	    } catch (NumberFormatException e) {
+	        JOptionPane.showMessageDialog(this, "Error al calcular los días pendientes.", "Error", JOptionPane.ERROR_MESSAGE);
 	    }
-
-	    return true;
 	}
+	
+	
+	private void calcularDiasDisponibles(int idEmpleado) {
+	    try {
+	        int diasCorrespondientes = obtenerValorEntero(txtdias_correspondientes.getText(), 0);
+	        int diasTomados = obtenerValorEntero(txttotal_dias.getText(), 0);
+	        int diasPendientes = 0;
+
+	        if (!tieneRegistrosPrevios(idEmpleado)) {
+	            // Primer registro del empleado
+	            diasPendientes = diasCorrespondientes;
+	        } else {
+	            // Registros previos: cargar días pendientes del último registro
+	            diasPendientes = cargarDiasPendientesUltimoRegistro(idEmpleado);
+	        }
+
+	        // Calcular los días disponibles
+	        int diasDisponibles = diasPendientes - diasTomados;
+	        if (diasDisponibles < 0) diasDisponibles = 0;
+
+	        // Actualizar los campos
+	        txtdias_disponibles.setText(String.valueOf(diasDisponibles));
+	        txtdias_pendientes.setText(String.valueOf(diasPendientes));
+	        lblultima.setVisible(diasPendientes > 0);
+	        txtdias_pendientes.setVisible(diasPendientes > 0);
+
+	        actualizarInterfazSegunDiasPendientes(diasDisponibles);
+	    } catch (Exception e) {
+	        JOptionPane.showMessageDialog(this, "Error al calcular los días disponibles: " + e.getMessage(),
+	                "Error", JOptionPane.ERROR_MESSAGE);
+	    }
+	}
+
+
+
+	
+
+
+
+	
+	
+
+
+
+	public java.sql.Time validarYObtenerHora(String horaStr) {
+	    try {
+	        if (horaStr == null || horaStr.trim().isEmpty()) {
+	            throw new IllegalArgumentException("La hora no puede estar vacía.");
+	        }
+
+	        String[] partes = horaStr.split(":");
+	        if (partes.length != 2) {
+	            throw new IllegalArgumentException("El formato de hora debe ser HH:mm.");
+	        }
+
+	        int horas = Integer.parseInt(partes[0]);
+	        int minutos = Integer.parseInt(partes[1]);
+
+	        if (horas < 0 || horas > 23 || minutos < 0 || minutos > 59) {
+	            throw new IllegalArgumentException("La hora debe estar en el rango 00:00 a 23:59.");
+	        }
+
+	        return java.sql.Time.valueOf(horaStr + ":00"); // Formato HH:mm:ss
+	    } catch (IllegalArgumentException e) {
+	        JOptionPane.showMessageDialog(this, e.getMessage(), "Error en la hora", JOptionPane.ERROR_MESSAGE);
+	        return null;
+	    }
+	}
+
+
+
+
+
+
+
+
+	// Método 10: Validar campos antes de guardar/actualizar
+    public boolean validarCamposVacaciones() {
+        if (cbxnombres.getSelectedIndex() == -1 || cbxnombres.getSelectedItem().toString().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un nombre.", "Validación", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (!radio_si.isSelected() && !radio_no.isSelected()) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar si las vacaciones son pagadas o no.", "Validación", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (fecha_inicio_v.getDate() == null || fecha_finalizacion_v.getDate() == null) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar las fechas de inicio y finalización.", "Validación", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true; // Validación básica sin comprobar días
+    }
+
+
+
 
 
 
 	// Método 11: Guardar vacaciones
-	public void guardarVacaciones() {
-	    if (!validarCamposVacaciones()) {
-	        return;
-	    }
+    public void guardarVacaciones() {
+        if (!validarCamposVacaciones()) {
+            return; // Detener si los campos no son válidos
+        }
 
-	    vacaciones claseVacaciones = new vacaciones();
+        int idEmpleado = obtenerValorEntero(txtid.getText(), 0);
+        int diasDisponibles = obtenerValorEntero(txtdias_disponibles.getText(), 0);
 
-	    claseVacaciones.setId_empleado(Integer.parseInt(txtid.getText()));
-	    claseVacaciones.setNombres_empleado(cbxnombres.getSelectedItem().toString());
-	    claseVacaciones.setApellidos_empleado(txtapellidos.getText());
-	    claseVacaciones.setIdentidad_empleado(txtidentidad.getText());
-	    claseVacaciones.setTel_empleado(txttel.getText());
-	    claseVacaciones.setCorreo_empleado(txtcorreo.getText());
-	    claseVacaciones.setCargo_empleado(txtcargo.getText());
-	    claseVacaciones.setArea_empleado(txtarea.getText());
-	    claseVacaciones.setNacimiento_empleado(fecha_nacimiento.getDate());
-	    claseVacaciones.setSexo_empleado(txtsexo.getText());
-	    claseVacaciones.setEdad_empleado(Integer.parseInt(txtedad.getText()));
-	    claseVacaciones.setAntiguedad(Integer.parseInt(txtantiguedad.getText()));
-	    claseVacaciones.setDias_correspondientes(Integer.parseInt(txtdias_correspondientes.getText()));
-	    claseVacaciones.setTotal_dias(Integer.parseInt(txttotal_dias.getText()));
-	    claseVacaciones.setPagadas(radio_si.isSelected() ? "Si" : "No");
+        if (diasDisponibles == 0 && tieneRegistrosPrevios(idEmpleado)) {
+            JOptionPane.showMessageDialog(this, "El empleado ya ha utilizado todos los días disponibles.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-	    // Obtener la fecha actual y la fecha de inicio de vacaciones desde los JDateChoosers
-	    Date fechaActual = new Date();  // Fecha actual
-	    Date fechaInicio = fecha_inicio_v.getDate();
+        vacaciones claseVacaciones = new vacaciones();
+        try {
+            // Configurar datos del formulario en la clase de vacaciones
+            claseVacaciones.setId_empleado(idEmpleado);
+            claseVacaciones.setNombres_empleado(cbxnombres.getSelectedItem().toString());
+            claseVacaciones.setApellidos_empleado(txtapellidos.getText());
+            claseVacaciones.setIdentidad_empleado(txtidentidad.getText());
+            claseVacaciones.setTel_empleado(txttel.getText());
+            claseVacaciones.setCorreo_empleado(txtcorreo.getText());
+            claseVacaciones.setCargo_empleado(txtcargo.getText());
+            claseVacaciones.setArea_empleado(txtarea.getText());
+            claseVacaciones.setNacimiento_empleado(fecha_nacimiento.getDate());
+            claseVacaciones.setSexo_empleado(txtsexo.getText());
+            claseVacaciones.setEdad_empleado(obtenerValorEntero(txtedad.getText(), 0));
+            claseVacaciones.setAntiguedad(obtenerValorEntero(txtantiguedad.getText(), 0));
+            claseVacaciones.setDias_correspondientes(obtenerValorEntero(txtdias_correspondientes.getText(), 0));
+            claseVacaciones.setTotal_dias(obtenerValorEntero(txttotal_dias.getText(), 0));
+            claseVacaciones.setDias_pendientes(obtenerValorEntero(txtdias_disponibles.getText(), 0));
+            claseVacaciones.setPagadas(radio_si.isSelected() ? "Si" : "No");
+            claseVacaciones.setFecha_inicio_v(fecha_inicio_v.getDate());
+            claseVacaciones.setFecha_finalizacion_v(fecha_finalizacion_v.getDate());
+            claseVacaciones.setExtendido(txtextendido.getText());
+            claseVacaciones.setCargo_ext(txtcargo_ext.getText());
 
-	    claseVacaciones.setFecha_inicio_v(fechaInicio);
-	    claseVacaciones.setFecha_finalizacion_v(fecha_finalizacion_v.getDate());
+            // Asignar fecha y hora actual
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 
-	    // Validar y asignar la hora actual desde el campo txthora_actual
-	    String horaActualStr = txthora_actual.getText().trim();
-	    if (isValidHour(horaActualStr)) {
-	        // Asegúrate de que el formato sea HH:mm:ss
-	        Time horaActual = Time.valueOf(horaActualStr + ":00");
-	        claseVacaciones.setHora_actual(horaActual);
-	    } else {
-	        JOptionPane.showMessageDialog(null, "La hora ingresada no es válida. Asegúrate de que el formato sea HH:mm.", "Error", JOptionPane.ERROR_MESSAGE);
-	        return;
-	    }
+            String fechaActualStr = dateFormat.format(new Date());
+            String horaActualStr = timeFormat.format(new Date());
 
-	    // Llamar a la clase de consultas para guardar las vacaciones
-	    consultas_vacaciones consulta = new consultas_vacaciones();
-	    boolean exito = consulta.guardarVacaciones(claseVacaciones, fechaActual, fechaInicio);
+            claseVacaciones.setFecha_actual(dateFormat.parse(fechaActualStr));
+            claseVacaciones.setHora_actual(Time.valueOf(horaActualStr));
 
-	    if (exito) {
-	        JOptionPane.showMessageDialog(null, "Vacaciones guardadas correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-	        vacaciones_tabla tabla = new vacaciones_tabla();
-			tabla.setVisible(true);
-			tabla.setLocationRelativeTo(null);
-			tabla.construirTabla();
-			dispose();
-	  
-	        
-	    } else {
-	        JOptionPane.showMessageDialog(null, "Error al guardar las vacaciones", "Error", JOptionPane.ERROR_MESSAGE);
-	    }
-	}
+            // Guardar el registro en la base de datos
+            consultas_vacaciones consulta = new consultas_vacaciones();
+            boolean exito = consulta.guardarVacaciones(claseVacaciones);
 
-	
-	public boolean isValidHour(String horaStr) {
-	    try {
-	        String[] partes = horaStr.split(":");
-	        if (partes.length != 2) {
-	            return false;  
-	        }
-	        
-	        int horas = Integer.parseInt(partes[0]);
-	        int minutos = Integer.parseInt(partes[1]);
+            if (exito) {
+                JOptionPane.showMessageDialog(this, "Vacaciones guardadas correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                calcularDiasDisponibles(idEmpleado); // Actualizar días disponibles después de guardar
+                vacaciones_tabla tabla = new vacaciones_tabla();
+                tabla.setVisible(true);
+                tabla.setLocationRelativeTo(null);
+                dispose();
+                
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al guardar las vacaciones.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al guardar las vacaciones: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
-	        // Verificar que las horas estén en el rango 0-23 y los minutos en el rango 0-59
-	        if (horas < 0 || horas > 23 || minutos < 0 || minutos > 59) {
-	            return false;
-	        }
-
-	        return true;
-	    } catch (NumberFormatException e) {
-	        return false; 
-	    }
-	}
 
 
 
 
 	// Método 12: Actualizar vacaciones
-	public void actualizarVacaciones() {
-	    if (!validarCamposVacaciones()) {
-	        return;
-	    }
+    public void actualizarVacaciones() {
+        if (!validarCamposVacaciones()) {
+            return; // Detener si los campos no son válidos
+        }
 
-	    vacaciones claseVacaciones = new vacaciones();
+        int idEmpleado = obtenerValorEntero(txtid.getText(), 0);
 
-	    claseVacaciones.setId_empleado(Integer.parseInt(txtid.getText()));
-	    claseVacaciones.setNombres_empleado(cbxnombres.getSelectedItem().toString());
-	    claseVacaciones.setApellidos_empleado(txtapellidos.getText());
-	    claseVacaciones.setIdentidad_empleado(txtidentidad.getText());
-	    claseVacaciones.setTel_empleado(txttel.getText());
-	    claseVacaciones.setCorreo_empleado(txtcorreo.getText());
-	    claseVacaciones.setCargo_empleado(txtcargo.getText());
-	    claseVacaciones.setArea_empleado(txtarea.getText());
-	    claseVacaciones.setNacimiento_empleado(fecha_nacimiento.getDate());
-	    claseVacaciones.setSexo_empleado(txtsexo.getText());
-	    claseVacaciones.setEdad_empleado(Integer.parseInt(txtedad.getText()));
-	    claseVacaciones.setAntiguedad(Integer.parseInt(txtantiguedad.getText()));
-	    claseVacaciones.setDias_correspondientes(Integer.parseInt(txtdias_correspondientes.getText()));
-	    claseVacaciones.setTotal_dias(Integer.parseInt(txttotal_dias.getText()));
-	    claseVacaciones.setPagadas(radio_si.isSelected() ? "Si" : "No");
+        vacaciones claseVacaciones = new vacaciones();
+        try {
+            // Configurar datos del formulario en la clase de vacaciones
+            claseVacaciones.setId_empleado(idEmpleado);
+            claseVacaciones.setNombres_empleado(cbxnombres.getSelectedItem().toString());
+            claseVacaciones.setApellidos_empleado(txtapellidos.getText());
+            claseVacaciones.setIdentidad_empleado(txtidentidad.getText());
+            claseVacaciones.setTel_empleado(txttel.getText());
+            claseVacaciones.setCorreo_empleado(txtcorreo.getText());
+            claseVacaciones.setCargo_empleado(txtcargo.getText());
+            claseVacaciones.setArea_empleado(txtarea.getText());
+            claseVacaciones.setNacimiento_empleado(fecha_nacimiento.getDate());
+            claseVacaciones.setSexo_empleado(txtsexo.getText());
+            claseVacaciones.setEdad_empleado(obtenerValorEntero(txtedad.getText(), 0));
+            claseVacaciones.setAntiguedad(obtenerValorEntero(txtantiguedad.getText(), 0));
+            claseVacaciones.setDias_correspondientes(obtenerValorEntero(txtdias_correspondientes.getText(), 0));
+            claseVacaciones.setTotal_dias(obtenerValorEntero(txttotal_dias.getText(), 0));
+            claseVacaciones.setDias_pendientes(obtenerValorEntero(txtdias_disponibles.getText(), 0));
+            claseVacaciones.setPagadas(radio_si.isSelected() ? "Si" : "No");
+            claseVacaciones.setFecha_inicio_v(fecha_inicio_v.getDate());
+            claseVacaciones.setFecha_finalizacion_v(fecha_finalizacion_v.getDate());
+            claseVacaciones.setExtendido(txtextendido.getText());
+            claseVacaciones.setCargo_ext(txtcargo_ext.getText());
 
-	    claseVacaciones.setFecha_inicio_v(fecha_inicio_v.getDate());
-	    claseVacaciones.setFecha_finalizacion_v(fecha_finalizacion_v.getDate());
+            // Actualizar el registro en la base de datos
+            consultas_vacaciones consulta = new consultas_vacaciones();
+            boolean exito = consulta.actualizarVacaciones(claseVacaciones);
 
-	    String horaActualStr = txthora_actual.getText().trim();
-	    if (!horaActualStr.isEmpty()) {
-	        Time horaActual = Time.valueOf(horaActualStr + ":00"); 
-	        claseVacaciones.setHora_actual(horaActual);
-	    } else {
-	        JOptionPane.showMessageDialog(null, "La hora actual está vacía. Por favor, revise.", "Error", JOptionPane.ERROR_MESSAGE);
-	        return;
-	    }
-
-	    consultas_vacaciones consulta = new consultas_vacaciones();
-	    boolean exito = consulta.actualizarVacaciones(this);  // Pasamos la instancia de ventana actual
-
-	    if (exito) {
-	        JOptionPane.showMessageDialog(null, "Vacaciones actualizadas correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-	        vacaciones_tabla tabla = new vacaciones_tabla();
-	    	tabla.setVisible(true);
-	    	tabla.setLocationRelativeTo(null);
-	    	dispose();
-	    } else {
-	        JOptionPane.showMessageDialog(null, "Error al actualizar las vacaciones", "Error", JOptionPane.ERROR_MESSAGE);
-	    }
-	}
+            if (exito) {
+                JOptionPane.showMessageDialog(this, "Vacaciones actualizadas correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                calcularDiasDisponibles(idEmpleado); // Actualizar días disponibles después de actualizar
+            } else {
+                JOptionPane.showMessageDialog(this, "Error al actualizar las vacaciones.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al actualizar las vacaciones: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
 
-	// Método 13: Resetear campos de vacaciones
-	private void resetearCamposVacaciones() {
-	    fecha_inicio_v.setDate(null);
-	    fecha_finalizacion_v.setDate(null);
-	    txttotal_dias.setText("0");
-	    txtdias_pendientes.setText("0");
-	    grupoPago.clearSelection();
-	}
+
 
 	// Método 14: Limpiar campos
 	public void limpiarCampos() {
@@ -1247,8 +1353,10 @@ public class vacaciones_nuevo extends JFrame {
 	    txtantiguedad.setText("");
 	    txtdias_correspondientes.setText("");
 	    txttotal_dias.setText("0");
-	    txtdias_pendientes.setText("0");
+	    txtdias_disponibles.setText("0");
 	    grupoPago.clearSelection();
+	    txtextendido.setText(" ");
+	    txtcargo_ext.setText(" ");
 	}
 
 
@@ -1328,6 +1436,48 @@ public class vacaciones_nuevo extends JFrame {
 	    }
 	    return nombreOriginal;
 	}
+	
+	private void llenarDatosEmpleado(ResultSet rs) throws SQLException {
+	    txtapellidos.setText(rs.getString("apellidos_empleado"));
+	    txtidentidad.setText(rs.getString("identidad_empleado"));
+	    txtsexo.setText(rs.getString("sexo_empleado"));
+	    txtid.setText(rs.getString("id_empleado"));
+	    txtcorreo.setText(rs.getString("correo_empleado"));
+	    txttel.setText(rs.getString("tel_empleado"));
+	    txtcargo.setText(rs.getString("cargo_empleado"));
+	    txtarea.setText(rs.getString("area_empleado"));
+	    fecha_inicio.setDate(rs.getDate("inicio_empleado"));
+	    fecha_nacimiento.setDate(rs.getDate("nacimiento_empleado"));
+	}
+	
+
+	
+	private void actualizarInterfazSegunDiasPendientes(int diasDisponibles) {
+	    if (diasDisponibles <= 0) {
+	        lblmensaje.setVisible(true);  // Mostrar mensaje de advertencia
+	        btnguardar.setEnabled(false);  // Desactivar el botón de guardar
+	        btnactualizar.setEnabled(false);  // Desactivar el botón de actualizar
+	    } else {
+	        lblmensaje.setVisible(false);  // Ocultar mensaje de advertencia
+	        btnguardar.setEnabled(true);  // Activar el botón de guardar
+	        btnactualizar.setEnabled(true);  // Activar el botón de actualizar
+	    }
+	}
+
+
+
+	
+	private void cerrarConexion(Connection con) {
+	    if (con != null) {
+	        try {
+	            con.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	}
+
+
 
 	// Método 20: Cerrar ventana
 	private void cerrar_ventana() {
