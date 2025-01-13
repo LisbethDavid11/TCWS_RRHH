@@ -62,7 +62,7 @@ public class reporte_vacaciones_individual {
                 encabezado.agregarEncabezado(document);
 
                 // Título
-                document.add(new Paragraph("Constancia de autorización de Vacaciones")
+                document.add(new Paragraph("Constancia de Autorización de Vacaciones")
                         .setBold().setFontSize(14).setTextAlignment(TextAlignment.CENTER));
                 document.add(new Paragraph("\n"));
 

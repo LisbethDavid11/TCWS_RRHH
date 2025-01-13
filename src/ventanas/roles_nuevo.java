@@ -17,9 +17,11 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.JTextArea;
 import javax.swing.JCheckBox;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.UIManager;
 
+import clases.validaciones;
 import consultas.consultas_roles;
 import principal.menu_principal;
 
@@ -30,6 +32,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class roles_nuevo extends JFrame{
 	
@@ -116,6 +120,12 @@ public class roles_nuevo extends JFrame{
 		panel_rol.add(lblNombreDelRol);
 		
 		txtrol = new JTextField(10);
+		txtrol.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				validaciones.validarNombresyApellidos(e, txtrol, 70);
+			}
+		});
 		txtrol.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtrol.setBounds(214, 193, 241, 33);
 		panel_rol.add(txtrol);
@@ -126,7 +136,18 @@ public class roles_nuevo extends JFrame{
 		panel_rol.add(lblDescripcin);
 		
 		txadescripcion = new JTextArea();
+		txadescripcion.setFont(new Font("Monospaced", Font.PLAIN, 14));
+		txadescripcion.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				validaciones.validarLongitud(e, txadescripcion, 150);
+				validaciones.capitalizarPrimeraLetra(txadescripcion);
+			}
+		});
 		txadescripcion.setBounds(214, 252, 241, 146);
+		txadescripcion.setLineWrap(true); // Activa el ajuste de líneas
+		txadescripcion.setWrapStyleWord(true); // Ajusta el texto en palabras completas
+		txadescripcion.setBorder(BorderFactory.createLineBorder(Color.GRAY)); // agrega borde
 		panel_rol.add(txadescripcion);
 		
 		JLabel lblDatosDel_1_2 = new JLabel("_______ Asignación del rol ________________________________\r\n");
@@ -357,7 +378,6 @@ public class roles_nuevo extends JFrame{
 	            return;
 	        }
 
-	        JOptionPane.showMessageDialog(null, "Registro guardado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 	       
 	        boolean guardado = consultas.guardarRol(nombreUsuario, contrasena, nombreRol, descripcionRol, empleados,
 	                ausenciaLaboral, incapacidades, vacaciones, cargos, areas, reportes, respaldos, usuarios);

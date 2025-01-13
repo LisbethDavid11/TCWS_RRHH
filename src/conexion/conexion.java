@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class conexion {
     private final String database = "tcws1";
     private final String usuario = "root";
-    private final String contrasena = "mendoza11.";
+    private final String contrasena = "";
     private final String global = "localhost";
     private final String url = "jdbc:mysql://" + global + "/" + database;
 
@@ -30,7 +30,6 @@ public class conexion {
             try {
                 if (!conexion.isClosed()) {
                     conexion.close();
-                    System.out.println("Conexión cerrada correctamente.");
                 }
             } catch (SQLException e) {
                 System.out.println("Error al cerrar la conexión!");
@@ -38,4 +37,26 @@ public class conexion {
             }
         }
     }
+    
+    public class TestConnection {
+        public static void main(String[] args) {
+            String url = "jdbc:mysql://localhost:3306/tcws1?useSSL=false";
+            String user = "root";
+            String password = ""; // Contraseña vacía
+
+            try (Connection conn = DriverManager.getConnection(url, user, password)) {
+                if (conn != null) {
+                    System.out.println("Conexión exitosa a la base de datos.");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        
+        
+    }
+    
+    
+   
+
 }

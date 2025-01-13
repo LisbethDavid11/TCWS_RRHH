@@ -40,8 +40,9 @@ public class login_principal extends JFrame {
 	public JLabel lblfoto;
 	public JLabel lblicon;
 	
-	ImageIcon icono_fotografia = new ImageIcon("src/imagenes/tcws_este.png");
-	ImageIcon icono_fotografia2 = new ImageIcon("src/imagenes/u1.png");
+	ImageIcon icono_fotografia = new ImageIcon(getClass().getResource("/imagenes/tcws_este.png"));
+	ImageIcon icono_fotografia2 = new ImageIcon(getClass().getResource("/imagenes/u1.png"));
+
 	public JPasswordField txtcontrasena;
 	public boolean mostrarC1 = false;
 	

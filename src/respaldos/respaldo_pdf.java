@@ -58,6 +58,11 @@ public class respaldo_pdf {
 	                // Encabezado solo en la primera página
 	                encabezado_documentos encabezado = new encabezado_documentos();
 	                encabezado.agregarEncabezado(document);
+	                
+	             // Agregar título
+	                document.add(new Paragraph("Respaldo general del Sistema EPAV")
+	                        .setBold().setFontSize(14).setTextAlignment(TextAlignment.CENTER));
+	             
 
 	                // Agregar numeración de páginas
 	                agregarNumeracionPaginas(pdfDoc);
@@ -67,7 +72,7 @@ public class respaldo_pdf {
 	                        "permisos_ausencia_laboral", "roles_usuarios", "usuarios", "vacaciones");
 
 	                // Conexión a la base de datos
-	                Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/tcws1", "root", "mendoza11.");
+	                Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/tcws1", "root", "");
 
 	                for (String nombreTabla : tablas) {
 	                    document.add(new Paragraph("\n"));

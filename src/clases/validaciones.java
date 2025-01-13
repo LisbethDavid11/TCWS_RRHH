@@ -12,34 +12,65 @@ import com.toedter.calendar.JDateChooser;
 
 public class validaciones {
 	
-	// para nombres y apellidos, con mayuscula en cada espacio
-    public static void validarNombresyApellidos(KeyEvent e, JTextField textField, int maxLength) {
-        char key = e.getKeyChar();
-        boolean mayusculas = (key >= 65 && key <= 90) || key == 209;  // A-Z o Ñ
-        boolean minusculas = (key >= 97 && key <= 122) || key == 241; // a-z o ñ
-        boolean espacio = key == 32;
+	// para nombres y apellidos, con mayúscula en cada espacio y aceptando acentos
+	public static void validarNombresyApellidos(KeyEvent e, JTextField textField, int maxLength) {
+	    char key = e.getKeyChar();
+	    boolean mayusculas = (key >= 65 && key <= 90) || key == 209 || "ÁÉÍÓÚÜ".indexOf(key) != -1; // A-Z, Ñ, o vocales con acento
+	    boolean minusculas = (key >= 97 && key <= 122) || key == 241 || "áéíóúü".indexOf(key) != -1; // a-z, ñ, o vocales con acento
+	    boolean espacio = key == 32;
 
-        if (!(minusculas || mayusculas || espacio)) {
-            e.consume();
-        }
+	    if (!(minusculas || mayusculas || espacio)) {
+	        e.consume();
+	    }
 
-        if (textField.getText().trim().length() == maxLength) {
-            e.consume();
-            JOptionPane.showMessageDialog(null, "¡Solo puede ingresar " + maxLength + " caracteres!", 
-            		"Advertencia", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
+	    if (textField.getText().trim().length() == maxLength) {
+	        e.consume();
+	        JOptionPane.showMessageDialog(null, "¡Solo puede ingresar " + maxLength + " caracteres!", 
+	                "Advertencia", JOptionPane.WARNING_MESSAGE);
+	        return;
+	    }
 
-        String texto = textField.getText();
+	    String texto = textField.getText();
 
-        if (texto.isEmpty() || texto.endsWith(" ")) {
-        	
-            e.setKeyChar(Character.toUpperCase(key));
-        } else {
-        	
-            e.setKeyChar(Character.toLowerCase(key));
-        }
-    }
+	    if (texto.isEmpty() || texto.endsWith(" ")) {
+	        e.setKeyChar(Character.toUpperCase(key));
+	    } else {
+	        e.setKeyChar(Character.toLowerCase(key));
+	    }
+	}
+	
+	
+	
+	// Validación que incluye: la primera letra siempre mayúscula, ñ, acentos, puntos, comas y guiones
+	public static void validarTextoConFormato(KeyEvent e, JTextField textField, int maxLength) {
+	    char key = e.getKeyChar();
+	    boolean mayusculas = (key >= 65 && key <= 90) || key == 209 || "ÁÉÍÓÚÜ".indexOf(key) != -1; // A-Z, Ñ, o vocales con acento
+	    boolean minusculas = (key >= 97 && key <= 122) || key == 241 || "áéíóúü".indexOf(key) != -1; // a-z, ñ, o vocales con acento
+	    boolean permitido = mayusculas || minusculas || key == 32 || key == 46 || key == 44 || key == 45; // Espacio, punto, coma, guión
+
+	    // Si el carácter no está permitido, lo consumimos
+	    if (!permitido) {
+	        e.consume();
+	        return;
+	    }
+
+	    // Limitar la longitud máxima del texto
+	    if (textField.getText().trim().length() >= maxLength) {
+	        e.consume();
+	        JOptionPane.showMessageDialog(null, "¡Solo puede ingresar " + maxLength + " caracteres!", 
+	                "Advertencia", JOptionPane.WARNING_MESSAGE);
+	        return;
+	    }
+
+	    // Convertir la primera letra a mayúscula
+	    String texto = textField.getText();
+	    if (texto.isEmpty()) { // Si el campo está vacío, forzar la primera letra en mayúscula
+	        e.setKeyChar(Character.toUpperCase(key));
+	    }
+	}
+
+
+
     
     
     

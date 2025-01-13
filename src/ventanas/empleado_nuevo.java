@@ -12,9 +12,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.net.MalformedURLException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +23,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -44,11 +42,9 @@ import com.toedter.calendar.JDateChooser;
 
 import clases.empleado;
 import clases.validaciones;
-import conexion.conexion;
 import consultas.consultas_areas;
 import consultas.consultas_cargos;
 import consultas.consultas_empleado;
-import javax.swing.JCheckBox;
 
 
 @SuppressWarnings("serial")
@@ -90,7 +86,9 @@ public class empleado_nuevo extends JFrame{
 	public Date fechaActual = new Date();
 	public JTextField txtcuenta;
 	public JPanel panel_datos;
-	ImageIcon icono_fotografia = new ImageIcon("src/imagenes/camara.png");
+	
+	ImageIcon icono_fotografia = new ImageIcon(getClass().getResource("/imagenes/camara.png"));
+
 	public JTextField txtid;
 	public JCheckBox chxeditar;
 	public JTextField txtidOriginal;
@@ -203,7 +201,7 @@ public class empleado_nuevo extends JFrame{
 		lblapellidos.setBounds(29, 236, 166, 25);
 		panel_datos.add(lblapellidos);
 		
-		JLabel lblsexo = new JLabel("Sexo");
+		JLabel lblsexo = new JLabel("Género");
 		lblsexo.setFont(new Font("Tahoma", Font.BOLD, 15));
 		lblsexo.setBounds(332, 96, 57, 25);
 		panel_datos.add(lblsexo);
@@ -213,7 +211,7 @@ public class empleado_nuevo extends JFrame{
 		lblfecha_nacimiento.setBounds(329, 170, 217, 25);
 		panel_datos.add(lblfecha_nacimiento);
 		
-		JLabel lbltelefono = new JLabel("Número de téfono");
+		JLabel lbltelefono = new JLabel("Número de teléfono");
 		lbltelefono.setFont(new Font("Tahoma", Font.BOLD, 15));
 		lbltelefono.setBounds(29, 307, 200, 25);
 		panel_datos.add(lbltelefono);
@@ -342,9 +340,9 @@ public class empleado_nuevo extends JFrame{
 		
 			//Rango de años
 	        Calendar minDate = Calendar.getInstance();//Establecer el rango de años (1935 - 2004)
-	        minDate.set(1935, Calendar.JANUARY, 1); // Año mínimo: 1935
+	        minDate.set(1920, Calendar.JANUARY, 1); // Año mínimo: 1935
 	        Calendar maxDate = Calendar.getInstance();
-	        maxDate.set(2004, Calendar.DECEMBER, 31); // Año máximo: 2004
+	        maxDate.set(2007, Calendar.DECEMBER, 31); // Año máximo: 2004
 	        fecha_nacimiento.setSelectableDateRange(minDate.getTime(), maxDate.getTime());// Configurar el rango de fechas
 		
 		JLabel lbltitulo_foto = new JLabel("Fotografía");
@@ -352,7 +350,7 @@ public class empleado_nuevo extends JFrame{
 		lbltitulo_foto.setBounds(630, 26, 119, 25);
 		panel_datos.add(lbltitulo_foto);
 		
-		JLabel lblid = new JLabel("Id empleado");
+		JLabel lblid = new JLabel("Id marcadas");
 		lblid.setFont(new Font("Tahoma", Font.BOLD, 15));
 		lblid.setBounds(31, 26, 166, 25);
 		panel_datos.add(lblid);
@@ -369,7 +367,7 @@ public class empleado_nuevo extends JFrame{
 		txtid_empleado.setBounds(29, 50, 119, 33);
 		panel_datos.add(txtid_empleado);
 		
-		JLabel lblFechaDeInicio = new JLabel("Fecha de inicio");
+		JLabel lblFechaDeInicio = new JLabel("Fecha de inicio laboral");
 		lblFechaDeInicio.setFont(new Font("Tahoma", Font.BOLD, 15));
 		lblFechaDeInicio.setBounds(630, 178, 200, 25);
 		panel_datos.add(lblFechaDeInicio);
@@ -589,14 +587,14 @@ public class empleado_nuevo extends JFrame{
 	
 		// Rango de años para los jdatechooser
 		Calendar fechaMin = Calendar.getInstance();
-		fechaMin.set(2012, Calendar.JANUARY, 1);
+		fechaMin.set(1920, Calendar.JANUARY, 1);
 		fecha_inicio.setMinSelectableDate(fechaMin.getTime()); 
 		fecha_inicio.setMaxSelectableDate(fechaActual);      
 
 		
 		//renuncia
 		Calendar fechaMinimo = Calendar.getInstance();
-		fechaMinimo.set(2012, Calendar.JANUARY, 1);
+		fechaMinimo.set(1920, Calendar.JANUARY, 1);
 		fecha_renuncia.setMinSelectableDate(fechaMinimo.getTime()); 
 		fecha_renuncia.setMaxSelectableDate(fechaActual); 
 		

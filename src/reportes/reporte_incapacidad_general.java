@@ -103,7 +103,7 @@ public class reporte_incapacidad_general {
             encabezado.agregarEncabezado(document);
 
             // Agregar título
-            document.add(new Paragraph("Reporte General de Incapacidades")
+            document.add(new Paragraph("Reporte general de Incapacidades")
                     .setBold().setFontSize(14).setTextAlignment(TextAlignment.CENTER));
             document.add(new Paragraph("\n"));
 

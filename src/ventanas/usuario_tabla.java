@@ -134,6 +134,78 @@ public class usuario_tabla extends JFrame {
 
 		
 		
+		btneliminar.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        int filaSeleccionada = tablaUsuarios.getSelectedRow();
+
+		        if (filaSeleccionada == -1) {
+		            JOptionPane.showMessageDialog(
+		                usuario_tabla.this, 
+		                "Debe seleccionar una fila para eliminar.", 
+		                "Advertencia", 
+		                JOptionPane.WARNING_MESSAGE
+		            );
+		            return;
+		        }
+
+		        int confirmacion = JOptionPane.showConfirmDialog(
+		            usuario_tabla.this, 
+		            "¿Está seguro de que desea eliminar el registro seleccionado?\nEsto también lo eliminará permanentemente de la base de datos", 
+                    "Confirmar eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE
+		        );
+
+		        if (confirmacion == JOptionPane.YES_OPTION) {
+		            Connection con = null;
+		            PreparedStatement pst = null;
+
+		            try {
+		                con = new conexion().conectar();
+		                // Obtener el ID del usuario a eliminar
+		                int idUsuario = Integer.parseInt(tablaUsuarios.getValueAt(filaSeleccionada, 0).toString());
+		                String sql = "DELETE FROM usuarios WHERE id_usuarios = ?";
+		                pst = con.prepareStatement(sql);
+		                pst.setInt(1, idUsuario);
+
+		                int resultado = pst.executeUpdate();
+
+		                if (resultado > 0) {
+		                    ((DefaultTableModel) tablaUsuarios.getModel()).removeRow(filaSeleccionada);
+		                    JOptionPane.showMessageDialog(
+		                        usuario_tabla.this, 
+		                        "El registro ha sido eliminado correctamente de la tabla y la base de datos", 
+	                    		"Éxito", JOptionPane.INFORMATION_MESSAGE 
+		                    );
+		                    actualizarConteoRegistros();
+		                } else {
+		                    JOptionPane.showMessageDialog(
+		                        usuario_tabla.this, 
+		                        "No se pudo eliminar el registro. Intente nuevamente.", 
+		                        "Error", 
+		                        JOptionPane.ERROR_MESSAGE
+		                    );
+		                }
+		            } catch (SQLException ex) {
+		                JOptionPane.showMessageDialog(
+		                    usuario_tabla.this, 
+		                    "Error al eliminar el registro: " + ex.getMessage(), 
+		                    "Error", 
+		                    JOptionPane.ERROR_MESSAGE
+		                );
+		            } finally {
+		                try {
+		                    if (pst != null) pst.close();
+		                    if (con != null) con.close();
+		                } catch (SQLException ex) {
+		                    System.err.println("Error al cerrar la conexión: " + ex.getMessage());
+		                }
+		            }
+		        }
+		    }
+		});
+
+		
+		
 		JLabel lblbuscar = new JLabel("Buscar");
 		lblbuscar.setHorizontalAlignment(SwingConstants.LEFT);
 		lblbuscar.setForeground(Color.BLACK);

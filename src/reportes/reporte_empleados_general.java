@@ -79,7 +79,7 @@ public class reporte_empleados_general {
             encabezado_documentos encabezado = new encabezado_documentos();
             encabezado.agregarEncabezado(document);
 
-            document.add(new Paragraph("Reporte completo de empleados")
+            document.add(new Paragraph("Reporte completo de Empleados")
                 .setBold().setFontSize(14).setTextAlignment(TextAlignment.CENTER));
             document.add(new Paragraph("\n"));
 

@@ -1,6 +1,5 @@
 package principal;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -20,18 +19,18 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 
 import consultas.consultas_roles;
+import informes.informe_empleado_general;
+import informes.informe_empleado_individual;
 import reportes.reporte_empleado_especial;
 import reportes.reporte_empleados_activos;
 import reportes.reporte_empleados_general;
 import reportes.reporte_incapacidad_general;
 import reportes.reporte_permisos_general;
 import reportes.reporte_vacaciones_general;
-import respaldos.respaldo_excel;
 import respaldos.respaldo_pdf;
 import respaldos.respaldo_sql;
 import ventanas.areas_nuevo;
@@ -45,22 +44,23 @@ import ventanas.incapacidad_laboral_nuevo;
 import ventanas.incapacidad_laboral_tabla;
 import ventanas.info_sistema;
 import ventanas.login_principal;
-import ventanas.usuario_nuevo;
-import ventanas.usuario_tabla;
 import ventanas.permiso_AL_nuevo;
 import ventanas.permiso_AL_tabla;
 import ventanas.roles_nuevo;
 import ventanas.roles_tabla;
+import ventanas.usuario_nuevo;
+import ventanas.usuario_tabla;
 import ventanas.vacaciones_nuevo;
 import ventanas.vacaciones_tabla;
-
-import java.awt.Window.Type;
 
 
 
 @SuppressWarnings("serial")
 public class menu_principal extends JFrame{
-	ImageIcon icono_fotografia = new ImageIcon("src/imagenes/logoTC.jpeg");
+	
+	ImageIcon icono_fotografia = new ImageIcon(getClass().getResource("/imagenes/logoTC.jpeg"));
+
+
 	public JLabel lblfoto;
 	public JLabel relojFechaLabel;
 	private JLabel lblBienvenido;
@@ -73,7 +73,7 @@ public class menu_principal extends JFrame{
 	public JMenu menu_respaldos;
 	public JMenu menu_usuarios;
 	public JMenu menu_areas;
-	public JMenu menu_ayuda;
+	public JMenu mnInformes;
 	public JMenu menu_reportes;
 	public JMenu menu_salir;
 	
@@ -103,6 +103,72 @@ public class menu_principal extends JFrame{
 		menuBar.setBackground(UIManager.getColor("Button.light"));
 		menuBar.setBounds(0, 0, 1036, 46);
 		getContentPane().add(menuBar);
+		
+		menu_cargos = new JMenu("Cargos");
+		menu_cargos.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		menuBar.add(menu_cargos);
+		
+		JMenuItem mntmNewMenuItem_2_1 = new JMenuItem("Tabla de registros de cargos");
+		mntmNewMenuItem_2_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cargos_tabla t = new cargos_tabla();
+				t.setVisible(true);
+				t.setLocationRelativeTo(null);
+				t.construirTabla();
+				dispose();
+			}
+		});
+		mntmNewMenuItem_2_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mntmNewMenuItem_2_1.setBackground(Color.WHITE);
+		menu_cargos.add(mntmNewMenuItem_2_1);
+		
+		JMenuItem mntmNewMenuItem_3_1 = new JMenuItem("Agregar un nuevo cargo");
+		mntmNewMenuItem_3_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cargos_nuevo c = new cargos_nuevo();
+				c.setVisible(true);
+				c.setLocationRelativeTo(null);
+				c.btnactualizar.setVisible(false);
+				c.chxeditar.setVisible(false);
+				c.chxeditar.setVisible(false);
+				dispose();
+			}
+		});
+		mntmNewMenuItem_3_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mntmNewMenuItem_3_1.setBackground(Color.WHITE);
+		menu_cargos.add(mntmNewMenuItem_3_1);
+		
+		menu_areas = new JMenu("Áreas");
+		menu_areas.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		menuBar.add(menu_areas);
+		
+		JMenuItem mntmNewMenuItem_2_1_1 = new JMenuItem("Tabla de registros de áreas");
+		mntmNewMenuItem_2_1_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				areas_tabla t = new areas_tabla();
+				t.setVisible(true);
+				t.setLocationRelativeTo(null);
+				t.construirTabla();
+				dispose();
+			}
+		});
+		mntmNewMenuItem_2_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mntmNewMenuItem_2_1_1.setBackground(Color.WHITE);
+		menu_areas.add(mntmNewMenuItem_2_1_1);
+		
+		JMenuItem mntmNewMenuItem_3_1_1 = new JMenuItem("Agregar una nueva área");
+		mntmNewMenuItem_3_1_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				areas_nuevo n = new areas_nuevo();
+				n.setVisible(true);
+				n.setLocationRelativeTo(null);
+				n.chxeditar.setVisible(false);
+				dispose();
+			}
+		});
+		mntmNewMenuItem_3_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mntmNewMenuItem_3_1_1.setBackground(Color.WHITE);
+		menu_areas.add(mntmNewMenuItem_3_1_1);
 		
 		menu_empleados = new JMenu("Empleados");
 		menu_empleados.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -242,71 +308,68 @@ public class menu_principal extends JFrame{
 		mntmNewMenuItem_8_2_1_1.setBackground(Color.WHITE);
 		menu_vacaciones.add(mntmNewMenuItem_8_2_1_1);
 		
-		menu_cargos = new JMenu("Cargos");
-		menu_cargos.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		menuBar.add(menu_cargos);
+		menu_usuarios = new JMenu("Usuarios");
+		menu_usuarios.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		menuBar.add(menu_usuarios);
 		
-		JMenuItem mntmNewMenuItem_2_1 = new JMenuItem("Tabla de registros de cargos");
-		mntmNewMenuItem_2_1.addActionListener(new ActionListener() {
+		JMenuItem mntmNewMenuItem_6_1 = new JMenuItem("Tabla de registros de usuarios");
+		mntmNewMenuItem_6_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cargos_tabla t = new cargos_tabla();
+				usuario_tabla t = new usuario_tabla();
 				t.setVisible(true);
 				t.setLocationRelativeTo(null);
 				t.construirTabla();
 				dispose();
 			}
 		});
-		mntmNewMenuItem_2_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mntmNewMenuItem_2_1.setBackground(Color.WHITE);
-		menu_cargos.add(mntmNewMenuItem_2_1);
+		mntmNewMenuItem_6_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mntmNewMenuItem_6_1.setBackground(Color.WHITE);
+		menu_usuarios.add(mntmNewMenuItem_6_1);
 		
-		JMenuItem mntmNewMenuItem_3_1 = new JMenuItem("Agregar un nuevo cargo");
-		mntmNewMenuItem_3_1.addActionListener(new ActionListener() {
+		JMenuItem mntmNewMenuItem_4_1 = new JMenuItem("Agregar un nuevo usuario");
+		mntmNewMenuItem_4_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cargos_nuevo c = new cargos_nuevo();
-				c.setVisible(true);
-				c.setLocationRelativeTo(null);
-				c.btnactualizar.setVisible(false);
-				c.chxeditar.setVisible(false);
-				c.chxeditar.setVisible(false);
+				usuario_nuevo registro = new usuario_nuevo();
+				registro.setVisible(true);
+				registro.setLocationRelativeTo(null);
+				dispose();
+				registro.btnregresar_login.setVisible(false);
+				registro.btnactualizar.setVisible(false);	
+				registro.chkeditar.setVisible(false);
+			}
+		});
+		mntmNewMenuItem_4_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mntmNewMenuItem_4_1.setBackground(Color.WHITE);
+		menu_usuarios.add(mntmNewMenuItem_4_1);
+		
+		JMenuItem mntmNewMenuItem_4_1_1_1 = new JMenuItem("Tabla de roles y permisos para usuarios");
+		mntmNewMenuItem_4_1_1_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				roles_tabla tabla = new roles_tabla();
+				tabla.setVisible(true);
+				tabla.setLocationRelativeTo(null);
+				tabla.construirTabla();
 				dispose();
 			}
 		});
-		mntmNewMenuItem_3_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mntmNewMenuItem_3_1.setBackground(Color.WHITE);
-		menu_cargos.add(mntmNewMenuItem_3_1);
+		mntmNewMenuItem_4_1_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mntmNewMenuItem_4_1_1_1.setBackground(Color.WHITE);
+		menu_usuarios.add(mntmNewMenuItem_4_1_1_1);
 		
-		menu_areas = new JMenu("Áreas");
-		menu_areas.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		menuBar.add(menu_areas);
-		
-		JMenuItem mntmNewMenuItem_2_1_1 = new JMenuItem("Tabla de registros de áreas");
-		mntmNewMenuItem_2_1_1.addActionListener(new ActionListener() {
+		JMenuItem mntmNewMenuItem_4_1_1 = new JMenuItem("Agregar roles y permisos para usuarios");
+		mntmNewMenuItem_4_1_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				areas_tabla t = new areas_tabla();
-				t.setVisible(true);
-				t.setLocationRelativeTo(null);
-				t.construirTabla();
+				roles_nuevo r = new roles_nuevo();
+				r.setVisible(true);
+				r.setLocationRelativeTo(null);
+				r.btnactualizar.setVisible(false);
+				r.chxeditar.setVisible(false);
 				dispose();
 			}
 		});
-		mntmNewMenuItem_2_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mntmNewMenuItem_2_1_1.setBackground(Color.WHITE);
-		menu_areas.add(mntmNewMenuItem_2_1_1);
-		
-		JMenuItem mntmNewMenuItem_3_1_1 = new JMenuItem("Agregar una nueva área");
-		mntmNewMenuItem_3_1_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				areas_nuevo n = new areas_nuevo();
-				n.setVisible(true);
-				n.setLocationRelativeTo(null);
-				n.chxeditar.setVisible(false);
-				dispose();
-			}
-		});
-		mntmNewMenuItem_3_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mntmNewMenuItem_3_1_1.setBackground(Color.WHITE);
-		menu_areas.add(mntmNewMenuItem_3_1_1);
+		mntmNewMenuItem_4_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mntmNewMenuItem_4_1_1.setBackground(Color.WHITE);
+		menu_usuarios.add(mntmNewMenuItem_4_1_1);
 		
 		menu_reportes = new JMenu("Reportes");
 		menu_reportes.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -380,6 +443,32 @@ public class menu_principal extends JFrame{
 		mntmNewMenuItem_8_4_1.setBackground(Color.WHITE);
 		menu_reportes.add(mntmNewMenuItem_8_4_1);
 		
+		mnInformes = new JMenu("Informes");
+		mnInformes.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		menuBar.add(mnInformes);
+		
+		JMenuItem mntmNewMenuItem_5 = new JMenuItem("Informe de empleado individual");
+		mntmNewMenuItem_5.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				 informe_empleado_individual informe = new informe_empleado_individual();
+				 informe.generarInformeIndividual();
+			}
+		});
+		mntmNewMenuItem_5.setBackground(UIManager.getColor("Button.highlight"));
+		mntmNewMenuItem_5.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mnInformes.add(mntmNewMenuItem_5);
+		
+		JMenuItem mntmNewMenuItem_5_2 = new JMenuItem("Informe de empleado general");
+		mntmNewMenuItem_5_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				informe_empleado_general general =  new informe_empleado_general();
+				general.generarInformeGeneral();
+			}
+		});
+		mntmNewMenuItem_5_2.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mntmNewMenuItem_5_2.setBackground(Color.WHITE);
+		mnInformes.add(mntmNewMenuItem_5_2);
+		
 		menu_respaldos = new JMenu("Respaldos");
 		menu_respaldos.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		menuBar.add(menu_respaldos);
@@ -405,78 +494,6 @@ public class menu_principal extends JFrame{
 		mntmNewMenuItem_5_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmNewMenuItem_5_1.setBackground(Color.WHITE);
 		menu_respaldos.add(mntmNewMenuItem_5_1);
-		
-		menu_usuarios = new JMenu("Usuarios");
-		menu_usuarios.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		menuBar.add(menu_usuarios);
-		
-		JMenuItem mntmNewMenuItem_6_1 = new JMenuItem("Tabla de registros de usuarios");
-		mntmNewMenuItem_6_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				usuario_tabla t = new usuario_tabla();
-				t.setVisible(true);
-				t.setLocationRelativeTo(null);
-				t.construirTabla();
-				dispose();
-			}
-		});
-		mntmNewMenuItem_6_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mntmNewMenuItem_6_1.setBackground(Color.WHITE);
-		menu_usuarios.add(mntmNewMenuItem_6_1);
-		
-		JMenuItem mntmNewMenuItem_4_1 = new JMenuItem("Agregar un nuevo usuario");
-		mntmNewMenuItem_4_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				usuario_nuevo registro = new usuario_nuevo();
-				registro.setVisible(true);
-				registro.setLocationRelativeTo(null);
-				dispose();
-				registro.btnregresar_login.setVisible(false);
-				registro.btnactualizar.setVisible(false);	
-				registro.chkeditar.setVisible(false);
-			}
-		});
-		mntmNewMenuItem_4_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mntmNewMenuItem_4_1.setBackground(Color.WHITE);
-		menu_usuarios.add(mntmNewMenuItem_4_1);
-		
-		JMenuItem mntmNewMenuItem_4_1_1_1 = new JMenuItem("Tabla de roles y permisos para usuarios");
-		mntmNewMenuItem_4_1_1_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				roles_tabla tabla = new roles_tabla();
-				tabla.setVisible(true);
-				tabla.setLocationRelativeTo(null);
-				tabla.construirTabla();
-				dispose();
-			}
-		});
-		mntmNewMenuItem_4_1_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mntmNewMenuItem_4_1_1_1.setBackground(Color.WHITE);
-		menu_usuarios.add(mntmNewMenuItem_4_1_1_1);
-		
-		JMenuItem mntmNewMenuItem_4_1_1 = new JMenuItem("Agregar roles y permisos para usuarios");
-		mntmNewMenuItem_4_1_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				roles_nuevo r = new roles_nuevo();
-				r.setVisible(true);
-				r.setLocationRelativeTo(null);
-				r.btnactualizar.setVisible(false);
-				r.chxeditar.setVisible(false);
-				dispose();
-			}
-		});
-		mntmNewMenuItem_4_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mntmNewMenuItem_4_1_1.setBackground(Color.WHITE);
-		menu_usuarios.add(mntmNewMenuItem_4_1_1);
-		
-		menu_ayuda = new JMenu("Ayuda");
-		menu_ayuda.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		menuBar.add(menu_ayuda);
-		
-		JMenuItem mntmNewMenuItem_5 = new JMenuItem("Manual de usuarioC");
-		mntmNewMenuItem_5.setBackground(UIManager.getColor("Button.highlight"));
-		mntmNewMenuItem_5.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		menu_ayuda.add(mntmNewMenuItem_5);
 		
 		JMenu menu_acerca = new JMenu("Acerca de");
 		menu_acerca.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -603,6 +620,10 @@ public class menu_principal extends JFrame{
 		iniciarRelojYFecha();
 		
 		
+		
+		
+		
+		
     }//class
 	
 	
@@ -616,29 +637,6 @@ public class menu_principal extends JFrame{
     }
 
   
-
-	
-
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					
-					menu_principal frame = new menu_principal();
-					
-					frame.setVisible(true);
-					frame.setLocationRelativeTo(null);
-					
-					
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-        
-		
-	
 	private void cerrar_ventana() {
 		if (JOptionPane.showConfirmDialog(rootPane, "¿Desea salir del sistema?", "Salir del sistema",
 				JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
@@ -706,6 +704,23 @@ public class menu_principal extends JFrame{
 	    menu_reportes.setEnabled(reportes);
 	    menu_respaldos.setEnabled(respaldos);
 	    menu_usuarios.setEnabled(usuarios);
+	}
+	
+	
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					
+					menu_principal frame = new menu_principal();
+					frame.setVisible(true);
+					frame.setLocationRelativeTo(null);
+				
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 
 	

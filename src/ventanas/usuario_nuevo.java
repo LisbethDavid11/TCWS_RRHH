@@ -34,8 +34,11 @@ import java.awt.event.KeyEvent;
 public class usuario_nuevo extends JFrame {
 	public JTextField txtnombres;
 	
-	ImageIcon icono_fotografia = new ImageIcon("src/imagenes/tcws_este.png");
-	ImageIcon icono_fotografia2 = new ImageIcon("src/imagenes/u1.png");
+	
+	ImageIcon icono_fotografia = new ImageIcon(getClass().getResource("/imagenes/tcws_este.png"));
+	ImageIcon icono_fotografia2 = new ImageIcon(getClass().getResource("/imagenes/u1.png"));
+
+	
 	private JTextField txtapellidos;
 	private JTextField txtcorreo;
 	private JTextField txtusuario;

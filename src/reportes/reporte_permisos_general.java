@@ -106,12 +106,12 @@ public class reporte_permisos_general {
 	        encabezado.agregarEncabezado(document);
 	        
 	        // Agregar título
-	        document.add(new Paragraph("Reporte General de Permisos por Ausencia Laboral")
+	        document.add(new Paragraph("Reporte general de Permisos por Ausencia Laboral")
 	                .setBold().setFontSize(14).setTextAlignment(TextAlignment.CENTER));
 	        document.add(new Paragraph("\n"));
 
 	        // Crear la tabla con los encabezados de los datos de empleado y permiso
-	        float[] columnWidths = {0.7f, 0.75f, 1.3f, 1.3f, 1.5f, 1.25f, 1.5f, 1.25f, 1f, 1f, 1f, 0.75f, 0.75f, 0.75f}; 
+	        float[] columnWidths = {0.7f, 0.75f, 1.3f, 1.3f, 1.5f, 1.25f, 1.5f,  1f, 1f, 1f, 0.75f, 0.75f, 0.75f}; 
 	        Table table = new Table(UnitValue.createPercentArray(columnWidths));
 	        table.setWidth(UnitValue.createPercentValue(100)); 
 
@@ -122,7 +122,7 @@ public class reporte_permisos_general {
 	        table.addHeaderCell(new Cell().add(new Paragraph("Apellidos")).setTextAlignment(TextAlignment.CENTER));
 	        table.addHeaderCell(new Cell().add(new Paragraph("Identidad")).setTextAlignment(TextAlignment.CENTER));
 	        table.addHeaderCell(new Cell().add(new Paragraph("Teléfono")).setTextAlignment(TextAlignment.CENTER));
-	        table.addHeaderCell(new Cell().add(new Paragraph("Correo")).setTextAlignment(TextAlignment.CENTER));
+	        //table.addHeaderCell(new Cell().add(new Paragraph("Correo")).setTextAlignment(TextAlignment.CENTER));
 	        table.addHeaderCell(new Cell().add(new Paragraph("Cargo")).setTextAlignment(TextAlignment.CENTER));
 	        table.addHeaderCell(new Cell().add(new Paragraph("Área")).setTextAlignment(TextAlignment.CENTER));
 	        table.addHeaderCell(new Cell().add(new Paragraph("Motivo")).setTextAlignment(TextAlignment.CENTER));
@@ -143,13 +143,23 @@ public class reporte_permisos_general {
 	            table.addCell(new Cell().add(new Paragraph(rs.getString("identidad_empleado"))).setTextAlignment(TextAlignment.LEFT));
 	            table.addCell(new Cell().add(new Paragraph(rs.getString("tel_empleado"))).setTextAlignment(TextAlignment.LEFT));
 	            // Si el correo es largo, se ajusta el texto en múltiples líneas
-	            table.addCell(new Cell().add(new Paragraph(rs.getString("correo_empleado")).setTextAlignment(TextAlignment.LEFT).setFontSize(8)));
+	            //table.addCell(new Cell().add(new Paragraph(rs.getString("correo_empleado")).setTextAlignment(TextAlignment.LEFT).setFontSize(8)));
 	            table.addCell(new Cell().add(new Paragraph(rs.getString("cargo_empleado"))).setTextAlignment(TextAlignment.LEFT));
 	            table.addCell(new Cell().add(new Paragraph(rs.getString("area_empleado"))).setTextAlignment(TextAlignment.LEFT));
 	            table.addCell(new Cell().add(new Paragraph(rs.getString("motivo_ausencia"))).setTextAlignment(TextAlignment.LEFT));
 	            table.addCell(new Cell().add(new Paragraph(dateFormat.format(rs.getDate("desde_fecha")))).setTextAlignment(TextAlignment.LEFT));
 	            table.addCell(new Cell().add(new Paragraph(dateFormat.format(rs.getDate("hasta_fecha")))).setTextAlignment(TextAlignment.LEFT));
-	            table.addCell(new Cell().add(new Paragraph(String.valueOf(rs.getInt("total_fecha")))).setTextAlignment(TextAlignment.LEFT)); // Total días
+	            
+	            //calculo de Dias
+	            java.sql.Date desdeFecha = rs.getDate("desde_fecha");
+	            java.sql.Date hastaFecha = rs.getDate("hasta_fecha");
+
+	            long diferencia = 0;
+	            if (desdeFecha != null && hastaFecha != null) {
+	                diferencia = (hastaFecha.getTime() - desdeFecha.getTime()) / (1000 * 60 * 60 * 24); // Diferencia en días
+	            }
+
+	            table.addCell(new Cell().add(new Paragraph(String.valueOf(diferencia))).setTextAlignment(TextAlignment.LEFT)); // Total días calculados
 	            table.addCell(new Cell().add(new Paragraph(rs.getString("total_horas"))).setTextAlignment(TextAlignment.LEFT)); // Total horas
 	        }
 

@@ -54,7 +54,7 @@ public class reporte_empleado_especial extends JFrame{
 	public JButton btncomprobante;
 	
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public reporte_empleado_especial() {
 	getContentPane().setBackground(new Color(255, 255, 255));
 	setType(Type.UTILITY);
@@ -119,8 +119,6 @@ public class reporte_empleado_especial extends JFrame{
 	panel_datos.add(lblCargo);
 	
 	cbxcargo = new JComboBox<String>();
-	//cbxcargo.setModel(new DefaultComboBoxModel(new String[] {"Director general", "Director", "Gerente financiero", "Administrador", "Asistente ", "Cobros", "Enfermero", "Psicologo", "Supervisor ", "Consejero", "Docente", 
-															//"Docente auxiliar", "Soporte técnico", "Marketing", "Aseo ", "Mantenimiento", "Conserje"}));
 	cbxcargo.setSelectedIndex(-1);
 	cbxcargo.setFont(new Font("Tahoma", Font.PLAIN, 14));
 	cbxcargo.setBounds(361, 113, 217, 33);
@@ -133,7 +131,6 @@ public class reporte_empleado_especial extends JFrame{
 	panel_datos.add(lblrea);
 	
 	cbxarea = new JComboBox<String>();
-	cbxarea.setModel(new DefaultComboBoxModel(new String[] {"Administrativa", "Financiera", "Pre basica", "Primaria", "Secundaria", "Logistica", "Aseo", "Mantenimiento"}));
 	cbxarea.setSelectedIndex(-1);
 	cbxarea.setFont(new Font("Tahoma", Font.PLAIN, 14));
 	cbxarea.setBounds(361, 225, 217, 33);
@@ -163,50 +160,61 @@ public class reporte_empleado_especial extends JFrame{
 	panel_datos.add(txtrNota);
 	
 	btncomprobante = new JButton("Comprobante");
-	btncomprobante.addActionListener(new ActionListener() {
-	    public void actionPerformed(ActionEvent e) {
-	    	
-	        // Verificar si al menos un JComboBox tiene un valor seleccionado
-	        if (cbxsexo.getSelectedIndex() == -1 && cbxcargo.getSelectedIndex() == -1 
-	            && cbxarea.getSelectedIndex() == -1 && cbxrenuncia.getSelectedIndex() == -1 
-	            && cbxcivil.getSelectedIndex() == -1) {
-	            
-	            JOptionPane.showMessageDialog(null, "Debe seleccionar al menos un filtro para generar el reporte", 
-	                                          "Advertencia", JOptionPane.WARNING_MESSAGE);
-	            return;
-	        }
-	        
-	        // Construir la consulta SQL según los filtros seleccionados
-	        StringBuilder query = new StringBuilder("SELECT * FROM empleados WHERE renuncia_empleado IS NULL");
-
-	        if (cbxsexo.getSelectedIndex() != -1) {
-	            query.append(" AND sexo_empleado = '").append(cbxsexo.getSelectedItem().toString()).append("'");
-	        }
-	        if (cbxcargo.getSelectedIndex() != -1) {
-	            query.append(" AND cargo_empleado = '").append(cbxcargo.getSelectedItem().toString()).append("'");
-	        }
-	        if (cbxarea.getSelectedIndex() != -1) {
-	            query.append(" AND area_empleado = '").append(cbxarea.getSelectedItem().toString()).append("'");
-	        }
-	        if (cbxrenuncia.getSelectedIndex() != -1) {
-	            String renuncia = cbxrenuncia.getSelectedItem().toString().equals("Si") ? "IS NOT NULL" : "IS NULL";
-	            query.append(" AND renuncia_empleado ").append(renuncia);
-	        }
-	        if (cbxcivil.getSelectedIndex() != -1) {
-	            query.append(" AND civil_empleado = '").append(cbxcivil.getSelectedItem().toString()).append("'");
-	        }
-
-	        // Aquí haces la conexión y la ejecución de la consulta, generando el reporte en PDF según los filtros
-	        generarReporte(query.toString());
-	    }
-	});
-
-
 	btncomprobante.setToolTipText("Generar comprobante");
 	btncomprobante.setFont(new Font("Tahoma", Font.BOLD, 10));
 	btncomprobante.setBackground(UIManager.getColor("Button.highlight"));
 	btncomprobante.setBounds(718, 233, 121, 25);
 	panel_datos.add(btncomprobante);
+	
+	btncomprobante.addActionListener(new ActionListener() {
+	    public void actionPerformed(ActionEvent e) {
+	        if (cbxsexo.getSelectedIndex() == -1 && cbxcargo.getSelectedIndex() == -1 
+	            && cbxarea.getSelectedIndex() == -1 && cbxrenuncia.getSelectedIndex() == -1 
+	            && cbxcivil.getSelectedIndex() == -1) {
+	            
+	            JOptionPane.showMessageDialog(null, "Debe seleccionar al menos un filtro para generar el reporte.", 
+	                                          "Advertencia", JOptionPane.WARNING_MESSAGE);
+	            return;
+	        }
+	        
+	        StringBuilder query = new StringBuilder("SELECT * FROM empleados WHERE 1=1");
+	        
+	        if (cbxsexo.getSelectedIndex() != -1) {
+	            String sexo = cbxsexo.getSelectedItem().toString().trim();
+	            if (!sexo.isEmpty()) {
+	                query.append(" AND sexo_empleado = '").append(sexo).append("'");
+	            }
+	        }
+	        if (cbxcargo.getSelectedIndex() != -1) {
+	            String cargo = cbxcargo.getSelectedItem().toString().trim();
+	            if (!cargo.isEmpty()) {
+	                query.append(" AND cargo_empleado = '").append(cargo).append("'");
+	            }
+	        }
+	        if (cbxarea.getSelectedIndex() != -1) {
+	            String area = cbxarea.getSelectedItem().toString().trim();
+	            if (!area.isEmpty()) {
+	                query.append(" AND area_empleado = '").append(area).append("'");
+	            }
+	        }
+	        if (cbxrenuncia.getSelectedIndex() != -1) {
+	            String renuncia = cbxrenuncia.getSelectedItem().toString().equals("Si") ? "renuncia_empleado IS NOT NULL" : "renuncia_empleado IS NULL";
+	            query.append(" AND ").append(renuncia);
+	        }
+	        if (cbxcivil.getSelectedIndex() != -1) {
+	            String civil = cbxcivil.getSelectedItem().toString().trim();
+	            if (!civil.isEmpty()) {
+	                query.append(" AND civil_empleado = '").append(civil).append("'");
+	            }
+	        }
+
+	        System.out.println("Consulta generada: " + query.toString());
+	        generarReporte(query.toString());
+	    }
+	});
+
+
+	
 	
 	JLabel lblImpresinDeReportes = new JLabel("REPORTES ESPECIALES DE EMPLEADOS");
 	lblImpresinDeReportes.setHorizontalAlignment(SwingConstants.LEFT);
@@ -236,17 +244,30 @@ public class reporte_empleado_especial extends JFrame{
 	
 	}
 	
+	
+	
 	public void generarReporte(String query) {
 	    conexion conex = new conexion();
 
 	    try {
+	        System.out.println("Ejecutando consulta: " + query); // Depuración
+
+	        Statement estatuto = conex.conectar().createStatement();
+	        ResultSet rs = estatuto.executeQuery(query);
+
+	        if (!rs.isBeforeFirst()) { // Verifica si hay registros
+	            JOptionPane.showMessageDialog(null, "No se encontraron registros para los filtros seleccionados.",
+	                                          "Sin resultados", JOptionPane.INFORMATION_MESSAGE);
+	            return;
+	        }
+
+	        // Continuar con la generación del PDF
 	        JFileChooser fileChooser = new JFileChooser();
 	        fileChooser.setDialogTitle("Guardar reporte especial de empleados");
 
 	        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos PDF", "pdf");
 	        fileChooser.setFileFilter(filter);
 
-	        // Establecer el nombre predeterminado del archivo con la fecha actual
 	        LocalDate fechaActual = LocalDate.now();
 	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 	        String fechaFormateada = fechaActual.format(formatter);
@@ -259,63 +280,42 @@ public class reporte_empleado_especial extends JFrame{
 	            File fileToSave = fileChooser.getSelectedFile();
 	            String dest = fileToSave.getAbsolutePath();
 
-	            // Asegurarse de que la extensión sea .pdf
 	            if (!dest.toLowerCase().endsWith(".pdf")) {
 	                dest += ".pdf";
-	                fileToSave = new File(dest);
 	            }
 
-	            // Verificar si el archivo ya existe
-	            if (fileToSave.exists()) {
-	                int overwriteOption = JOptionPane.showConfirmDialog(null,
-	                        "El archivo ya existe. ¿Deseas reemplazarlo?",
-	                        "Archivo existente",
-	                        JOptionPane.YES_NO_OPTION);
-
-	                if (overwriteOption != JOptionPane.YES_OPTION) {
-	                    JOptionPane.showMessageDialog(null, "Por favor, elige otro nombre de archivo.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
-	                    return;
-	                }
-	            }
-
-	            // Proceder a generar el reporte si el archivo es válido
 	            PdfWriter writer = new PdfWriter(dest);
 	            PdfDocument pdf = new PdfDocument(writer);
 	            Document document = new Document(pdf, PageSize.LEGAL.rotate());
 
-	            // Agregar encabezado
 	            encabezado_documentos encabezado = new encabezado_documentos();
 	            encabezado.agregarEncabezado(document);
 
-	            // Título del reporte
-	            document.add(new Paragraph("Reporte especial de empleados")
+	            document.add(new Paragraph("Reporte especial de Empleados")
 	                .setBold().setFontSize(16).setTextAlignment(TextAlignment.CENTER));
 	            document.add(new Paragraph("\n"));
 
-	            // Ejecutar la consulta
-	            Statement estatuto = conex.conectar().createStatement();
-	            ResultSet rs = estatuto.executeQuery(query);
-
-	            // Definir columnas de la tabla
 	            float[] columnWidths = {0.5f, 0.5f, 1.5f, 1.5f, 1.5f, 1f, 1f, 1f, 1.3f, 1.3f, 1f, 1.2f};
 	            Table table = new Table(UnitValue.createPercentArray(columnWidths)).useAllAvailableWidth();
+
 	            table.addHeaderCell(new Cell().add(new Paragraph("No.").setBold().setFontSize(10)));
-	            table.addHeaderCell(new Cell().add(new Paragraph("Id").setBold().setFontSize(10)));
+	            table.addHeaderCell(new Cell().add(new Paragraph("Id marcada").setBold().setFontSize(10)));
 	            table.addHeaderCell(new Cell().add(new Paragraph("Identidad").setBold().setFontSize(10)));
 	            table.addHeaderCell(new Cell().add(new Paragraph("Nombres").setBold().setFontSize(10)));
 	            table.addHeaderCell(new Cell().add(new Paragraph("Apellidos").setBold().setFontSize(10)));
-	            table.addHeaderCell(new Cell().add(new Paragraph("Fecha de Nacimiento").setBold().setFontSize(10)));
+	            table.addHeaderCell(new Cell().add(new Paragraph("Fecha de nacimiento").setBold().setFontSize(10)));
 	            table.addHeaderCell(new Cell().add(new Paragraph("Sexo").setBold().setFontSize(10)));
-	            table.addHeaderCell(new Cell().add(new Paragraph("Estado Civil").setBold().setFontSize(10)));
+	            table.addHeaderCell(new Cell().add(new Paragraph("Estado civil").setBold().setFontSize(10)));
 	            table.addHeaderCell(new Cell().add(new Paragraph("Teléfono").setBold().setFontSize(10)));
 	            table.addHeaderCell(new Cell().add(new Paragraph("Cargo").setBold().setFontSize(10)));
 	            table.addHeaderCell(new Cell().add(new Paragraph("Área").setBold().setFontSize(10)));
 	            table.addHeaderCell(new Cell().add(new Paragraph("Fotografía").setBold().setFontSize(10)));
 
-	            // Iterar sobre los resultados y llenar la tabla
+	            int contador = 1;
+
 	            while (rs.next()) {
-	            	table.addCell(new Cell().add(new Paragraph(rs.getString("id")).setFontSize(9)));
-	                table.addCell(new Cell().add(new Paragraph(rs.getString("id_empleado")).setFontSize(9)));
+	                table.addCell(new Cell().add(new Paragraph(String.valueOf(contador++)).setFontSize(9)));
+	                table.addCell(new Cell().add(new Paragraph(rs.getString("id")).setFontSize(9)));
 	                table.addCell(new Cell().add(new Paragraph(rs.getString("identidad_empleado")).setFontSize(9)));
 	                table.addCell(new Cell().add(new Paragraph(rs.getString("nombres_empleado")).setFontSize(9)));
 	                table.addCell(new Cell().add(new Paragraph(rs.getString("apellidos_empleado")).setFontSize(9)));
@@ -326,7 +326,6 @@ public class reporte_empleado_especial extends JFrame{
 	                table.addCell(new Cell().add(new Paragraph(rs.getString("cargo_empleado")).setFontSize(9)));
 	                table.addCell(new Cell().add(new Paragraph(rs.getString("area_empleado")).setFontSize(9)));
 
-	                // Agregar fotografía si existe
 	                String rutaFoto = rs.getString("fotografia_empleado");
 	                if (rutaFoto != null && !rutaFoto.isEmpty()) {
 	                    try {
@@ -345,6 +344,7 @@ public class reporte_empleado_especial extends JFrame{
 
 	            document.add(table);
 	            document.close();
+	            
 
 	            JOptionPane.showMessageDialog(null, "Reporte guardado con éxito en:\n" + dest, "Éxito", JOptionPane.INFORMATION_MESSAGE);
 	        }
@@ -356,6 +356,7 @@ public class reporte_empleado_especial extends JFrame{
 	        conex.desconectar(null);
 	    }
 	}
+
 	
 	private void cerrar_ventana() {
 		if (JOptionPane.showConfirmDialog(rootPane, "¿Desea salir del sistema?", "Salir del sistema",

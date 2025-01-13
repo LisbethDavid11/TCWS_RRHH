@@ -62,7 +62,7 @@ public class reporte_empleados_individual {
 
                 // Mostrar JFileChooser para que el usuarioC seleccione dónde guardar el PDF
                 JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setDialogTitle("Guardar reporte individual del empleado");
+                fileChooser.setDialogTitle("Guardar");
                 FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos PDF", "pdf");
                 fileChooser.setFileFilter(filter);
                 fileChooser.setSelectedFile(new File(nombreArchivo));
@@ -119,7 +119,7 @@ public class reporte_empleados_individual {
                 encabezado.agregarEncabezado(document);
                 
                 // Agregar titulo
-                document.add(new Paragraph("Reporte de empleado")
+                document.add(new Paragraph("Reporte de Empleado")
                         .setBold().setFontSize(14).setTextAlignment(TextAlignment.CENTER));
                 document.add(new Paragraph("\n"));
 

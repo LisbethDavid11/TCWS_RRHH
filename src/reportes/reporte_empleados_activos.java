@@ -40,7 +40,7 @@ public class reporte_empleados_activos {
 	                String nombreArchivo = "Reporte_empleados_activos" + fechaFormateada + ".pdf";
 
 	                JFileChooser fileChooser = new JFileChooser();
-	                fileChooser.setDialogTitle("Guardar reporte de empleados activos");
+	                fileChooser.setDialogTitle("Guardar reporte de Empleados activos");
 
 	                FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos PDF", "pdf");
 	                fileChooser.setFileFilter(filter);
@@ -90,7 +90,7 @@ public class reporte_empleados_activos {
 	                encabezado.agregarEncabezado(document);
 
 	                // Título del documento
-	                document.add(new Paragraph("Reporte de general de empleados activos")
+	                document.add(new Paragraph("Reporte de general de Empleados Activos")
 	                    .setBold().setFontSize(14).setTextAlignment(TextAlignment.CENTER));
 	                document.add(new Paragraph("\n"));
 

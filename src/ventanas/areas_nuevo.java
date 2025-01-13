@@ -64,13 +64,13 @@ public class areas_nuevo extends JFrame {
 		lblDatosDelCargo.setHorizontalAlignment(SwingConstants.LEFT);
 		lblDatosDelCargo.setFont(new Font("Segoe UI", Font.BOLD, 26));
 		lblDatosDelCargo.setBackground(new Color(255, 153, 0));
-		lblDatosDelCargo.setBounds(10, 20, 350, 33);
+		lblDatosDelCargo.setBounds(20, 25, 400, 33);
 		getContentPane().add(lblDatosDelCargo);
 		
 		JPanel panel_titulo_1 = new JPanel();
 		panel_titulo_1.setLayout(null);
 		panel_titulo_1.setBackground(SystemColor.menu);
-		panel_titulo_1.setBounds(367, 10, 659, 54);
+		panel_titulo_1.setBounds(419, 10, 596, 54);
 		getContentPane().add(panel_titulo_1);
 		
 		btnguardar = new JButton("Guardar");
@@ -82,7 +82,7 @@ public class areas_nuevo extends JFrame {
 		btnguardar.setToolTipText("Guardar registro");
 		btnguardar.setFont(new Font("Tahoma", Font.BOLD, 10));
 		btnguardar.setBackground(UIManager.getColor("Button.highlight"));
-		btnguardar.setBounds(559, 17, 90, 23);
+		btnguardar.setBounds(478, 17, 90, 23);
 		panel_titulo_1.add(btnguardar);
 		
 		btnlimpiar = new JButton("Limpiar");
@@ -93,7 +93,7 @@ public class areas_nuevo extends JFrame {
 		btnlimpiar.setToolTipText("Limpiar los campos");
 		btnlimpiar.setFont(new Font("Tahoma", Font.BOLD, 10));
 		btnlimpiar.setBackground(UIManager.getColor("Button.highlight"));
-		btnlimpiar.setBounds(464, 17, 90, 23);
+		btnlimpiar.setBounds(383, 17, 90, 23);
 		panel_titulo_1.add(btnlimpiar);
 		
 		btnactualizar = new JButton("Actualizar");
@@ -105,7 +105,7 @@ public class areas_nuevo extends JFrame {
 		btnactualizar.setToolTipText("Actualizar registro");
 		btnactualizar.setFont(new Font("Tahoma", Font.BOLD, 10));
 		btnactualizar.setBackground(UIManager.getColor("Button.highlight"));
-		btnactualizar.setBounds(559, 17, 90, 23);
+		btnactualizar.setBounds(478, 17, 90, 23);
 		panel_titulo_1.add(btnactualizar);
 		
 		btnregresar = new JButton("Regresar");
@@ -141,30 +141,30 @@ public class areas_nuevo extends JFrame {
 			}
 		});
 		chxeditar.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		chxeditar.setBounds(330, 17, 105, 21);
+		chxeditar.setBounds(249, 17, 105, 21);
 		panel_titulo_1.add(chxeditar);
 		
 		JPanel panel_titulo_1_1 = new JPanel();
 		panel_titulo_1_1.setLayout(null);
 		panel_titulo_1_1.setBackground(SystemColor.menu);
-		panel_titulo_1_1.setBounds(10, 65, 1016, 518);
+		panel_titulo_1_1.setBounds(20, 71, 995, 494);
 		getContentPane().add(panel_titulo_1_1);
 		
 		JLabel lblNombreDelCargo = new JLabel("Nombre del área");
 		lblNombreDelCargo.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblNombreDelCargo.setBounds(75, 89, 141, 25);
+		lblNombreDelCargo.setBounds(80, 81, 141, 25);
 		panel_titulo_1_1.add(lblNombreDelCargo);
 		
 		txtarea = new JTextField(10);
 		txtarea.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
-        	    validaciones.validarNombresyApellidos(e, txtarea, 70);
+        	    validaciones.validarTextoConFormato(e, txtarea, 70);
         	}
 
 		});
 		txtarea.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtarea.setBounds(226, 85, 253, 33);
+		txtarea.setBounds(231, 77, 253, 33);
 		panel_titulo_1_1.add(txtarea);
 		
 		JLabel lblhoy_es = new JLabel("Fecha de creación\r\n");

@@ -106,7 +106,7 @@ public class reporte_vacaciones_general {
             encabezado.agregarEncabezado(document);
             
             // Agregar título
-            document.add(new Paragraph("Reporte General de Vacaciones")
+            document.add(new Paragraph("Reporte general de Vacaciones")
                     .setBold().setFontSize(14).setTextAlignment(TextAlignment.CENTER));
             document.add(new Paragraph("\n"));
 

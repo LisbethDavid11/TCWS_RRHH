@@ -39,6 +39,8 @@ import clases.vacaciones;
 import clases.validaciones;
 import conexion.conexion;
 import consultas.consultas_vacaciones;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 
 
@@ -472,6 +474,12 @@ public class vacaciones_nuevo extends JFrame {
         panel_datos.add(lblmensaje);
         
         txtextendido = new JTextField();
+        txtextendido.addKeyListener(new KeyAdapter() {
+        	@Override
+        	public void keyTyped(KeyEvent e) {
+        		validaciones.validarNombresyApellidos(e, txtextendido, 70);
+        	}
+        });
         txtextendido.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txtextendido.setBounds(600, 434, 154, 33);
         panel_datos.add(txtextendido);
@@ -483,6 +491,12 @@ public class vacaciones_nuevo extends JFrame {
         panel_datos.add(lblCargo_ext);
         
         txtcargo_ext = new JTextField();
+        txtcargo_ext.addKeyListener(new KeyAdapter() {
+        	@Override
+        	public void keyTyped(KeyEvent e) {
+        		validaciones.validarNombresyApellidos(e, txtcargo_ext, 70);
+        	}
+        });
         txtcargo_ext.setFont(new Font("Tahoma", Font.PLAIN, 14));
         txtcargo_ext.setColumns(10);
         txtcargo_ext.setBounds(796, 434, 154, 33);
