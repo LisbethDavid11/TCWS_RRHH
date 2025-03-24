@@ -235,12 +235,6 @@ public class empleado_nuevo extends JFrame{
 		panel_datos.add(lblarea);
 		
 		txtcorreo = new JTextField();
-		txtcorreo.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusLost(FocusEvent e) {
-				validaciones.validarCorreo(e, txtcorreo);
-			}
-		});
 		txtcorreo.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtcorreo.setColumns(10);
 		txtcorreo.setBounds(29, 403, 253, 33);
@@ -359,7 +353,7 @@ public class empleado_nuevo extends JFrame{
 		txtid_empleado.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
-				validaciones.validarNumerosID(e, txtid_empleado, 3);
+				validaciones.validarNumerosID(e, txtid_empleado, 5);
 			}
 		});
 		txtid_empleado.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -375,7 +369,6 @@ public class empleado_nuevo extends JFrame{
 		fecha_inicio = new JDateChooser();
 		fecha_inicio.setToolTipText("Seleccione la fecha de inicio laboral");
 		fecha_inicio.setBackground(new Color(255, 255, 255));
-		//fecha_inicio.setForeground(Color.BLACK);
 		fecha_inicio.setBounds(630, 203, 251, 33);
 		fecha_inicio.setDateFormatString("dd-MM-yy");
 		panel_datos.add(fecha_inicio);

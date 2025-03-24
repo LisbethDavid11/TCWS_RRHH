@@ -29,7 +29,6 @@ public class informe_empleado_individual {
 
     public void generarInformeIndividual() {
         try (Connection conn = new conexion().conectar()) {
-            // Obtener nombres de empleados desde la base de datos
             JComboBox<String> comboBoxNombres = new JComboBox<>();
             PreparedStatement stmt = conn.prepareStatement("SELECT CONCAT(nombres_empleado, ' ', apellidos_empleado) AS nombre_completo FROM empleados");
             ResultSet rs = stmt.executeQuery();

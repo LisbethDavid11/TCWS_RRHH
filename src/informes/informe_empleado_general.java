@@ -28,7 +28,6 @@ public class informe_empleado_general {
 
     public void generarInformeGeneral() {
         try (Connection conn = new conexion().conectar()) {
-            // Obtener lista de empleados con datos y conteos
             String query = "SELECT e.nombres_empleado, e.apellidos_empleado, e.identidad_empleado, e.cargo_empleado, e.area_empleado, " +
                            "(SELECT COUNT(*) FROM permisos_ausencia_laboral p WHERE p.nombres_empleado = e.nombres_empleado AND p.apellidos_empleado = e.apellidos_empleado) AS total_permisos, " +
                            "(SELECT COUNT(*) FROM incapacidad_laboral i WHERE i.nombres_empleado = e.nombres_empleado AND i.apellidos_empleado = e.apellidos_empleado) AS total_incapacidades " +
@@ -74,7 +73,7 @@ public class informe_empleado_general {
             table.addHeaderCell(new Cell().add(new Paragraph("No. Permisos").setBold().setTextAlignment(TextAlignment.CENTER)));
             table.addHeaderCell(new Cell().add(new Paragraph("No. Incapacidades").setBold().setTextAlignment(TextAlignment.CENTER)));
 
-            // Agregar datos de empleados
+            //agregar datos de empleados
             while (rs.next()) {
                 String nombres = rs.getString("nombres_empleado");
                 String apellidos = rs.getString("apellidos_empleado");
@@ -101,7 +100,7 @@ public class informe_empleado_general {
             JOptionPane.showMessageDialog(null, "El informe general se ha generado correctamente");
         } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Ocurrió un error al generar el informe: " + e.getMessage());
+            //JOptionPane.showMessageDialog(null, "Ocurrió un error al generar el informe: " + e.getMessage());
         }
     }
 }

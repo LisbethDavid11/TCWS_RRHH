@@ -48,16 +48,14 @@ public class reporte_vacaciones_individual {
                             "El archivo ya existe. ¿Desea sobrescribirlo?", "Archivo existente",
                             JOptionPane.YES_NO_CANCEL_OPTION);
                     if (sobreescribir != JOptionPane.YES_OPTION) {
-                        return; // Cancelar la operación
+                        return; 
                     }
                 }
 
-                // Generar el PDF
                 PdfWriter writer = new PdfWriter(archivo.getAbsolutePath());
                 PdfDocument pdf = new PdfDocument(writer);
                 Document document = new Document(pdf);
 
-                // Agregar el encabezado del documento
                 encabezado_documentos encabezado = new encabezado_documentos();
                 encabezado.agregarEncabezado(document);
 
