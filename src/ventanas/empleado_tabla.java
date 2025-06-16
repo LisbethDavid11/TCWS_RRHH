@@ -75,7 +75,7 @@ public class empleado_tabla extends JFrame {
     public JComboBox<String> cbxbusquedasexo;
     public JButton btneliminar;
     public JPanel panelbusqueda;
-    private final String placeHolderText = "Nombres, apellidos, identidad, estado civil y teléfono"; 
+    private final String placeHolderText = "Marcadas, Nombres, Apellidos, Identidad, y Dirección"; 
     public JLabel lblresultado_busqueda;
 
     public empleado_tabla() {
@@ -200,10 +200,10 @@ public class empleado_tabla extends JFrame {
         lblresultado_busqueda.setBounds(744, 390, 222, 27);
         panel_1.add(lblresultado_busqueda);
 
-        JLabel lbltitulo = new JLabel("EMPLEADOS REGISTRADOS");
+        JLabel lbltitulo = new JLabel("COLABORADORES REGISTRADOS");
         lbltitulo.setHorizontalAlignment(SwingConstants.LEFT);
         lbltitulo.setFont(new Font("Segoe UI", Font.BOLD, 26));
-        lbltitulo.setBounds(28, 32, 402, 26);
+        lbltitulo.setBounds(28, 32, 526, 26);
         contentPane.add(lbltitulo);
 
         JPanel panelbotones = new JPanel();
@@ -258,7 +258,7 @@ public class empleado_tabla extends JFrame {
         btnImprimir.addActionListener(e -> {
             int selectedRow = table.getSelectedRow(); 
             if (selectedRow != -1) {
-                int idEmpleado = Integer.parseInt(table.getValueAt(selectedRow, 1).toString());
+            	int idEmpleado = Integer.parseInt(table.getValueAt(selectedRow, 2).toString());
                 reporte_empleados_individual reporte = new reporte_empleados_individual();
                 reporte.generarReporteEmpleadoIndividual(idEmpleado);
             } else {
@@ -292,7 +292,7 @@ public class empleado_tabla extends JFrame {
         	            
         	            if (confirmacion == JOptionPane.YES_OPTION) {
         	                
-        	                String id = table.getValueAt(filaSeleccionada, 0).toString();
+        	            	String id = table.getValueAt(filaSeleccionada, 1).toString(); // <- CORRECTO
 
         	                consultas_empleado consulta = new consultas_empleado();
         	                
@@ -301,6 +301,7 @@ public class empleado_tabla extends JFrame {
         	                    ((DefaultTableModel) table.getModel()).removeRow(filaSeleccionada);
         	                    JOptionPane.showMessageDialog(null, "El registro ha sido eliminado correctamente de la tabla y la base de datos", 
         	                    		"Éxito", JOptionPane.INFORMATION_MESSAGE );
+        	                    actualizarConteoRegistros();
         	                } else {
         	                    
         	                    JOptionPane.showMessageDialog(null, "Error al eliminar el registro de la base de datos.", 
@@ -377,7 +378,7 @@ public class empleado_tabla extends JFrame {
 	public void construirTabla() {
         // Definir títulos de las columnas
         String titulos[] = { 
-            "No", "Id", "Identidad", "Nombres", "Apellidos", "Sexo", "Nacimiento", 
+        		"No", "DB", "Marcadas",  "Identidad", "Nombres", "Apellidos", "Sexo", "Nacimiento", 
             "Estado civil", "Dirección", "Teléfono", "Correo", "Cargo", "Área", 
             "Inicio", "Renuncia", "Fotografía", "No.cuenta" 
         };
@@ -386,8 +387,7 @@ public class empleado_tabla extends JFrame {
         String informacion[][] = obtenerMatriz(); // Método debe estar implementado en esta clase
 
         // Crear modelo de tabla no editable
-        @SuppressWarnings("serial")
-		DefaultTableModel modeloTabla = new DefaultTableModel(informacion, titulos) {
+        DefaultTableModel modeloTabla = new DefaultTableModel(informacion, titulos) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // Deshabilitar edición de celdas
@@ -435,23 +435,24 @@ public class empleado_tabla extends JFrame {
                         int fila = table.convertRowIndexToModel(filaSeleccionada); // Convertir índice visual a modelo
 
                         try {
-                            // Obtener datos de la fila seleccionada
-                            String idOriginalStr = String.valueOf(table.getModel().getValueAt(fila, 0));
-                            String idEmpleado = String.valueOf(table.getModel().getValueAt(fila, 1));
-                            String identidad = String.valueOf(table.getModel().getValueAt(fila, 2));
-                            String nombres = String.valueOf(table.getModel().getValueAt(fila, 3));
-                            String apellidos = String.valueOf(table.getModel().getValueAt(fila, 4));
-                            String sexo = String.valueOf(table.getModel().getValueAt(fila, 5));
+                            // ID visual de la tabla (No): solo para numeración, no lo uses como dato real
+                            String idOriginalStr = String.valueOf(table.getModel().getValueAt(fila, 1)); // ID (clave real)
+
+                            // Campos reales
+                            String idEmpleado = String.valueOf(table.getModel().getValueAt(fila, 2));     // ID Empleado
+                            String identidad = String.valueOf(table.getModel().getValueAt(fila, 3));      // Identidad
+                            String nombres = String.valueOf(table.getModel().getValueAt(fila, 4));        // Nombres
+                            String apellidos = String.valueOf(table.getModel().getValueAt(fila, 5));      // Apellidos
+                            String sexo = String.valueOf(table.getModel().getValueAt(fila, 6));           // Sexo
 
                             Date fechaNacimiento = null;
                             Date fechaInicio = null;
                             Date fechaRenuncia = null;
 
                             try {
-                                // Parsear fechas
-                                fechaNacimiento = dateFormat.parse(String.valueOf(table.getModel().getValueAt(fila, 6)));
-                                fechaInicio = dateFormat.parse(String.valueOf(table.getModel().getValueAt(fila, 13)));
-                                String fechaRenunciaStr = String.valueOf(table.getModel().getValueAt(fila, 14));
+                                fechaNacimiento = dateFormat.parse(String.valueOf(table.getModel().getValueAt(fila, 7))); // Nacimiento
+                                fechaInicio = dateFormat.parse(String.valueOf(table.getModel().getValueAt(fila, 14)));    // Inicio
+                                String fechaRenunciaStr = String.valueOf(table.getModel().getValueAt(fila, 15));          // Renuncia
                                 if (!fechaRenunciaStr.isEmpty() && !fechaRenunciaStr.equals("null")) {
                                     fechaRenuncia = dateFormat.parse(fechaRenunciaStr);
                                 }
@@ -460,25 +461,29 @@ public class empleado_tabla extends JFrame {
                                 return;
                             }
 
-                            // Obtener otros datos
-                            String estadoCivil = String.valueOf(table.getModel().getValueAt(fila, 7));
-                            String direccion = String.valueOf(table.getModel().getValueAt(fila, 8));
-                            String telefono = String.valueOf(table.getModel().getValueAt(fila, 9));
-                            String correo = String.valueOf(table.getModel().getValueAt(fila, 10));
-                            String cargo = String.valueOf(table.getModel().getValueAt(fila, 11));
-                            String area = String.valueOf(table.getModel().getValueAt(fila, 12));
-                            String fotografia = String.valueOf(table.getModel().getValueAt(fila, 15));
-                            String cuenta = String.valueOf(table.getModel().getValueAt(fila, 16));
+                            String estadoCivil = String.valueOf(table.getModel().getValueAt(fila, 8));
+                            String direccion = String.valueOf(table.getModel().getValueAt(fila, 9));
+                            String telefono = String.valueOf(table.getModel().getValueAt(fila, 10));
+                            String correo = String.valueOf(table.getModel().getValueAt(fila, 11));
+                            String cargo = String.valueOf(table.getModel().getValueAt(fila, 12));
+                            String area = String.valueOf(table.getModel().getValueAt(fila, 13));
+                            String fotografia = String.valueOf(table.getModel().getValueAt(fila, 16));
+                            String cuenta = String.valueOf(table.getModel().getValueAt(fila, 17));
 
-                            // Enviar datos a empleado_nuevo
+                            // Abrir formulario con datos
                             empleado_nuevo ventanaNuevo = new empleado_nuevo();
-                            ventanaNuevo.ver_empleado(idEmpleado, identidad, nombres, apellidos, sexo, fechaNacimiento, estadoCivil,
-                                    direccion, telefono, correo, cargo, area, fechaInicio, fechaRenuncia, fotografia, cuenta);
+                            ventanaNuevo.cargarCargosEnComboBox();
+                            ventanaNuevo.cargarAreasEnComboBox();
+
+                            ventanaNuevo.ver_empleado(
+                                idEmpleado, identidad, nombres, apellidos, sexo, fechaNacimiento,
+                                estadoCivil, direccion, telefono, correo, cargo, area,
+                                fechaInicio, fechaRenuncia, fotografia, cuenta
+                            );
 
                             ventanaNuevo.txtidOriginal.setText(idOriginalStr);
                             ventanaNuevo.setLocationRelativeTo(null);
 
-                            // Configurar botones en empleado_nuevo
                             ventanaNuevo.btnguardar.setVisible(false);
                             ventanaNuevo.btnactualizar.setVisible(false);
                             ventanaNuevo.btnlimpiar.setVisible(false);
@@ -488,6 +493,7 @@ public class empleado_tabla extends JFrame {
                             JOptionPane.showMessageDialog(null, "Error al procesar los datos", "Error", JOptionPane.ERROR_MESSAGE);
                             ex.printStackTrace();
                         }
+
                     }
                 }
             }
@@ -504,15 +510,15 @@ public class empleado_tabla extends JFrame {
         List<RowFilter<Object, Object>> filtros = new ArrayList<>();
 
         if (filtroCargo != null && !filtroCargo.trim().isEmpty()) {
-            filtros.add(RowFilter.regexFilter("(?i)" + filtroCargo, 11)); 
+            filtros.add(RowFilter.regexFilter("(?i)" + filtroCargo, 12)); 
         }
 
         if (filtroArea != null && !filtroArea.trim().isEmpty()) {
-            filtros.add(RowFilter.regexFilter("(?i)" + filtroArea, 12)); 
+            filtros.add(RowFilter.regexFilter("(?i)" + filtroArea, 13)); 
         }
 
         if (filtroSexo != null && !filtroSexo.trim().isEmpty()) {
-            filtros.add(RowFilter.regexFilter("(?i)" + filtroSexo, 5));
+            filtros.add(RowFilter.regexFilter("(?i)" + filtroSexo, 6));
         }
 
         if (filtros.isEmpty()) {
@@ -531,41 +537,40 @@ public class empleado_tabla extends JFrame {
 
     public static String[][] obtenerMatriz() {
         ArrayList<empleado> miLista = buscarUsuariosConMatriz();
-        String matrizInfo[][] = new String[miLista.size()][17];
+        String matrizInfo[][] = new String[miLista.size()][18];
 
         SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yy");
 
         for (int i = 0; i < miLista.size(); i++) {
-        	matrizInfo[i][0] = miLista.get(i).getId() + "";
-            matrizInfo[i][1] = miLista.get(i).getId_empleado() + "";
-            matrizInfo[i][2] = miLista.get(i).getIdentidad_empleado() + "";
-            matrizInfo[i][3] = miLista.get(i).getNombres_empleado() + "";
-            matrizInfo[i][4] = miLista.get(i).getApellidos_empleado() + "";
-            matrizInfo[i][5] = miLista.get(i).getSexo_empleado() + "";
+            matrizInfo[i][0] = String.valueOf(i + 1); // "No" visual
+            matrizInfo[i][1] = miLista.get(i).getId() + ""; // ID (clave primaria real)
+            matrizInfo[i][2] = miLista.get(i).getId_empleado() + ""; // ID Empleado
+
+            matrizInfo[i][3] = miLista.get(i).getIdentidad_empleado();
+            matrizInfo[i][4] = miLista.get(i).getNombres_empleado();
+            matrizInfo[i][5] = miLista.get(i).getApellidos_empleado();
+            matrizInfo[i][6] = miLista.get(i).getSexo_empleado();
 
             Date nacimiento = miLista.get(i).getNacimiento_empleado();
-            matrizInfo[i][6] = outputFormat.format(nacimiento); 
+            matrizInfo[i][7] = (nacimiento != null) ? outputFormat.format(nacimiento) : "";
 
-            matrizInfo[i][7] = miLista.get(i).getCivil_empleado() + "";
-            matrizInfo[i][8] = miLista.get(i).getDireccion_empleado() + "";
-            matrizInfo[i][9] = miLista.get(i).getTel_empleado() + "";
-            matrizInfo[i][10] = miLista.get(i).getCorreo_empleado() + "";
-            matrizInfo[i][11] = miLista.get(i).getCargo_empleado() + "";
-            matrizInfo[i][12] = miLista.get(i).getArea_empleado() + "";
+            matrizInfo[i][8] = miLista.get(i).getCivil_empleado();
+            matrizInfo[i][9] = miLista.get(i).getDireccion_empleado();
+            matrizInfo[i][10] = miLista.get(i).getTel_empleado();
+            matrizInfo[i][11] = miLista.get(i).getCorreo_empleado();
+            matrizInfo[i][12] = miLista.get(i).getCargo_empleado();
+            matrizInfo[i][13] = miLista.get(i).getArea_empleado();
 
             Date inicio = miLista.get(i).getInicio_empleado();
-            matrizInfo[i][13] = outputFormat.format(inicio); 
+            matrizInfo[i][14] = (inicio != null) ? outputFormat.format(inicio) : "";
 
             Date renuncia = miLista.get(i).getRenuncia_empleado();
-            if (renuncia != null) {
-                matrizInfo[i][14] = outputFormat.format(renuncia); 
-            } else {
-                matrizInfo[i][14] = ""; 
-            }
+            matrizInfo[i][15] = (renuncia != null) ? outputFormat.format(renuncia) : "";
 
-            matrizInfo[i][15] = miLista.get(i).getFotografia_empleado() + "";
-            matrizInfo[i][16] = miLista.get(i).getCuenta_empleado() + "";
+            matrizInfo[i][16] = miLista.get(i).getFotografia_empleado();
+            matrizInfo[i][17] = miLista.get(i).getCuenta_empleado();
         }
+
         return matrizInfo;
     }
 
@@ -579,8 +584,11 @@ public class empleado_tabla extends JFrame {
 
             while (rs.next()) {
                 empleado empleado = new empleado();
-                empleado.setId(Integer.parseInt(rs.getString("id")));
-                empleado.setId_empleado(Integer.parseInt(rs.getString("id_empleado")));
+                String idStr = rs.getString("id");
+                empleado.setId((idStr != null && !idStr.isEmpty()) ? Integer.parseInt(idStr) : 0);
+
+                String idEmpleadoStr = rs.getString("id_empleado");
+                empleado.setId_empleado((idEmpleadoStr != null && !idEmpleadoStr.isEmpty()) ? Integer.parseInt(idEmpleadoStr) : 0);
                 empleado.setIdentidad_empleado(rs.getString("identidad_empleado"));
                 empleado.setNombres_empleado(rs.getString("nombres_empleado"));
                 empleado.setApellidos_empleado(rs.getString("apellidos_empleado"));
@@ -610,9 +618,8 @@ public class empleado_tabla extends JFrame {
 
     public void filtro() {
         filtroCodigo = txtb.getText();
-        trsfiltroCodigo.setRowFilter(RowFilter.regexFilter("(?i)" + filtroCodigo, 2, 3, 4, 7, 9));
-
-        // Actualizar el conteo de registros visibles
+        trsfiltroCodigo.setRowFilter(RowFilter.regexFilter("(?i)" + filtroCodigo, 2, 3, 4, 5, 6, 8, 9));
+        
         actualizarConteoRegistros();
     }
     

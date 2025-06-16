@@ -19,6 +19,7 @@ import consultas.consultas_incapacidad_laboral;
 import principal.menu_principal;
 import java.awt.Window.Type;
 
+@SuppressWarnings({ "serial", "unused" })
 public class incapacidad_laboral_tabla extends JFrame {
     private JTable table;
     private JScrollPane scrollPane;
@@ -539,8 +540,7 @@ public class incapacidad_laboral_tabla extends JFrame {
         actualizarConteoRegistros();
     }
 
-    @SuppressWarnings("unused")
-	private void desactivarComponentes(incapacidad_laboral_nuevo formulario) {
+    private void desactivarComponentes(incapacidad_laboral_nuevo formulario) {
         formulario.cbxnombres.setEnabled(false);
         formulario.txtapellidos.setEditable(false);
         formulario.txtidentidad.setEditable(false);

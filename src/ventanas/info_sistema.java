@@ -13,10 +13,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 
 import principal.menu_principal;
-import javax.swing.UIManager;
-import javax.swing.border.LineBorder;
 
 @SuppressWarnings("serial")
 public class info_sistema extends JFrame{

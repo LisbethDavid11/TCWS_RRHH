@@ -6,8 +6,6 @@ import java.awt.Image;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -555,7 +553,7 @@ public class empleado_nuevo extends JFrame{
 		     }
 		 });
 		
-		JLabel lbltitulo = new JLabel("DATOS DEL EMPLEADO");
+		JLabel lbltitulo = new JLabel("DATOS DEL COLABORADOR");
 		lbltitulo.setBounds(27, 31, 459, 33);
 		getContentPane().add(lbltitulo);
 		lbltitulo.setHorizontalAlignment(SwingConstants.LEFT);
@@ -730,6 +728,18 @@ public class empleado_nuevo extends JFrame{
 		    }
 		}
 		
+		
+		private void seleccionarItemEnCombo(JComboBox<String> comboBox, String valorBuscado) {
+		    for (int i = 0; i < comboBox.getItemCount(); i++) {
+		        String item = comboBox.getItemAt(i);
+		        if (item != null && item.trim().equalsIgnoreCase(valorBuscado.trim())) {
+		            comboBox.setSelectedIndex(i);
+		            return;
+		        }
+		    }
+		}
+		
+		
 		public void limpiar() {
 			txtid_empleado.setText("");
 			txtidentidad.setText("");
@@ -754,88 +764,91 @@ public class empleado_nuevo extends JFrame{
 
 		}
 	
+		@SuppressWarnings("unchecked")
 		public void ver_empleado(String idEmpleado, String identidad, String nombres, String apellidos, String sexo, Date fechaNacimiento,
-                String estadoCivil, String direccion, String telefono, String correo, String cargo, String area, 
-                Date fechaInicio, Date fechaRenuncia, String fotografia, String cuenta) {
+		                         String estadoCivil, String direccion, String telefono, String correo, String cargo, String area,
+		                         Date fechaInicio, Date fechaRenuncia, String fotografia, String cuenta) {
+		    
+		    // Cargar datos básicos
+		    txtid_empleado.setText(idEmpleado);
+		    txtidOriginal.setText(idEmpleado); // <-- clave para saber si el id cambió
+		    txtidentidad.setText(identidad);
+		    txtnombres.setText(nombres);
+		    txtapellidos.setText(apellidos);
+		    txtcuenta.setText(cuenta != null ? cuenta : ""); // prevenir null
+		    txtruta.setText(fotografia != null ? fotografia : ""); // prevenir null
 
-			txtid_empleado.setText(idEmpleado);
-			txtidentidad.setText(identidad);
-			txtnombres.setText(nombres);
-			txtapellidos.setText(apellidos);
-			txtcuenta.setText(cuenta);
-			txtruta.setText(fotografia);  
-			
-			if (sexo.equalsIgnoreCase("Masculino")) {
-				buttonmasculino.setSelected(true);
-			} else if (sexo.equalsIgnoreCase("Femenino")) {
-				buttonfemenino.setSelected(true);
-			} else {
-				buttonotro.setSelected(true);
-			}
-			
-			fecha_nacimiento.setDate(fechaNacimiento);
-			cbxestado_civil.setSelectedItem(estadoCivil);
-			txadireccion.setText(direccion);
-			txttel.setText(telefono);
-			txtcorreo.setText(correo);
-			cbxcargo.setSelectedItem(cargo);
-			cbxarea.setSelectedItem(area);
-			fecha_inicio.setDate(fechaInicio);
-			fecha_renuncia.setDate(fechaRenuncia);
-			
-			if (fotografia != null && !fotografia.isEmpty()) {
-				ImageIcon icon = new ImageIcon(fotografia);
-				Image img = icon.getImage().getScaledInstance(lblfoto.getWidth(), lblfoto.getHeight(), Image.SCALE_SMOOTH);
-				lblfoto.setIcon(new ImageIcon(img));
-			} else {
-				lblfoto.setIcon(new ImageIcon(icono_fotografia.getImage().getScaledInstance(lblfoto.getWidth(),
-						lblfoto.getHeight(), Image.SCALE_SMOOTH)));
-			}
-			
-			txtid_empleado.setEditable(false);
-			txtidentidad.setEditable(false);
-			txtnombres.setEditable(false);
-			txtapellidos.setEditable(false);
-			buttonmasculino.setEnabled(false);
-			buttonfemenino.setEnabled(false);
-			buttonotro.setEnabled(false);
-			fecha_nacimiento.setEnabled(false);
-			cbxestado_civil.setEnabled(false);
-			txadireccion.setEditable(false);
-			txttel.setEditable(false);
-			txtcorreo.setEditable(false);
-			cbxcargo.setEnabled(false);
-			cbxarea.setEnabled(false);
-			fecha_inicio.setEnabled(false);
-			fecha_renuncia.setEnabled(false);
-			txtcuenta.setEditable(false);
-			txtruta.setEditable(false);
-			
-			btnseleccionar_foto.setVisible(false);
-			btneliminar_foto.setVisible(false);
-			
-			txtid_empleado.setForeground(Color.BLACK);
-			txtidentidad.setForeground(Color.BLACK);
-			txtnombres.setForeground(Color.BLACK);
-			txtapellidos.setForeground(Color.BLACK);
-			buttonmasculino.setForeground(Color.BLACK);
-			buttonfemenino.setForeground(Color.BLACK);
-			buttonotro.setForeground(Color.BLACK);
-			fecha_nacimiento.setForeground(Color.BLACK);
-			cbxestado_civil.setForeground(Color.BLACK);
-			txadireccion.setForeground(Color.BLACK);
-			txttel.setForeground(Color.BLACK);
-			txtcorreo.setForeground(Color.BLACK);
-			cbxcargo.setForeground(Color.BLACK);
-			cbxarea.setForeground(Color.BLACK);
-			fecha_inicio.setForeground(Color.BLACK);
-			fecha_renuncia.setForeground(Color.BLACK);
-			txtcuenta.setForeground(Color.BLACK);
-			txtruta.setForeground(Color.BLACK); 
-			lblfoto.setForeground(Color.BLACK);
-			
-			setVisible(true);
+		    // Género
+		    if (sexo != null) {
+		        switch (sexo.toLowerCase()) {
+		            case "masculino":
+		                buttonmasculino.setSelected(true);
+		                break;
+		            case "femenino":
+		                buttonfemenino.setSelected(true);
+		                break;
+		            default:
+		                buttonotro.setSelected(true);
+		                break;
+		        }
+		    }
+
+		    // Fechas
+		    fecha_nacimiento.setDate(fechaNacimiento);
+		    fecha_inicio.setDate(fechaInicio);
+		    fecha_renuncia.setDate(fechaRenuncia);
+
+		    // Textos
+		    txadireccion.setText(direccion);
+		    txttel.setText(telefono);
+		    txtcorreo.setText(correo);
+
+		    // Seleccionar ítems en los comboBox (solo si están ya cargados)
+		    seleccionarItemEnCombo(cbxcargo, cargo);
+		    seleccionarItemEnCombo(cbxarea, area);
+		    seleccionarItemEnCombo(cbxestado_civil, estadoCivil);
+
+		    if (fotografia != null && !fotografia.trim().isEmpty()) {
+		        File archivo = new File(fotografia);
+		        if (archivo.exists()) {
+		            ImageIcon icon = new ImageIcon(fotografia);
+		            Image img = icon.getImage().getScaledInstance(lblfoto.getWidth(), lblfoto.getHeight(), Image.SCALE_SMOOTH);
+		            lblfoto.setIcon(new ImageIcon(img));
+		        } else {
+		            lblfoto.setIcon(new ImageIcon(icono_fotografia.getImage().getScaledInstance(lblfoto.getWidth(),
+		                    lblfoto.getHeight(), Image.SCALE_SMOOTH)));
+		        }
+		    }
+
+
+		    // Deshabilitar campos
+		    habilitarCampos(false);
+
+		    // Botones de foto
+		    btnseleccionar_foto.setVisible(false);
+		    btneliminar_foto.setVisible(false);
+
+		    // Forzar el color de texto en negro
+		    Color colorTexto = Color.BLACK;
+		    txtid_empleado.setForeground(colorTexto);
+		    txtidOriginal.setForeground(colorTexto);
+		    txtidentidad.setForeground(colorTexto);
+		    txtnombres.setForeground(colorTexto);
+		    txtapellidos.setForeground(colorTexto);
+		    txtcuenta.setForeground(colorTexto);
+		    txttel.setForeground(colorTexto);
+		    txtcorreo.setForeground(colorTexto);
+		    txadireccion.setForeground(colorTexto);
+		    cbxcargo.setForeground(colorTexto);
+		    cbxarea.setForeground(colorTexto);
+		    cbxestado_civil.setForeground(colorTexto);
+		    fecha_nacimiento.setForeground(colorTexto);
+		    fecha_inicio.setForeground(colorTexto);
+		    fecha_renuncia.setForeground(colorTexto);
+
+		    setVisible(true);
 		}
+
 		
 		
 		private void habilitarCampos(boolean habilitar) {
@@ -872,6 +885,7 @@ public class empleado_nuevo extends JFrame{
 		}
 
 		
+		@SuppressWarnings("unused")
 		public boolean validarCamposEmpleado() {
 		    String idEmpleadoStr = txtid_empleado.getText().trim();
 		    String cuentaEmpleado = txtcuenta.getText().trim();
@@ -965,12 +979,23 @@ public class empleado_nuevo extends JFrame{
 		        empleadoActualizado.setApellidos_empleado(apellidosEmpleado);
 		        empleadoActualizado.setSexo_empleado(sexoEmpleado);
 		        empleadoActualizado.setNacimiento_empleado(fecha_nacimiento.getDate());
-		        empleadoActualizado.setCivil_empleado(cbxestado_civil.getSelectedItem().toString());
+		        //empleadoActualizado.setCivil_empleado(cbxestado_civil.getSelectedItem().toString());
 		        empleadoActualizado.setDireccion_empleado(direccionEmpleado);
 		        empleadoActualizado.setTel_empleado(telefonoEmpleado);
 		        empleadoActualizado.setCorreo_empleado(correoEmpleado);
-		        empleadoActualizado.setCargo_empleado(cbxcargo.getSelectedItem().toString());
-		        empleadoActualizado.setArea_empleado(cbxarea.getSelectedItem().toString());
+		        
+		        String estadoCivil = (cbxestado_civil.getSelectedItem() != null) ? cbxestado_civil.getSelectedItem().toString() : "";
+		        String cargo = (cbxcargo.getSelectedItem() != null) ? cbxcargo.getSelectedItem().toString() : "";
+		        String area = (cbxarea.getSelectedItem() != null) ? cbxarea.getSelectedItem().toString() : "";
+
+		        empleadoActualizado.setCivil_empleado(estadoCivil);
+		        empleadoActualizado.setCargo_empleado(cargo);
+		        empleadoActualizado.setArea_empleado(area);
+
+
+		        
+		        //empleadoActualizado.setCargo_empleado(cbxcargo.getSelectedItem().toString());
+		        //empleadoActualizado.setArea_empleado(cbxarea.getSelectedItem().toString());
 		        empleadoActualizado.setInicio_empleado(fecha_inicio.getDate());
 		        empleadoActualizado.setRenuncia_empleado(fecha_renuncia.getDate());
 		        empleadoActualizado.setFotografia_empleado(txtruta.getText().trim());
@@ -1007,7 +1032,8 @@ public class empleado_nuevo extends JFrame{
 		}
 		
 		
-		private void cargarCargosEnComboBox() {
+		@SuppressWarnings("unchecked")
+		public void cargarCargosEnComboBox() {
 		    consultas_cargos consultas = new consultas_cargos();
 		    List<String> cargos = consultas.obtenerCargos();
 		    cbxcargo.removeAllItems();
@@ -1022,7 +1048,10 @@ public class empleado_nuevo extends JFrame{
 
 		
 
-		private void cargarAreasEnComboBox() {
+		
+
+		@SuppressWarnings("unchecked")
+		public void cargarAreasEnComboBox() {
 		    consultas_areas c = new consultas_areas();
 		    List<String> areas = c.obtenerAreas();
 		    cbxarea.removeAllItems();

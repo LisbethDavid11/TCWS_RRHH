@@ -51,7 +51,7 @@ import javax.swing.UIManager;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-@SuppressWarnings("serial")
+@SuppressWarnings({ "serial", "unused" })
 public class incapacidad_laboral_nuevo extends JFrame {
     public JTextField txtidentidad;
     public JTextField txtapellidos;

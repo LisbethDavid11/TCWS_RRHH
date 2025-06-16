@@ -130,23 +130,22 @@ public class reporte_empleados_individual {
 
                 // Columna izquierda: datos del empleado
                 Cell datosEmpleado = new Cell();
-                datosEmpleado.add(new Paragraph("ID del empleado:           " + idEmpleado));
-                datosEmpleado.add(new Paragraph("Identidad:                 " + identidad));
-                datosEmpleado.add(new Paragraph("Nombres:                   " + nombres));
-                datosEmpleado.add(new Paragraph("Apellidos:                 " + apellidos));
-                datosEmpleado.add(new Paragraph("Fecha de nacimiento:       " + fechaNacimiento));
-                datosEmpleado.add(new Paragraph("Sexo:                      " + sexo));
-                datosEmpleado.add(new Paragraph("Estado civil:              " + estadoCivil));
-                datosEmpleado.add(new Paragraph("Teléfono:                  " + telefono));
-                datosEmpleado.add(new Paragraph("Correo:                    " + correo));
-                datosEmpleado.add(new Paragraph("Cargo:                     " + cargo));
-                datosEmpleado.add(new Paragraph("Área:                      " + area));
-                datosEmpleado.add(new Paragraph("Fecha de inicio:           " + fechaInicio));
-                datosEmpleado.add(new Paragraph("Fecha de renuncia:         " + fechaRenuncia));
-                datosEmpleado.setBorder(null); // Quitar bordes de la celda
+                datosEmpleado.add(new Paragraph("	ID del empleado:              " + idEmpleado));
+                datosEmpleado.add(new Paragraph("	Identidad:                    " + identidad));
+                datosEmpleado.add(new Paragraph("	Nombres:                      " + nombres));
+                datosEmpleado.add(new Paragraph("	Apellidos:                    " + apellidos));
+                datosEmpleado.add(new Paragraph("	Fecha de nacimiento:          " + fechaNacimiento));
+                datosEmpleado.add(new Paragraph("	Sexo:                         " + sexo));
+                datosEmpleado.add(new Paragraph("	Estado civil:                 " + estadoCivil));
+                datosEmpleado.add(new Paragraph("	Teléfono:                     " + telefono));
+                datosEmpleado.add(new Paragraph("	Correo:                       " + correo));
+                datosEmpleado.add(new Paragraph("	Cargo:                        " + cargo));
+                datosEmpleado.add(new Paragraph("	Área:                         " + area));
+                datosEmpleado.add(new Paragraph("	Fecha de inicio:              " + fechaInicio));
+                datosEmpleado.add(new Paragraph("	Fecha de renuncia:            " + fechaRenuncia));
+                datosEmpleado.setBorder(null); 
                 table.addCell(datosEmpleado);
 
-                // Columna derecha: fotografía del empleado
                 if (rutaFoto != null && !rutaFoto.isEmpty()) {
                     try {
                         ImageData imageData = ImageDataFactory.create(rutaFoto);

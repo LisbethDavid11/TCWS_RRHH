@@ -4,37 +4,28 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Image;
-import java.awt.Window.Type;
-
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
-import principal.menu_principal;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.JPanel;
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
-import com.mysql.cj.Session;
-
-import consultas.consultas_login;
 import consultas.consultas_roles;
-import consultas.consultas_usuario;
-
-import java.awt.event.ActionListener;
-import java.net.PasswordAuthentication;
-import java.util.Properties;
-import java.awt.event.ActionEvent;
-import javax.swing.JPasswordField;
+import principal.menu_principal;
 
 
 
 
+@SuppressWarnings("serial")
 public class login_principal extends JFrame {
 	public JTextField txtusuario;
 	public JLabel lblfoto;
