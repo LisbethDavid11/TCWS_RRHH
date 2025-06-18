@@ -43,6 +43,7 @@ import ventanas.empleado_tabla;
 import ventanas.incapacidad_laboral_nuevo;
 import ventanas.incapacidad_laboral_tabla;
 import ventanas.info_sistema;
+import ventanas.injustificadas_tabla;
 import ventanas.login_principal;
 import ventanas.permiso_dia_nuevo;
 import ventanas.permiso_dia_tabla;
@@ -206,30 +207,29 @@ public class menu_principal extends JFrame{
 		menuBar.add(menu_vacaciones_1);
 		
 		JMenuItem mntmNewMenuItem_8_2_2_1 = new JMenuItem("Ausencias injustificadas");
+		mntmNewMenuItem_8_2_2_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				injustificadas_tabla t = new injustificadas_tabla();
+				t.setLocationRelativeTo(null);
+				t.setVisible(true);
+				t.construirTabla();
+				dispose();
+			}
+		});
 		mntmNewMenuItem_8_2_2_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmNewMenuItem_8_2_2_1.setBackground(Color.WHITE);
 		menu_vacaciones_1.add(mntmNewMenuItem_8_2_2_1);
 		
-		JMenuItem mntmNewMenuItem_8_2_1_1_1 = new JMenuItem("Agregar una nueva ausencia injustificada");
-		mntmNewMenuItem_8_2_1_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mntmNewMenuItem_8_2_1_1_1.setBackground(Color.WHITE);
-		menu_vacaciones_1.add(mntmNewMenuItem_8_2_1_1_1);
-		
-		JMenuItem mntmNewMenuItem_8_2_2_1_1 = new JMenuItem("Tabla de registros de impuntualidades");
+		JMenuItem mntmNewMenuItem_8_2_2_1_1 = new JMenuItem("Impuntualidades");
 		mntmNewMenuItem_8_2_2_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmNewMenuItem_8_2_2_1_1.setBackground(Color.WHITE);
 		menu_vacaciones_1.add(mntmNewMenuItem_8_2_2_1_1);
-		
-		JMenuItem mntmNewMenuItem_8_2_1_1_1_1 = new JMenuItem("Agregar una nueva impuntualidad");
-		mntmNewMenuItem_8_2_1_1_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mntmNewMenuItem_8_2_1_1_1_1.setBackground(Color.WHITE);
-		menu_vacaciones_1.add(mntmNewMenuItem_8_2_1_1_1_1);
 		
 		menu_vacaciones = new JMenu("Vacaciones");
 		menu_vacaciones.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		menuBar.add(menu_vacaciones);
 		
-		JMenuItem mntmNewMenuItem_8_2_2 = new JMenuItem("Tabla de registros de vacaciones");
+		JMenuItem mntmNewMenuItem_8_2_2 = new JMenuItem("Vacaciones");
 		mntmNewMenuItem_8_2_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				vacaciones_tabla tabla = new vacaciones_tabla();
@@ -242,23 +242,6 @@ public class menu_principal extends JFrame{
 		mntmNewMenuItem_8_2_2.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmNewMenuItem_8_2_2.setBackground(Color.WHITE);
 		menu_vacaciones.add(mntmNewMenuItem_8_2_2);
-		
-		JMenuItem mntmNewMenuItem_8_2_1_1 = new JMenuItem("Agregar una nuevo registro de vacaciones");
-		mntmNewMenuItem_8_2_1_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				vacaciones_nuevo nuevo = new vacaciones_nuevo();
-				nuevo.setVisible(true);
-				nuevo.setLocationRelativeTo(null);
-				nuevo.btnactualizar.setVisible(false);
-				nuevo.chxeditar.setVisible(false);
-				nuevo.chxeditar.setVisible(false);
-				nuevo.lblmensaje.setVisible(false);
-				dispose();
-			}
-		});
-		mntmNewMenuItem_8_2_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mntmNewMenuItem_8_2_1_1.setBackground(Color.WHITE);
-		menu_vacaciones.add(mntmNewMenuItem_8_2_1_1);
 		
 		JMenu menu_vacaciones_2 = new JMenu("Asistencia");
 		menu_vacaciones_2.setFont(new Font("Segoe UI", Font.PLAIN, 16));

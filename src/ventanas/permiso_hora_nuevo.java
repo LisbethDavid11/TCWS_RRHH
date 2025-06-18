@@ -388,7 +388,7 @@ public class permiso_hora_nuevo extends JFrame {
 		
 		btnguardar = new JButton("Guardar");
 		btnguardar.setToolTipText("Guardar registro");
-		btnguardar.setBounds(414, 32, 90, 23);
+		btnguardar.setBounds(414, 17, 90, 23);
 		panel_botones.add(btnguardar);
 		btnguardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -722,10 +722,16 @@ public class permiso_hora_nuevo extends JFrame {
 
 	        permiso.setTotal_horas(totalHoras);
 
-	        // Llamar al método de consultas
+	        
 	        consultas_permiso_hora consulta = new consultas_permiso_hora();
 	        if (consulta.guardar_permiso_hora(permiso, desdeHora, hastaHora, cargoRecibe, cargoExtiende, fechaRecibe)) {
 	            JOptionPane.showMessageDialog(null, "El permiso por ausencia laboral se ha registrado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+	            permiso_hora_tabla tabla = new permiso_hora_tabla();
+	            tabla.setVisible(true);
+	            tabla.setLocationRelativeTo(null);
+	            tabla.construirTabla();
+	            
+	            
 	        } else {
 	            JOptionPane.showMessageDialog(null, "Error al guardar el permiso por ausencia laboral", "Error", JOptionPane.ERROR_MESSAGE);
 	        }
@@ -843,7 +849,6 @@ public class permiso_hora_nuevo extends JFrame {
 
 	            if (consulta.actualizar_permiso_hora(clase, horaInicioTime, horaFinTime, fechaSQL, cargoRecibe, cargoExtiende)) {
 	                JOptionPane.showMessageDialog(null, "Permiso por ausencia laboral actualizado correctamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-
 	                permiso_hora_tabla ver_permiso = new permiso_hora_tabla();
 	                ver_permiso.construirTabla(); 
 	                ver_permiso.setLocationRelativeTo(null);

@@ -1,11 +1,9 @@
 package ventanas;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.HeadlessException;
-import java.awt.Image;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -14,7 +12,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,46 +19,31 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.RowFilter;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
-
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.property.TextAlignment;
-
-import com.toedter.calendar.JDateChooser;
 
 import clases.permiso_ausencia_hora;
 import conexion.conexion;
@@ -69,14 +51,7 @@ import consultas.consultas_areas;
 import consultas.consultas_cargos;
 import consultas.consultas_permiso_hora;
 import principal.menu_principal;
-import reportes.encabezado_documentos;
 import reportes.reporte_permiso_hora;
-import reportes.reporte_permiso_individual;
-
-import javax.swing.UIManager;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
-import java.awt.SystemColor;
 
 @SuppressWarnings("serial")
 public class permiso_hora_tabla extends JFrame {
@@ -94,12 +69,10 @@ public class permiso_hora_tabla extends JFrame {
 	public JTextField txtbuscar;
 	public JComboBox<String> cbxbusquedaCargo;
 	public JComboBox<String> cbxbusquedaarea;
-	public JDateChooser hasta_buscar;
 	public JButton btnactualizar;
 	public JButton btnregresar;
 	public JButton btnnuevo;
 	public JButton btneliminar;
-	public JDateChooser desde_buscar;
 	
 	private final String placeHolderText = "Marcadas, Nombres, Apellidos e Identidad"; // Placeholder definido
 	private JButton btnimprimir;
@@ -108,6 +81,7 @@ public class permiso_hora_tabla extends JFrame {
 	
 
 	
+	@SuppressWarnings({ "deprecation" })
 	public permiso_hora_tabla() {
 		getContentPane().setBackground(Color.WHITE);
 		setType(Type.UTILITY);
@@ -149,7 +123,7 @@ public class permiso_hora_tabla extends JFrame {
 		txtbuscar.setForeground(Color.GRAY);
 		txtbuscar.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		txtbuscar.setColumns(10);
-		txtbuscar.setBounds(68, 10, 212, 27);
+		txtbuscar.setBounds(68, 10, 260, 27);
 		panelbusqueda.add(txtbuscar);
 		
 		InputMap map = txtbuscar.getInputMap(JComponent.WHEN_FOCUSED); 
@@ -189,14 +163,14 @@ public class permiso_hora_tabla extends JFrame {
 				"Soporte técnico", "Marketing", "Aseo", "Mantenimiento", "Conserje", " "}));
 		cbxbusquedaCargo.setSelectedIndex(-1);
 		cbxbusquedaCargo.setFont(new Font("Tahoma", Font.BOLD, 11));
-		cbxbusquedaCargo.setBounds(347, 12, 111, 26);
+		cbxbusquedaCargo.setBounds(441, 12, 111, 26);
 		panelbusqueda.add(cbxbusquedaCargo);
 		
 		JLabel lblCargo = new JLabel("Cargo");
 		lblCargo.setHorizontalAlignment(SwingConstants.LEFT);
 		lblCargo.setForeground(Color.BLACK);
 		lblCargo.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		lblCargo.setBounds(290, 10, 66, 26);
+		lblCargo.setBounds(384, 10, 66, 26);
 		panelbusqueda.add(lblCargo);
 		
 		cbxbusquedaarea = new JComboBox<String>();
@@ -204,29 +178,15 @@ public class permiso_hora_tabla extends JFrame {
 				"Secundaria", "Logistica", "Aseo", "Mantenimiento", " " }));
 		cbxbusquedaarea.setSelectedIndex(-1);
 		cbxbusquedaarea.setFont(new Font("Tahoma", Font.BOLD, 11));
-		cbxbusquedaarea.setBounds(516, 12, 111, 26);
+		cbxbusquedaarea.setBounds(647, 12, 111, 26);
 		panelbusqueda.add(cbxbusquedaarea);
 		
 		JLabel lblarea = new JLabel("Área");
 		lblarea.setHorizontalAlignment(SwingConstants.LEFT);
 		lblarea.setForeground(Color.BLACK);
 		lblarea.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		lblarea.setBounds(468, 10, 56, 26);
+		lblarea.setBounds(599, 10, 56, 26);
 		panelbusqueda.add(lblarea);
-		
-		JLabel lblhasta = new JLabel("Hasta");
-		lblhasta.setHorizontalAlignment(SwingConstants.LEFT);
-		lblhasta.setForeground(Color.BLACK);
-		lblhasta.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		lblhasta.setBounds(829, 10, 56, 26);
-		panelbusqueda.add(lblhasta);
-		
-		hasta_buscar = new JDateChooser();
-		hasta_buscar.setBackground(new Color(255, 255, 255));
-		hasta_buscar.setForeground(new Color(0, 0, 0));
-		hasta_buscar.setDateFormatString("dd-MM-yy");
-		hasta_buscar.setBounds(879, 10, 101, 27);
-		panelbusqueda.add(hasta_buscar);
 		
 		lblresultado_busqueda = new JLabel("Registros: 2");
         lblresultado_busqueda.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -291,7 +251,8 @@ public class permiso_hora_tabla extends JFrame {
 						
 						if (confirmacion == JOptionPane.YES_OPTION) {
 							
-							String id = table.getValueAt(filaSeleccionada, 0).toString();
+							int filaModelo = table.convertRowIndexToModel(filaSeleccionada);
+							String id = table.getModel().getValueAt(filaModelo, 1).toString(); // columna 1 = id_permisos
 
 							consultas_permiso_hora consulta = new consultas_permiso_hora();
 							
@@ -365,29 +326,13 @@ public class permiso_hora_tabla extends JFrame {
 		getContentPane().add(lblPermisosAusenciaLaboral);
 		
 		Calendar cal = Calendar.getInstance();
-		cal.set(2015, Calendar.JANUARY, 1); // Inicio en enero 2015
-		hasta_buscar.setMinSelectableDate(cal.getTime());
+		cal.set(2015, Calendar.JANUARY, 1);
 
 		cal.setTime(new Date()); 
-		cal.add(Calendar.YEAR, 1); 
-		hasta_buscar.setMaxSelectableDate(cal.getTime());
+		cal.add(Calendar.YEAR, 1);
 		
 	        txtbuscar.setText(placeHolderText);
 	        txtbuscar.setForeground(Color.GRAY);
-	        
-	        JLabel lblDesde = new JLabel("Desde");
-	        lblDesde.setHorizontalAlignment(SwingConstants.LEFT);
-	        lblDesde.setForeground(Color.BLACK);
-	        lblDesde.setFont(new Font("Segoe UI", Font.BOLD, 16));
-	        lblDesde.setBounds(655, 10, 56, 26);
-	        panelbusqueda.add(lblDesde);
-	        
-	        desde_buscar = new JDateChooser();
-	        desde_buscar.setForeground(Color.BLACK);
-	        desde_buscar.setDateFormatString("dd-MM-yy");
-	        desde_buscar.setBackground(Color.WHITE);
-	        desde_buscar.setBounds(707, 10, 101, 27);
-	        panelbusqueda.add(desde_buscar);
 	        
 
 			
@@ -426,9 +371,6 @@ public class permiso_hora_tabla extends JFrame {
 	        });
 	        
 	        construirTabla();
-	        
-	        desde_buscar.getDateEditor().addPropertyChangeListener("date", evt -> aplicarFiltros());
-	        hasta_buscar.getDateEditor().addPropertyChangeListener("date", evt -> aplicarFiltros());
 	        trsfiltroCodigo = new TableRowSorter<>(table.getModel());
 	        table.setRowSorter(trsfiltroCodigo);  
 	        
@@ -576,6 +518,10 @@ public class permiso_hora_tabla extends JFrame {
 		                        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 		                        ventanaPermiso.spinnerHoraInicio.setValue(timeFormat.parse(desdeHora));
 		                        ventanaPermiso.spinnerHoraFin.setValue(timeFormat.parse(hastaHora));
+		                        ventanaPermiso.btnguardar.setVisible(false);
+		                        ventanaPermiso.btnactualizar.setVisible(false);
+		                        ventanaPermiso.btnlimpiar.setVisible(false);
+		                        
 		                    } catch (ParseException ex) {
 		                        ex.printStackTrace();
 		                    }
@@ -621,20 +567,6 @@ public class permiso_hora_tabla extends JFrame {
 		    ventanaPermiso.txtnombres_recibe.setEditable(false);
 		    ventanaPermiso.txtextiende.setEditable(false);
 		}
-		
-		private void cambiarColorFuenteNegro(JPanel panel) {
-		    for (Component componente : panel.getComponents()) {
-		        if (componente instanceof JTextField || componente instanceof JLabel || componente instanceof JComboBox || 
-		        		componente instanceof JTextArea || componente instanceof JSpinner) {
-		            componente.setForeground(Color.BLACK); 
-		        }
-		        if (componente instanceof JPanel) {
-		            cambiarColorFuenteNegro((JPanel) componente); 
-		        }
-		    }
-		}
-
-
 
 		public static String[][] obtenerMatriz() {
 		    ArrayList<permiso_ausencia_hora> miLista = buscarUsuariosConMatriz();
@@ -671,13 +603,13 @@ public class permiso_hora_tabla extends JFrame {
 
 
 		
-		private static long calcularDiasEntreFechas(Date desde, Date hasta) {
+		/*private static long calcularDiasEntreFechas(Date desde, Date hasta) {
 		    if (desde == null || hasta == null) {
 		        return 0; // Si alguna de las fechas es nula, retorna 0
 		    }
 		    long diferenciaMilisegundos = hasta.getTime() - desde.getTime();
 		    return diferenciaMilisegundos / (1000 * 60 * 60 * 24); // Convertir de milisegundos a días
-		}
+		}*/
 
 
 
@@ -728,8 +660,6 @@ public class permiso_hora_tabla extends JFrame {
 		private void aplicarFiltros() {
 			String filtroCargo = (String) cbxbusquedaCargo.getSelectedItem();
 	        String filtroArea = (String) cbxbusquedaarea.getSelectedItem();
-	        Date fechaDesde = desde_buscar.getDate();
-	        Date fechaHasta = hasta_buscar.getDate();
 	        
 	        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
 	        List<RowFilter<Object, Object>> filtros = new ArrayList<>();
@@ -742,22 +672,7 @@ public class permiso_hora_tabla extends JFrame {
 	            filtros.add(RowFilter.regexFilter("(?i)" + filtroArea, 9)); 
 	        }
 
-	        if (fechaDesde != null && fechaHasta != null) {
-	            filtros.add(new RowFilter<Object, Object>() {
-	                @Override
-	                public boolean include(Entry<? extends Object, ? extends Object> entry) {
-	                    try {
-	                        String fechaRecibidoStr = entry.getStringValue(18); // Columna 17 es "Fecha recibido"
-	                        Date fechaRecibido = dateFormat.parse(fechaRecibidoStr);
-	                        
-	                        return (fechaRecibido.equals(fechaDesde) || fechaRecibido.after(fechaDesde)) 
-	                            && (fechaRecibido.equals(fechaHasta) || fechaRecibido.before(fechaHasta));
-	                    } catch (ParseException e) {
-	                        return false; 
-	                    }
-	                }
-	            });
-	        }
+	        
 	        
 	        if (filtros.isEmpty()) {
 	            trsfiltroCodigo.setRowFilter(null);  
@@ -776,7 +691,7 @@ public class permiso_hora_tabla extends JFrame {
         private void fechaFiltros() {
             String filtroCargo = (String) cbxbusquedaCargo.getSelectedItem();
             String filtroArea = (String) cbxbusquedaarea.getSelectedItem();
-            Date fechaSeleccionada = hasta_buscar.getDate();
+      
             
             List<RowFilter<Object, Object>> filtros = new ArrayList<>();
 
@@ -786,11 +701,6 @@ public class permiso_hora_tabla extends JFrame {
             
             if (filtroArea != null && !filtroArea.trim().isEmpty()) {
                 filtros.add(RowFilter.regexFilter("(?i)" + filtroArea, 7)); 
-            }
-
-            if (fechaSeleccionada != null) {
-                String fechaFiltro = new SimpleDateFormat("dd-MM-yy").format(fechaSeleccionada);
-                filtros.add(RowFilter.regexFilter(fechaFiltro, 12, 13, 16)); // Columnas 12, 13, 16 son fechas
             }
 
             // Si no hay filtros activos, mostrar todos los registros
