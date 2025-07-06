@@ -55,7 +55,7 @@ public class areas_tabla extends JFrame{
 	public JTextField txtb;
 	public JTable tablaAreas; 
 	public JScrollPane scrollPane;
-	private final String placeHolderText = "Nombre del área y fecha";
+	private final String placeHolderText = "Nombre y fecha";
 	public JLabel lblresultado_busqueda;
 	
 	
@@ -81,16 +81,16 @@ public class areas_tabla extends JFrame{
 			}
 			});
 		
-		JLabel lbltitulo = new JLabel("ÁREAS REGISTRADAS");
+		JLabel lbltitulo = new JLabel("ÁREAS");
 		lbltitulo.setHorizontalAlignment(SwingConstants.LEFT);
 		lbltitulo.setFont(new Font("Segoe UI", Font.BOLD, 26));
-		lbltitulo.setBounds(10, 23, 374, 24);
+		lbltitulo.setBounds(20, 23, 465, 36);
 		getContentPane().add(lbltitulo);
 		
 		JPanel panelbotones = new JPanel();
 		panelbotones.setLayout(null);
 		panelbotones.setBackground(SystemColor.menu);
-		panelbotones.setBounds(495, 10, 531, 56);
+		panelbotones.setBounds(495, 23, 531, 43);
 		getContentPane().add(panelbotones);
 		
 		JButton btnMenu = new JButton("Menú");
@@ -105,7 +105,7 @@ public class areas_tabla extends JFrame{
 		btnMenu.setToolTipText("Regresar al menú principal");
 		btnMenu.setFont(new Font("Tahoma", Font.BOLD, 10));
 		btnMenu.setBackground(UIManager.getColor("Button.highlight"));
-		btnMenu.setBounds(48, 17, 90, 23);
+		btnMenu.setBounds(36, 10, 90, 23);
 		panelbotones.add(btnMenu);
 		
 		JButton btnNuevoEmpleado = new JButton("Nuevo");
@@ -122,7 +122,7 @@ public class areas_tabla extends JFrame{
 		btnNuevoEmpleado.setToolTipText("Nuevo registro");
 		btnNuevoEmpleado.setFont(new Font("Tahoma", Font.BOLD, 10));
 		btnNuevoEmpleado.setBackground(UIManager.getColor("Button.highlight"));
-		btnNuevoEmpleado.setBounds(427, 17, 90, 23);
+		btnNuevoEmpleado.setBounds(419, 10, 90, 23);
 		panelbotones.add(btnNuevoEmpleado);
 		
 		JButton btneliminar = new JButton("Eliminar");
@@ -134,20 +134,20 @@ public class areas_tabla extends JFrame{
 		btneliminar.setToolTipText("Eliminar registro");
 		btneliminar.setFont(new Font("Tahoma", Font.BOLD, 10));
 		btneliminar.setBackground(UIManager.getColor("Button.highlight"));
-		btneliminar.setBounds(332, 17, 90, 23);
+		btneliminar.setBounds(324, 10, 90, 23);
 		panelbotones.add(btneliminar);
 		
 		JPanel panelbusqueda = new JPanel();
 		panelbusqueda.setLayout(null);
 		panelbusqueda.setBackground(SystemColor.menu);
-		panelbusqueda.setBounds(10, 66, 1016, 46);
+		panelbusqueda.setBounds(20, 66, 1006, 46);
 		getContentPane().add(panelbusqueda);
 		
 		txtb = new JTextField();
 		txtb.setForeground(Color.GRAY);
 		txtb.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		txtb.setColumns(10);
-		txtb.setBounds(78, 10, 330, 27);
+		txtb.setBounds(68, 10, 330, 27);
 		panelbusqueda.add(txtb);
 		
 		
@@ -179,23 +179,23 @@ public class areas_tabla extends JFrame{
 		lblbuscar.setHorizontalAlignment(SwingConstants.LEFT);
 		lblbuscar.setForeground(Color.BLACK);
 		lblbuscar.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		lblbuscar.setBounds(20, 10, 66, 26);
+		lblbuscar.setBounds(10, 10, 66, 26);
 		panelbusqueda.add(lblbuscar);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setLayout(null);
 		panel_1.setBackground(SystemColor.menu);
-		panel_1.setBounds(10, 118, 1016, 465);
+		panel_1.setBounds(20, 118, 1006, 442);
 		getContentPane().add(panel_1);
 		
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 10, 996, 370);
+		scrollPane.setBounds(10, 10, 984, 370);
 		panel_1.add(scrollPane);
 		
 		lblresultado_busqueda = new JLabel("");
 		lblresultado_busqueda.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblresultado_busqueda.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblresultado_busqueda.setBounds(784, 410, 210, 27);
+		lblresultado_busqueda.setBounds(784, 402, 210, 27);
 		panel_1.add(lblresultado_busqueda);
 		
 		

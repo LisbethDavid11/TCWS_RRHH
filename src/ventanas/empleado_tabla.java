@@ -200,7 +200,7 @@ public class empleado_tabla extends JFrame {
         lblresultado_busqueda.setBounds(744, 390, 222, 27);
         panel_1.add(lblresultado_busqueda);
 
-        JLabel lbltitulo = new JLabel("COLABORADORES REGISTRADOS");
+        JLabel lbltitulo = new JLabel("COLABORADORES");
         lbltitulo.setHorizontalAlignment(SwingConstants.LEFT);
         lbltitulo.setFont(new Font("Segoe UI", Font.BOLD, 26));
         lbltitulo.setBounds(28, 32, 526, 26);

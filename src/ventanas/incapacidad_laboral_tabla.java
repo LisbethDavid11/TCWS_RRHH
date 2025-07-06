@@ -254,10 +254,10 @@ public class incapacidad_laboral_tabla extends JFrame {
         btneliminar.setBounds(251, 17, 90, 23);
         panelbotones.add(btneliminar);
 
-        JLabel lblPermisosAusenciaLaboral = new JLabel("INCAPACIDADES POR AUSENCIA LABORAL");
+        JLabel lblPermisosAusenciaLaboral = new JLabel("INCAPACIDADES IHSS");
         lblPermisosAusenciaLaboral.setHorizontalAlignment(SwingConstants.LEFT);
         lblPermisosAusenciaLaboral.setFont(new Font("Segoe UI", Font.BOLD, 26));
-        lblPermisosAusenciaLaboral.setBounds(25, 30, 534, 26);
+        lblPermisosAusenciaLaboral.setBounds(25, 30, 534, 37);
         getContentPane().add(lblPermisosAusenciaLaboral);
 
         construirTabla(); // Construir la tabla al iniciar

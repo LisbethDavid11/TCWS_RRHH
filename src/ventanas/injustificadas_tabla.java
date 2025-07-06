@@ -77,10 +77,10 @@ public class injustificadas_tabla extends JFrame {
 
         txtbuscar = new JTextField();
         txtbuscar.setFont(new Font("Tahoma", Font.PLAIN, 10));
-        txtbuscar.setBounds(68, 10, 216, 27);
+        txtbuscar.setBounds(68, 10, 235, 27);
         panelbusqueda.add(txtbuscar);
 
-        final String placeHolderText = "Nombres, apellidos, identidad y sexo";
+        final String placeHolderText = "Marcadas, nombres, apellidos, identidad y sexo";
 
         txtbuscar.setText(placeHolderText);
         txtbuscar.setForeground(Color.GRAY);
@@ -120,7 +120,7 @@ public class injustificadas_tabla extends JFrame {
         cbxbusquedaCargo = new JComboBox<String>();
 		cbxbusquedaCargo.setSelectedIndex(-1);
 		cbxbusquedaCargo.setFont(new Font("Tahoma", Font.BOLD, 11));
-		cbxbusquedaCargo.setBounds(347, 12, 111, 26);
+		cbxbusquedaCargo.setBounds(376, 11, 111, 26);
 		panelbusqueda.add(cbxbusquedaCargo);
 		
 		
@@ -128,26 +128,26 @@ public class injustificadas_tabla extends JFrame {
         lblCargo.setHorizontalAlignment(SwingConstants.LEFT);
         lblCargo.setForeground(Color.BLACK);
         lblCargo.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        lblCargo.setBounds(294, 11, 66, 26);
+        lblCargo.setBounds(323, 10, 66, 26);
         panelbusqueda.add(lblCargo);
 
         cbxbusquedaarea = new JComboBox<String>();
 		//cbxbusquedaarea.setModel(new DefaultComboBoxModel<>(new String[] { "Administrativa", "Financiera", "Pre basica", "Primaria", "Secundaria", "Logistica", "Aseo", "Mantenimiento", " " }));
 		cbxbusquedaarea.setSelectedIndex(-1);
 		cbxbusquedaarea.setFont(new Font("Tahoma", Font.BOLD, 11));
-		cbxbusquedaarea.setBounds(516, 12, 111, 26);
+		cbxbusquedaarea.setBounds(545, 11, 111, 26);
 		panelbusqueda.add(cbxbusquedaarea);
 
         JLabel lblarea = new JLabel("Área");
         lblarea.setHorizontalAlignment(SwingConstants.LEFT);
         lblarea.setForeground(Color.BLACK);
         lblarea.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        lblarea.setBounds(468, 10, 56, 26);
+        lblarea.setBounds(497, 9, 56, 26);
         panelbusqueda.add(lblarea);
 
         desde_buscar = new JDateChooser();
         desde_buscar.setDateFormatString("dd-MM-yy");
-        desde_buscar.setBounds(707, 10, 101, 27);
+        desde_buscar.setBounds(718, 10, 101, 27);
         panelbusqueda.add(desde_buscar);
         desde_buscar.getDateEditor().addPropertyChangeListener(evt -> aplicarFiltros());
 
@@ -161,7 +161,7 @@ public class injustificadas_tabla extends JFrame {
         lblDesde.setHorizontalAlignment(SwingConstants.LEFT);
         lblDesde.setForeground(Color.BLACK);
         lblDesde.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        lblDesde.setBounds(655, 10, 56, 26);
+        lblDesde.setBounds(666, 10, 56, 26);
         panelbusqueda.add(lblDesde);
 
         JLabel lblHasta = new JLabel("Hasta");
@@ -296,7 +296,7 @@ public class injustificadas_tabla extends JFrame {
     private void filtro() {
         String filtroTexto = txtbuscar.getText();
         if (trsfiltroCodigo != null) {
-            trsfiltroCodigo.setRowFilter(RowFilter.regexFilter("(?i)" + filtroTexto, 1, 2, 3, 4));  
+            trsfiltroCodigo.setRowFilter(RowFilter.regexFilter("(?i)" + filtroTexto, 3, 4, 5, 6, 10));  
         }
         actualizarConteoRegistros();
         
@@ -309,11 +309,11 @@ public class injustificadas_tabla extends JFrame {
         List<RowFilter<Object, Object>> filtros = new ArrayList<>();
 
         if (filtroCargo != null && !filtroCargo.trim().isEmpty()) {
-            filtros.add(RowFilter.regexFilter("(?i)" + filtroCargo, 7)); 
+            filtros.add(RowFilter.regexFilter("(?i)" + filtroCargo, 8)); 
         }
 
         if (filtroArea != null && !filtroArea.trim().isEmpty()) {
-            filtros.add(RowFilter.regexFilter("(?i)" + filtroArea, 8)); 
+            filtros.add(RowFilter.regexFilter("(?i)" + filtroArea, 9)); 
         }
         
 
@@ -332,8 +332,8 @@ public class injustificadas_tabla extends JFrame {
                 @Override
                 public boolean include(Entry<? extends Object, ? extends Object> entry) {
                     try {
-                        String fechaInicioStr = entry.getStringValue(12); 
-                        String fechaFinStr = entry.getStringValue(13);   
+                        String fechaInicioStr = entry.getStringValue(13); 
+                        String fechaFinStr = entry.getStringValue(14);   
                         Date fechaInicio = dateFormat.parse(fechaInicioStr);
                         Date fechaFin = dateFormat.parse(fechaFinStr);
 

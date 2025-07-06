@@ -55,7 +55,7 @@ public class cargos_tabla extends JFrame{
 	public JTextField txtb;
 	public JTable tablaCargos; 
 	public JScrollPane scrollPane;
-	private final String placeHolderText = "Nombre del cargo y fecha";
+	private final String placeHolderText = "Nombre y fecha";
 	public JLabel lblresultado_busqueda;
 	
 	
@@ -82,16 +82,16 @@ public class cargos_tabla extends JFrame{
 			}
 			});
 		
-		JLabel lbltitulo = new JLabel("CARGOS REGISTRADOS");
+		JLabel lbltitulo = new JLabel("CARGOS");
 		lbltitulo.setHorizontalAlignment(SwingConstants.LEFT);
 		lbltitulo.setFont(new Font("Segoe UI", Font.BOLD, 26));
-		lbltitulo.setBounds(10, 25, 360, 24);
+		lbltitulo.setBounds(21, 25, 349, 24);
 		getContentPane().add(lbltitulo);
 		
 		JPanel panelbotones = new JPanel();
 		panelbotones.setLayout(null);
 		panelbotones.setBackground(SystemColor.menu);
-		panelbotones.setBounds(418, 10, 608, 56);
+		panelbotones.setBounds(418, 20, 608, 46);
 		getContentPane().add(panelbotones);
 		
 		JButton btnMenu = new JButton("Menú");
@@ -106,7 +106,7 @@ public class cargos_tabla extends JFrame{
 		btnMenu.setToolTipText("Regresar al menú principal");
 		btnMenu.setFont(new Font("Tahoma", Font.BOLD, 10));
 		btnMenu.setBackground(UIManager.getColor("Button.highlight"));
-		btnMenu.setBounds(32, 23, 90, 23);
+		btnMenu.setBounds(31, 13, 90, 23);
 		panelbotones.add(btnMenu);
 		
 		JButton btnNuevoEmpleado = new JButton("Nuevo");
@@ -123,7 +123,7 @@ public class cargos_tabla extends JFrame{
 		btnNuevoEmpleado.setToolTipText("Nuevo registro");
 		btnNuevoEmpleado.setFont(new Font("Tahoma", Font.BOLD, 10));
 		btnNuevoEmpleado.setBackground(UIManager.getColor("Button.highlight"));
-		btnNuevoEmpleado.setBounds(497, 23, 90, 23);
+		btnNuevoEmpleado.setBounds(496, 13, 90, 23);
 		panelbotones.add(btnNuevoEmpleado);
 		
 		JButton btneliminar = new JButton("Eliminar");
@@ -135,20 +135,20 @@ public class cargos_tabla extends JFrame{
 		btneliminar.setToolTipText("Eliminar registro");
 		btneliminar.setFont(new Font("Tahoma", Font.BOLD, 10));
 		btneliminar.setBackground(UIManager.getColor("Button.highlight"));
-		btneliminar.setBounds(402, 23, 90, 23);
+		btneliminar.setBounds(401, 13, 90, 23);
 		panelbotones.add(btneliminar);
 		
 		JPanel panelbusqueda = new JPanel();
 		panelbusqueda.setLayout(null);
 		panelbusqueda.setBackground(SystemColor.menu);
-		panelbusqueda.setBounds(10, 66, 1016, 46);
+		panelbusqueda.setBounds(21, 66, 1005, 46);
 		getContentPane().add(panelbusqueda);
 		
 		txtb = new JTextField();
 		txtb.setForeground(Color.GRAY);
 		txtb.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		txtb.setColumns(10);
-		txtb.setBounds(68, 10, 311, 27);
+		txtb.setBounds(78, 10, 311, 27);
 		panelbusqueda.add(txtb);
 		
 		
@@ -180,17 +180,17 @@ public class cargos_tabla extends JFrame{
 		lblbuscar.setHorizontalAlignment(SwingConstants.LEFT);
 		lblbuscar.setForeground(Color.BLACK);
 		lblbuscar.setFont(new Font("Segoe UI", Font.BOLD, 16));
-		lblbuscar.setBounds(10, 10, 66, 26);
+		lblbuscar.setBounds(20, 10, 66, 26);
 		panelbusqueda.add(lblbuscar);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setLayout(null);
 		panel_1.setBackground(SystemColor.menu);
-		panel_1.setBounds(10, 118, 1016, 452);
+		panel_1.setBounds(21, 118, 1005, 452);
 		getContentPane().add(panel_1);
 		
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 10, 996, 370);
+		scrollPane.setBounds(10, 10, 985, 370);
 		panel_1.add(scrollPane);
 		
 		lblresultado_busqueda = new JLabel("");

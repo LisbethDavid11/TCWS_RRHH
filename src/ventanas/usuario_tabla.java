@@ -60,7 +60,7 @@ public class usuario_tabla extends JFrame {
 		getContentPane().setLayout(null);
 		getContentPane().setLayout(null);
 		
-		JLabel lblUsuarios = new JLabel("USUARIOS REGISTRADOS");
+		JLabel lblUsuarios = new JLabel("USUARIOS");
 		lblUsuarios.setHorizontalAlignment(SwingConstants.LEFT);
 		lblUsuarios.setFont(new Font("Segoe UI", Font.BOLD, 26));
 		lblUsuarios.setBounds(23, 28, 534, 26);

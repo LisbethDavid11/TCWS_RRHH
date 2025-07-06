@@ -74,7 +74,7 @@ public class reporte_permiso_hora {
                     .setMarginBottom(40));
 
             // Firmas
-            document.add(new Paragraph("_________________________________			  ______________________________")
+            document.add(new Paragraph("\n\n_________________________________			  ______________________________")
                     .setTextAlignment(TextAlignment.CENTER));
             document.add(new Paragraph("Firma y sello de autoridad inmediata    					    	  Firma del solicitante")
                     .setFontSize(11)
@@ -96,7 +96,7 @@ public class reporte_permiso_hora {
 
             document.close();
 
-            JOptionPane.showMessageDialog(null, "El PDF se ha generado correctamente.");
+            JOptionPane.showMessageDialog(null, "El permiso por hora se ha guardado correctamente");
             Desktop.getDesktop().open(fileToSave);
 
         } catch (IOException e) {

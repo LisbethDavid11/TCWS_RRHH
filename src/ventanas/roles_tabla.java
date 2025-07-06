@@ -82,7 +82,7 @@ public class roles_tabla extends JFrame {
 		lblbuscar.setBounds(10, 10, 66, 26);
 		panelbusqueda.add(lblbuscar);
 		
-		JLabel lblRolesDePermisos = new JLabel("ROLES DE PERMISOS DE USUARIOS");
+		JLabel lblRolesDePermisos = new JLabel("ROLES DE PERMISOS PARA USUARIOS");
 		lblRolesDePermisos.setHorizontalAlignment(SwingConstants.LEFT);
 		lblRolesDePermisos.setFont(new Font("Segoe UI", Font.BOLD, 26));
 		lblRolesDePermisos.setBounds(25, 31, 496, 26);

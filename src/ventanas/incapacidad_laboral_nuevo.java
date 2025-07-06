@@ -108,7 +108,7 @@ public class incapacidad_laboral_nuevo extends JFrame {
         lblIncapacidadLaboral.setHorizontalAlignment(SwingConstants.LEFT);
         lblIncapacidadLaboral.setFont(new Font("Segoe UI", Font.BOLD, 26));
         lblIncapacidadLaboral.setBackground(new Color(255, 153, 0));
-        lblIncapacidadLaboral.setBounds(31, 20, 519, 36);
+        lblIncapacidadLaboral.setBounds(31, 20, 497, 36);
         getContentPane().add(lblIncapacidadLaboral);
 
         JPanel panel_botones = new JPanel();

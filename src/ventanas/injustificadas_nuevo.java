@@ -111,7 +111,7 @@ public class injustificadas_nuevo extends JFrame {
         JPanel panel_botones = new JPanel();
         panel_botones.setLayout(null);
         panel_botones.setBackground(SystemColor.menu);
-        panel_botones.setBounds(538, 10, 468, 65);
+        panel_botones.setBounds(560, 10, 446, 65);
         getContentPane().add(panel_botones);
 
         btnguardar = new JButton("Guardar");
@@ -123,7 +123,7 @@ public class injustificadas_nuevo extends JFrame {
         });
         btnguardar.setFont(new Font("Tahoma", Font.BOLD, 10));
         btnguardar.setBackground(UIManager.getColor("Button.highlight"));
-        btnguardar.setBounds(367, 17, 90, 23);
+        btnguardar.setBounds(346, 17, 90, 23);
         panel_botones.add(btnguardar);
 
         btnactualizar = new JButton("Actualizar");
@@ -136,7 +136,7 @@ public class injustificadas_nuevo extends JFrame {
 
         btnactualizar.setFont(new Font("Tahoma", Font.BOLD, 10));
         btnactualizar.setBackground(UIManager.getColor("Button.highlight"));
-        btnactualizar.setBounds(367, 17, 90, 23);
+        btnactualizar.setBounds(346, 17, 90, 23);
         panel_botones.add(btnactualizar);
 
         btnlimpiar = new JButton("Limpiar");
@@ -147,7 +147,7 @@ public class injustificadas_nuevo extends JFrame {
         });
         btnlimpiar.setFont(new Font("Tahoma", Font.BOLD, 10));
         btnlimpiar.setBackground(UIManager.getColor("Button.highlight"));
-        btnlimpiar.setBounds(272, 17, 90, 23);
+        btnlimpiar.setBounds(251, 17, 90, 23);
         panel_botones.add(btnlimpiar);
 
         btnregresar = new JButton("Regresar");
@@ -168,7 +168,7 @@ public class injustificadas_nuevo extends JFrame {
         
         chxeditar = new JCheckBox("Editar registro");
         chxeditar.setFont(new Font("Tahoma", Font.PLAIN, 13));
-        chxeditar.setBounds(160, 17, 105, 21);
+        chxeditar.setBounds(139, 17, 105, 21);
         panel_botones.add(chxeditar);
 
         JPanel panel_datos = new JPanel();
