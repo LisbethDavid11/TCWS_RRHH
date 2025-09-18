@@ -22,6 +22,7 @@ public class asistencia_nuevo extends JFrame {
     public JDateChooser fecha_chooser;
     public JCheckBox chxeditar;
     private boolean columnaAsistioEditable = false;
+    public JButton btnCargar;
 
     
     public asistencia_nuevo() {
@@ -76,7 +77,7 @@ public class asistencia_nuevo extends JFrame {
         fecha_chooser.setDateFormatString("dd-MM-yy");
         panelBusqueda.add(fecha_chooser);
 
-        JButton btnCargar = new JButton("Cargar empleados");
+        btnCargar = new JButton("Cargar empleados");
         btnCargar.setFont(new Font("Tahoma", Font.BOLD, 10));
         btnCargar.setBackground(UIManager.getColor("Button.highlight"));
         btnCargar.setBounds(240, 10, 140, 25);
@@ -113,7 +114,7 @@ public class asistencia_nuevo extends JFrame {
         btnactualizar = new JButton("Actualizar");
         btnactualizar.setFont(new Font("Tahoma", Font.BOLD, 10));
         btnactualizar.setBackground(UIManager.getColor("Button.highlight"));
-        btnactualizar.setBounds(346, 17, 90, 23);
+        btnactualizar.setBounds(346, 23, 90, 23);
         panelBotones.add(btnactualizar);
 
         btnguardar = new JButton("Guardar");
@@ -130,7 +131,9 @@ public class asistencia_nuevo extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 columnaAsistioEditable = chxeditar.isSelected();
                 btnactualizar.setVisible(columnaAsistioEditable);
+                btnCargar.setVisible(columnaAsistioEditable);
 
+                
                 // Esto obliga al JTable a reconstruir el modelo y así se aplica el nuevo editable
                 ((AbstractTableModel) tablaEmpleados.getModel()).fireTableStructureChanged();
             }

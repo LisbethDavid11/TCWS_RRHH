@@ -403,4 +403,4 @@ public class cargos_tabla extends JFrame{
 	
 	
 
-}
+}//end

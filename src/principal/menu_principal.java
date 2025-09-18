@@ -229,11 +229,6 @@ public class menu_principal extends JFrame{
 		mntmNewMenuItem_8_2_2_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmNewMenuItem_8_2_2_1.setBackground(Color.WHITE);
 		
-		JMenuItem mntmNewMenuItem_8_2_2_1_1 = new JMenuItem("Impuntualidades");
-		menu_vacaciones_2.add(mntmNewMenuItem_8_2_2_1_1);
-		mntmNewMenuItem_8_2_2_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mntmNewMenuItem_8_2_2_1_1.setBackground(Color.WHITE);
-		
 		menu_vacaciones = new JMenu("Vacaciones");
 		menu_vacaciones.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		menuBar.add(menu_vacaciones);
@@ -265,7 +260,7 @@ public class menu_principal extends JFrame{
 		menu_reportes.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		menuBar.add(menu_reportes);
 		
-		JMenuItem mntmNewMenuItem_8 = new JMenuItem("Reporte de empleados general");
+		JMenuItem mntmNewMenuItem_8 = new JMenuItem("Reporte de Colaboradores general");
 		mntmNewMenuItem_8.setBackground(UIManager.getColor("Button.highlight"));
 		mntmNewMenuItem_8.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmNewMenuItem_8.addActionListener(new ActionListener() {
@@ -276,7 +271,7 @@ public class menu_principal extends JFrame{
 		});
 		menu_reportes.add(mntmNewMenuItem_8);
 		
-		JMenuItem mntmNewMenuItem_8_1 = new JMenuItem("Reporte de empleados personalizado");
+		JMenuItem mntmNewMenuItem_8_1 = new JMenuItem("Reporte de Colaboradores personalizado");
 		mntmNewMenuItem_8_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				reporte_empleado_especial especial = new reporte_empleado_especial();
@@ -286,7 +281,7 @@ public class menu_principal extends JFrame{
 			}
 		});
 		
-		JMenuItem mntmNewMenuItem_8_1_1 = new JMenuItem("Reporte de empleados activos");
+		JMenuItem mntmNewMenuItem_8_1_1 = new JMenuItem("Reporte de Colaboradores activos");
 		mntmNewMenuItem_8_1_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				reporte_empleados_activos reporte = new reporte_empleados_activos();
@@ -300,7 +295,7 @@ public class menu_principal extends JFrame{
 		mntmNewMenuItem_8_1.setBackground(Color.WHITE);
 		menu_reportes.add(mntmNewMenuItem_8_1);
 		
-		JMenuItem mntmNewMenuItem_8_3 = new JMenuItem("Reporte de permisos A.L. general");
+		JMenuItem mntmNewMenuItem_8_3 = new JMenuItem("Reporte de permisos por Ausencia Laboral general");
 		mntmNewMenuItem_8_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				reporte_permisos_general g = new reporte_permisos_general();
@@ -311,7 +306,7 @@ public class menu_principal extends JFrame{
 		mntmNewMenuItem_8_3.setBackground(Color.WHITE);
 		menu_reportes.add(mntmNewMenuItem_8_3);
 		
-		JMenuItem mntmNewMenuItem_8_4 = new JMenuItem("Reporte de incapacidades general");
+		JMenuItem mntmNewMenuItem_8_4 = new JMenuItem("Reporte de Incapacidades general");
 		mntmNewMenuItem_8_4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				reporte_incapacidad_general i = new reporte_incapacidad_general();
@@ -322,7 +317,7 @@ public class menu_principal extends JFrame{
 		mntmNewMenuItem_8_4.setBackground(Color.WHITE);
 		menu_reportes.add(mntmNewMenuItem_8_4);
 		
-		JMenuItem mntmNewMenuItem_8_4_1 = new JMenuItem("Reporte de vacaciones general");
+		JMenuItem mntmNewMenuItem_8_4_1 = new JMenuItem("Reporte de Vacaciones general");
 		mntmNewMenuItem_8_4_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				reporte_vacaciones_general v = new reporte_vacaciones_general();

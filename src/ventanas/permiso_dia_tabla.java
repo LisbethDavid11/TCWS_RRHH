@@ -316,9 +316,6 @@ public class permiso_dia_tabla extends JFrame {
 		panelbotones.add(btneliminar);
 		
 		btnimprimir = new JButton("Imprimir");
-		btnimprimir = new JButton("Imprimir");
-		btnimprimir = new JButton("Imprimir");
-		btnimprimir = new JButton("Imprimir");
 		btnimprimir.addActionListener(new ActionListener() {
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
