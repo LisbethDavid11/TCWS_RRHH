@@ -31,7 +31,7 @@ public class login_principal extends JFrame {
 	public JLabel lblfoto;
 	public JLabel lblicon;
 	
-	ImageIcon icono_fotografia = new ImageIcon(getClass().getResource("/imagenes/tcws_este.png"));
+	ImageIcon icono_fotografia = new ImageIcon(getClass().getResource("/imagenes/tcws_hd.png"));
 	ImageIcon icono_fotografia2 = new ImageIcon(getClass().getResource("/imagenes/u1.png"));
 
 	public JPasswordField txtcontrasena;
@@ -89,11 +89,11 @@ public class login_principal extends JFrame {
 		btniniciar.setToolTipText("Acceder");
 		btniniciar.setFont(new Font("Tahoma", Font.BOLD, 12));
 		btniniciar.setBackground(UIManager.getColor("Button.light"));
-		btniniciar.setBounds(173, 330, 130, 23);
+		btniniciar.setBounds(175, 328, 145, 33);
 		panelDatos.add(btniniciar);
 		
 		lblicon = new JLabel("");
-		lblicon.setBounds(195, 23, 108, 123);
+		lblicon.setBounds(190, 23, 122, 123);
 		panelDatos.add(lblicon);
 		
 		lblicon.setIcon(new ImageIcon(icono_fotografia2.getImage().getScaledInstance(lblicon.getWidth(),
@@ -110,7 +110,7 @@ public class login_principal extends JFrame {
 		btnmostrar_c1.setBackground(UIManager.getColor("Button.light"));
 		btnmostrar_c1.setToolTipText("Ver contraseña");
 		btnmostrar_c1.setFont(new Font("Tahoma", Font.BOLD, 9));
-		btnmostrar_c1.setBounds(368, 228, 42, 28);
+		btnmostrar_c1.setBounds(368, 223, 42, 33);
 		panelDatos.add(btnmostrar_c1);
 		
 		JLabel lblnoTieneUn = new JLabel("¿No tiene un usuario?");
@@ -145,7 +145,7 @@ public class login_principal extends JFrame {
 		getContentPane().add(panelFoto);
 		panelFoto.setLayout(null);
 		
-		JLabel lblSistemaControlDe = new JLabel("Sistema Control de Empleados, ");
+		JLabel lblSistemaControlDe = new JLabel("Sistema Recursos Humanos");
 		lblSistemaControlDe.setBackground(new Color(0, 0, 0));
 		lblSistemaControlDe.setForeground(new Color(0, 0, 0));
 		lblSistemaControlDe.setHorizontalAlignment(SwingConstants.CENTER);
@@ -153,7 +153,7 @@ public class login_principal extends JFrame {
 		lblSistemaControlDe.setBounds(0, 435, 472, 58);
 		panelFoto.add(lblSistemaControlDe);
 		
-		JLabel lblIncapacidadesYVacaciones = new JLabel("Permisos, Incapacidades y Vacaciones.");
+		JLabel lblIncapacidadesYVacaciones = new JLabel("TCWS / TCWHS");
 		lblIncapacidadesYVacaciones.setBackground(new Color(0, 0, 0));
 		lblIncapacidadesYVacaciones.setForeground(new Color(0, 0, 0));
 		lblIncapacidadesYVacaciones.setHorizontalAlignment(SwingConstants.CENTER);
@@ -162,7 +162,7 @@ public class login_principal extends JFrame {
 		panelFoto.add(lblIncapacidadesYVacaciones);
 		
 		lblfoto = new JLabel("");
-		lblfoto.setBounds(56, 63, 349, 345);
+		lblfoto.setBounds(43, 63, 375, 361);
 		panelFoto.add(lblfoto);
 		
 		lblfoto.setIcon(new ImageIcon(icono_fotografia.getImage().getScaledInstance(lblfoto.getWidth(),
@@ -175,7 +175,7 @@ public class login_principal extends JFrame {
 		lblTodosLosDerechos.setBounds(7, 526, 465, 35);
 		panelFoto.add(lblTodosLosDerechos);
 		
-		JLabel lblVersin = new JLabel("Versión 1.1");
+		JLabel lblVersin = new JLabel("Versión 1.2");
 		lblVersin.setHorizontalAlignment(SwingConstants.CENTER);
 		lblVersin.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		lblVersin.setBounds(0, 548, 472, 24);

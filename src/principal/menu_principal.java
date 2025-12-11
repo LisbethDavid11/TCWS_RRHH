@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -25,9 +26,13 @@ import javax.swing.UIManager;
 import consultas.consultas_roles;
 import informes.informe_empleado_general;
 import informes.informe_empleado_individual;
+import reportes.reporte_ausencia_hora_mensual;
+import reportes.reporte_ausencias_dia_mensual;
+import reportes.reporte_ausencias_injustificadas;
 import reportes.reporte_empleado_especial;
 import reportes.reporte_empleados_activos;
 import reportes.reporte_empleados_general;
+import reportes.reporte_incapacidadYpermisos_colaborador;
 import reportes.reporte_incapacidad_general;
 import reportes.reporte_permisos_general;
 import reportes.reporte_vacaciones_general;
@@ -40,8 +45,10 @@ import ventanas.derechos_autor;
 import ventanas.empleado_tabla;
 import ventanas.incapacidad_laboral_tabla;
 import ventanas.info_sistema;
-import ventanas.injustificadas_tabla;
+import ventanas.impuntualidades_tabla;
 import ventanas.login_principal;
+import ventanas.memorandum_nuevo;
+import ventanas.memorandum_tabla;
 import ventanas.permiso_dia_tabla;
 import ventanas.permiso_hora_tabla;
 import ventanas.roles_nuevo;
@@ -63,12 +70,11 @@ public class menu_principal extends JFrame{
 	private JLabel lblBienvenido;
 	public JMenu menu_permisos;
 	public JMenu menu_incapacidades;
-	public JMenu menu_vacaciones;
 	public JMenu mnOrganizacin;
 	public JMenu menu_roles;
 	public JMenu mnSistema;
 	public JMenu mnInformes;
-	public JMenu menu_reportes;
+	public JMenu mnReportesGenerales;
 	public JMenu menu_salir;
 	
 	
@@ -98,7 +104,7 @@ public class menu_principal extends JFrame{
 		menuBar.setBounds(0, 0, 1036, 46);
 		getContentPane().add(menuBar);
 		
-		mnOrganizacin = new JMenu("Personal");
+		mnOrganizacin = new JMenu("Colaboradores");
 		mnOrganizacin.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		menuBar.add(mnOrganizacin);
 		
@@ -144,6 +150,58 @@ public class menu_principal extends JFrame{
 		});
 		mntmNewMenuItem_2_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmNewMenuItem_2_1_1.setBackground(Color.WHITE);
+		
+		JMenuItem mntmNewMenuItem_8_2_2_2_1 = new JMenuItem("Memorandums");
+		mntmNewMenuItem_8_2_2_2_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				memorandum_tabla mem = new memorandum_tabla();
+				mem.setVisible(true);
+				mem.setLocationRelativeTo(null);
+				mem.construirTabla();
+				dispose();
+			}
+		});
+		mntmNewMenuItem_8_2_2_2_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mntmNewMenuItem_8_2_2_2_1.setBackground(Color.WHITE);
+		mnOrganizacin.add(mntmNewMenuItem_8_2_2_2_1);
+		
+		JMenuItem mntmNewMenuItem_8_2_2 = new JMenuItem("Vacaciones");
+		mntmNewMenuItem_8_2_2.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mntmNewMenuItem_8_2_2.setBackground(Color.WHITE);
+		mnOrganizacin.add(mntmNewMenuItem_8_2_2);
+		
+		JMenu menu_vacaciones_2 = new JMenu("Asistencia");
+		menu_vacaciones_2.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		menuBar.add(menu_vacaciones_2);
+		
+		JMenuItem mntmNewMenuItem_8_2_2_2 = new JMenuItem("Asistencia diaria");
+		mntmNewMenuItem_8_2_2_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				asistencia_tabla b = new asistencia_tabla();
+				b.setVisible(true);
+				b.setLocationRelativeTo(null);
+				b.construirTabla();
+				b.cargarFechasAsistencia();
+				dispose();
+			}
+		});
+		mntmNewMenuItem_8_2_2_2.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mntmNewMenuItem_8_2_2_2.setBackground(Color.WHITE);
+		menu_vacaciones_2.add(mntmNewMenuItem_8_2_2_2);
+		
+		JMenuItem mntmNewMenuItem_8_2_2_1 = new JMenuItem("Impuntualidades");
+		menu_vacaciones_2.add(mntmNewMenuItem_8_2_2_1);
+		mntmNewMenuItem_8_2_2_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				impuntualidades_tabla t = new impuntualidades_tabla();
+				t.setLocationRelativeTo(null);
+				t.setVisible(true);
+				t.construirTabla();
+				dispose();
+			}
+		});
+		mntmNewMenuItem_8_2_2_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mntmNewMenuItem_8_2_2_1.setBackground(Color.WHITE);
 		
 		menu_permisos = new JMenu("Permisos");
 		menu_permisos.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -196,69 +254,53 @@ public class menu_principal extends JFrame{
 		mntmNewMenuItem_8_2.setBackground(Color.WHITE);
 		menu_incapacidades.add(mntmNewMenuItem_8_2);
 		
-		JMenu menu_vacaciones_2 = new JMenu("Asistencia");
-		menu_vacaciones_2.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		menuBar.add(menu_vacaciones_2);
+		JMenu mnReportes = new JMenu("Reportes individuales");
+		mnReportes.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		menuBar.add(mnReportes);
 		
-		JMenuItem mntmNewMenuItem_8_2_2_2 = new JMenuItem("Asistencia diaria");
-		mntmNewMenuItem_8_2_2_2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				asistencia_tabla b = new asistencia_tabla();
-				b.setVisible(true);
-				b.setLocationRelativeTo(null);
-				b.construirTabla();
-				b.cargarFechasAsistencia();
-				dispose();
-			}
+		JMenuItem mntmNewMenuItem_7_1_1_1 = new JMenuItem("Reporte de Permisos e Incapacidades por colaborador");
+		mntmNewMenuItem_7_1_1_1.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        reporte_incapacidadYpermisos_colaborador reporte = new reporte_incapacidadYpermisos_colaborador();
+		        reporte.generarReporte();
+		    }
 		});
-		mntmNewMenuItem_8_2_2_2.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mntmNewMenuItem_8_2_2_2.setBackground(Color.WHITE);
-		menu_vacaciones_2.add(mntmNewMenuItem_8_2_2_2);
+		mntmNewMenuItem_7_1_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mntmNewMenuItem_7_1_1_1.setBackground(Color.WHITE);
+		mnReportes.add(mntmNewMenuItem_7_1_1_1);
+
 		
-		JMenuItem mntmNewMenuItem_8_2_2_1 = new JMenuItem("Ausencias injustificadas");
-		menu_vacaciones_2.add(mntmNewMenuItem_8_2_2_1);
-		mntmNewMenuItem_8_2_2_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				injustificadas_tabla t = new injustificadas_tabla();
-				t.setLocationRelativeTo(null);
-				t.setVisible(true);
-				t.construirTabla();
-				dispose();
-			}
+		JMenuItem mntmNewMenuItem_7_2 = new JMenuItem("Reporte de Ausencias injustificadas por colaborador");
+		mntmNewMenuItem_7_2.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        try {
+		            reporte_ausencias_injustificadas reporte = new reporte_ausencias_injustificadas();
+		            reporte.generarReporte();
+		        } catch (Exception ex) {
+		            ex.printStackTrace();
+		            JOptionPane.showMessageDialog(null, "Ocurrió un error al generar el reporte: " + ex.getMessage(),
+		                    "Error", JOptionPane.ERROR_MESSAGE);
+		        }
+		    }
 		});
-		mntmNewMenuItem_8_2_2_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mntmNewMenuItem_8_2_2_1.setBackground(Color.WHITE);
+		mntmNewMenuItem_7_2.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mntmNewMenuItem_7_2.setBackground(Color.WHITE);
+		mnReportes.add(mntmNewMenuItem_7_2);
+
 		
-		menu_vacaciones = new JMenu("Vacaciones");
-		menu_vacaciones.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		menuBar.add(menu_vacaciones);
+		JMenuItem mntmNewMenuItem_7_1_1 = new JMenuItem("Reporte de Memorándums por colaborador");
+		mntmNewMenuItem_7_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mntmNewMenuItem_7_1_1.setBackground(Color.WHITE);
+		mnReportes.add(mntmNewMenuItem_7_1_1);
 		
-		JMenuItem mntmNewMenuItem_8_2_2 = new JMenuItem("Vacaciones");
-		mntmNewMenuItem_8_2_2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				vacaciones_tabla tabla = new vacaciones_tabla();
-				tabla.setVisible(true);
-				tabla.setLocationRelativeTo(null);
-				tabla.construirTabla();
-				dispose();
-			}
-		});
-		mntmNewMenuItem_8_2_2.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mntmNewMenuItem_8_2_2.setBackground(Color.WHITE);
-		menu_vacaciones.add(mntmNewMenuItem_8_2_2);
+		JMenuItem mntmNewMenuItem_7_1_1_2 = new JMenuItem("Reporte de Perfil completo de colaborador");
+		mntmNewMenuItem_7_1_1_2.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mntmNewMenuItem_7_1_1_2.setBackground(Color.WHITE);
+		mnReportes.add(mntmNewMenuItem_7_1_1_2);
 		
-		JMenu menu_vacaciones_2_1 = new JMenu("Documentos");
-		menu_vacaciones_2_1.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		menuBar.add(menu_vacaciones_2_1);
-		
-		JMenuItem mntmNewMenuItem_8_2_2_2_1 = new JMenuItem("Memorandums");
-		mntmNewMenuItem_8_2_2_2_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mntmNewMenuItem_8_2_2_2_1.setBackground(Color.WHITE);
-		menu_vacaciones_2_1.add(mntmNewMenuItem_8_2_2_2_1);
-		
-		menu_reportes = new JMenu("Reportes");
-		menu_reportes.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		menuBar.add(menu_reportes);
+		mnReportesGenerales = new JMenu("Reportes generales");
+		mnReportesGenerales.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+		menuBar.add(mnReportesGenerales);
 		
 		JMenuItem mntmNewMenuItem_8 = new JMenuItem("Reporte de Colaboradores general");
 		mntmNewMenuItem_8.setBackground(UIManager.getColor("Button.highlight"));
@@ -269,7 +311,7 @@ public class menu_principal extends JFrame{
 				rp.generarReporteEmpleadosCompleto();
 			}
 		});
-		menu_reportes.add(mntmNewMenuItem_8);
+		mnReportesGenerales.add(mntmNewMenuItem_8);
 		
 		JMenuItem mntmNewMenuItem_8_1 = new JMenuItem("Reporte de Colaboradores personalizado");
 		mntmNewMenuItem_8_1.addActionListener(new ActionListener() {
@@ -290,12 +332,12 @@ public class menu_principal extends JFrame{
 		});
 		mntmNewMenuItem_8_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmNewMenuItem_8_1_1.setBackground(Color.WHITE);
-		menu_reportes.add(mntmNewMenuItem_8_1_1);
+		mnReportesGenerales.add(mntmNewMenuItem_8_1_1);
 		mntmNewMenuItem_8_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmNewMenuItem_8_1.setBackground(Color.WHITE);
-		menu_reportes.add(mntmNewMenuItem_8_1);
+		mnReportesGenerales.add(mntmNewMenuItem_8_1);
 		
-		JMenuItem mntmNewMenuItem_8_3 = new JMenuItem("Reporte de permisos por Ausencia Laboral general");
+		JMenuItem mntmNewMenuItem_8_3 = new JMenuItem("Reporte de Permisos por Día general");
 		mntmNewMenuItem_8_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				reporte_permisos_general g = new reporte_permisos_general();
@@ -304,7 +346,7 @@ public class menu_principal extends JFrame{
 		});
 		mntmNewMenuItem_8_3.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmNewMenuItem_8_3.setBackground(Color.WHITE);
-		menu_reportes.add(mntmNewMenuItem_8_3);
+		mnReportesGenerales.add(mntmNewMenuItem_8_3);
 		
 		JMenuItem mntmNewMenuItem_8_4 = new JMenuItem("Reporte de Incapacidades general");
 		mntmNewMenuItem_8_4.addActionListener(new ActionListener() {
@@ -313,9 +355,61 @@ public class menu_principal extends JFrame{
 				i.generarReporteIncapacidades();
 			}
 		});
+		
+		JMenuItem mntmNewMenuItem_8_3_1 = new JMenuItem("Reporte de Permisos por Día mensual");
+		mntmNewMenuItem_8_3_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mntmNewMenuItem_8_3_1.setBackground(Color.WHITE);
+		
+				mntmNewMenuItem_8_3_1.addActionListener(new ActionListener() {
+				    public void actionPerformed(ActionEvent e) {
+				        String[] meses = {
+				            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+				            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+				        };
+		
+				        JComboBox<String> comboMeses = new JComboBox<>(meses);
+		
+				        int opcion = JOptionPane.showConfirmDialog(
+				                null,
+				                comboMeses,
+				                "Seleccione el mes del reporte",
+				                JOptionPane.OK_CANCEL_OPTION,
+				                JOptionPane.QUESTION_MESSAGE
+				        );
+		
+				        if (opcion == JOptionPane.OK_OPTION) {
+				            int mesSeleccionado = comboMeses.getSelectedIndex() + 1; 
+				            reporte_ausencias_dia_mensual reporte = new reporte_ausencias_dia_mensual();
+				            reporte.generarReportePermisos(mesSeleccionado);
+				        }
+				    }
+				});
+				
+						mnReportesGenerales.add(mntmNewMenuItem_8_3_1);
+		
+		JMenuItem mntmNewMenuItem_8_3_2 = new JMenuItem("Reporte de Permisos por Hora general");
+		mntmNewMenuItem_8_3_2.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mntmNewMenuItem_8_3_2.setBackground(Color.WHITE);
+		mnReportesGenerales.add(mntmNewMenuItem_8_3_2);
+		
+		JMenuItem mntmNewMenuItem_8_3_1_1 = new JMenuItem("Reporte de Permisos por Hora mensual");
+		mntmNewMenuItem_8_3_1_1.addActionListener(new ActionListener() {
+			 public void actionPerformed(ActionEvent e) {
+			        new reporte_ausencia_hora_mensual().generarReporteHorasMensual();
+			    }
+		});
+		mntmNewMenuItem_8_3_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mntmNewMenuItem_8_3_1_1.setBackground(Color.WHITE);
+		mnReportesGenerales.add(mntmNewMenuItem_8_3_1_1);
+
+		
+		JMenuItem mntmNewMenuItem_8_4_2 = new JMenuItem("Reporte de Incapacidades mensual");
+		mntmNewMenuItem_8_4_2.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mntmNewMenuItem_8_4_2.setBackground(Color.WHITE);
+		mnReportesGenerales.add(mntmNewMenuItem_8_4_2);
 		mntmNewMenuItem_8_4.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmNewMenuItem_8_4.setBackground(Color.WHITE);
-		menu_reportes.add(mntmNewMenuItem_8_4);
+		mnReportesGenerales.add(mntmNewMenuItem_8_4);
 		
 		JMenuItem mntmNewMenuItem_8_4_1 = new JMenuItem("Reporte de Vacaciones general");
 		mntmNewMenuItem_8_4_1.addActionListener(new ActionListener() {
@@ -326,13 +420,13 @@ public class menu_principal extends JFrame{
 		});
 		mntmNewMenuItem_8_4_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmNewMenuItem_8_4_1.setBackground(Color.WHITE);
-		menu_reportes.add(mntmNewMenuItem_8_4_1);
+		mnReportesGenerales.add(mntmNewMenuItem_8_4_1);
 		
 		mnInformes = new JMenu("Informes");
 		mnInformes.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		menuBar.add(mnInformes);
 		
-		JMenuItem mntmNewMenuItem_5 = new JMenuItem("Informe de empleado individual");
+		JMenuItem mntmNewMenuItem_5 = new JMenuItem("Informe de Colaborador individual");
 		mntmNewMenuItem_5.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				 informe_empleado_individual informe = new informe_empleado_individual();
@@ -343,7 +437,7 @@ public class menu_principal extends JFrame{
 		mntmNewMenuItem_5.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnInformes.add(mntmNewMenuItem_5);
 		
-		JMenuItem mntmNewMenuItem_5_2 = new JMenuItem("Informe de empleado general");
+		JMenuItem mntmNewMenuItem_5_2 = new JMenuItem("Informe de Colaboradores general");
 		mntmNewMenuItem_5_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				informe_empleado_general general =  new informe_empleado_general();
@@ -417,12 +511,12 @@ public class menu_principal extends JFrame{
 		mnExportar.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		menuBar.add(mnExportar);
 		
-		JMenuItem mntmNewMenuItem_5_1_1_1 = new JMenuItem("Exportar respaldo en archivo PDF\r\n");
+		JMenuItem mntmNewMenuItem_5_1_1_1 = new JMenuItem("Respaldo en archivo PDF\r\n");
 		mntmNewMenuItem_5_1_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmNewMenuItem_5_1_1_1.setBackground(Color.WHITE);
 		mnExportar.add(mntmNewMenuItem_5_1_1_1);
 		
-		JMenuItem mntmNewMenuItem_5_1_2 = new JMenuItem("Exportar respaldo en script MySQL\r\n");
+		JMenuItem mntmNewMenuItem_5_1_2 = new JMenuItem("Respaldo en script MySQL\r\n");
 		mntmNewMenuItem_5_1_2.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmNewMenuItem_5_1_2.setBackground(Color.WHITE);
 		mnExportar.add(mntmNewMenuItem_5_1_2);
@@ -594,10 +688,10 @@ public class menu_principal extends JFrame{
 	    //menu_empleados.setEnabled(empleados);
 	    menu_permisos.setEnabled(ausenciaLaboral);
 	    menu_incapacidades.setEnabled(incapacidades);
-	    menu_vacaciones.setEnabled(vacaciones);
+	    //menu_vacaciones.setEnabled(vacaciones);
 	    mnOrganizacin.setEnabled(cargos);
 	    //menu_areas.setEnabled(areas);
-	    menu_reportes.setEnabled(reportes);
+	    mnReportesGenerales.setEnabled(reportes);
 	    //menu_respaldos.setEnabled(respaldos);
 	    mnSistema.setEnabled(usuarios);
 	}
