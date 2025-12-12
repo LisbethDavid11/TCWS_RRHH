@@ -7,6 +7,7 @@ import java.awt.Image;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.PreparedStatement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -23,6 +24,9 @@ import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Paragraph;
+
 import consultas.consultas_roles;
 import informes.informe_empleado_general;
 import informes.informe_empleado_individual;
@@ -34,6 +38,8 @@ import reportes.reporte_empleados_activos;
 import reportes.reporte_empleados_general;
 import reportes.reporte_incapacidadYpermisos_colaborador;
 import reportes.reporte_incapacidad_general;
+import reportes.reporte_memorandums_por_empleado;
+import reportes.reporte_perfil_colaborador;
 import reportes.reporte_permisos_general;
 import reportes.reporte_vacaciones_general;
 import respaldos.respaldo_pdf;
@@ -289,15 +295,35 @@ public class menu_principal extends JFrame{
 
 		
 		JMenuItem mntmNewMenuItem_7_1_1 = new JMenuItem("Reporte de Memorándums por colaborador");
+		mntmNewMenuItem_7_1_1.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        try {
+		            reporte_memorandums_por_empleado reporte = new reporte_memorandums_por_empleado();
+		            reporte.generarReporte();   // aquí adentro se mostrará la lista de empleados
+		        } catch (Exception ex) {
+		            ex.printStackTrace();
+		            JOptionPane.showMessageDialog(null,
+		                    "Ocurrió un error al generar el reporte: " + ex.getMessage(),
+		                    "Error",
+		                    JOptionPane.ERROR_MESSAGE);
+		        }
+		    }
+		});
 		mntmNewMenuItem_7_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmNewMenuItem_7_1_1.setBackground(Color.WHITE);
 		mnReportes.add(mntmNewMenuItem_7_1_1);
+
 		
 		JMenuItem mntmNewMenuItem_7_1_1_2 = new JMenuItem("Reporte de Perfil completo de colaborador");
 		mntmNewMenuItem_7_1_1_2.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmNewMenuItem_7_1_1_2.setBackground(Color.WHITE);
+		mntmNewMenuItem_7_1_1_2.addActionListener(e -> {
+		    reporte_perfil_colaborador reporte = new reporte_perfil_colaborador();
+		    reporte.generarReporte();
+		});
 		mnReportes.add(mntmNewMenuItem_7_1_1_2);
-		
+
+
 		mnReportesGenerales = new JMenu("Reportes generales");
 		mnReportesGenerales.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		menuBar.add(mnReportesGenerales);
