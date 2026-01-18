@@ -36,8 +36,10 @@ import reportes.reporte_ausencias_injustificadas;
 import reportes.reporte_empleado_especial;
 import reportes.reporte_empleados_activos;
 import reportes.reporte_empleados_general;
+import reportes.reporte_ausencias_hora_mensual;
 import reportes.reporte_incapacidadYpermisos_colaborador;
 import reportes.reporte_incapacidad_general;
+import reportes.reporte_incapacidad_mensual;
 import reportes.reporte_memorandums_por_empleado;
 import reportes.reporte_perfil_colaborador;
 import reportes.reporte_permisos_general;
@@ -421,18 +423,31 @@ public class menu_principal extends JFrame{
 		JMenuItem mntmNewMenuItem_8_3_1_1 = new JMenuItem("Reporte de Permisos por Hora mensual");
 		mntmNewMenuItem_8_3_1_1.addActionListener(new ActionListener() {
 			 public void actionPerformed(ActionEvent e) {
-			        new reporte_ausencia_hora_mensual().generarReporteHorasMensual();
+			        String[] meses = {
+			            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+			            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+			        };
+	
+			        JComboBox<String> comboMeses = new JComboBox<>(meses);
+	
+			        int opcion = JOptionPane.showConfirmDialog(
+			                null,
+			                comboMeses,
+			                "Seleccione el mes del reporte",
+			                JOptionPane.OK_CANCEL_OPTION,
+			                JOptionPane.QUESTION_MESSAGE
+			        );
+	
+			        if (opcion == JOptionPane.OK_OPTION) {
+			            int mesSeleccionado = comboMeses.getSelectedIndex() + 1; 
+			            reporte_ausencias_hora_mensual reporte = new reporte_ausencias_hora_mensual();
+			            reporte.generarReportePermisosPorHora(mesSeleccionado);
+			        }
 			    }
 		});
 		mntmNewMenuItem_8_3_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmNewMenuItem_8_3_1_1.setBackground(Color.WHITE);
 		mnReportesGenerales.add(mntmNewMenuItem_8_3_1_1);
-
-		
-		JMenuItem mntmNewMenuItem_8_4_2 = new JMenuItem("Reporte de Incapacidades mensual");
-		mntmNewMenuItem_8_4_2.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		mntmNewMenuItem_8_4_2.setBackground(Color.WHITE);
-		mnReportesGenerales.add(mntmNewMenuItem_8_4_2);
 		mntmNewMenuItem_8_4.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmNewMenuItem_8_4.setBackground(Color.WHITE);
 		mnReportesGenerales.add(mntmNewMenuItem_8_4);
@@ -444,6 +459,36 @@ public class menu_principal extends JFrame{
 				v.generarReporteVacaciones();
 			}
 		});
+		
+				
+				JMenuItem mntmNewMenuItem_8_4_2 = new JMenuItem("Reporte de Incapacidades mensual");
+				mntmNewMenuItem_8_4_2.addActionListener(new ActionListener() {
+					 public void actionPerformed(ActionEvent e) {
+					        String[] meses = {
+					            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+					            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+					        };
+			
+					        JComboBox<String> comboMeses = new JComboBox<>(meses);
+			
+					        int opcion = JOptionPane.showConfirmDialog(
+					                null,
+					                comboMeses,
+					                "Seleccione el mes del reporte",
+					                JOptionPane.OK_CANCEL_OPTION,
+					                JOptionPane.QUESTION_MESSAGE
+					        );
+			
+					        if (opcion == JOptionPane.OK_OPTION) {
+					            int mesSeleccionado = comboMeses.getSelectedIndex() + 1; 
+					            reporte_incapacidad_mensual reporte = new reporte_incapacidad_mensual();
+					            reporte.generarReporteIncapacidades(mesSeleccionado);
+					        }
+					    }
+					});
+				mntmNewMenuItem_8_4_2.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+				mntmNewMenuItem_8_4_2.setBackground(Color.WHITE);
+				mnReportesGenerales.add(mntmNewMenuItem_8_4_2);
 		mntmNewMenuItem_8_4_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmNewMenuItem_8_4_1.setBackground(Color.WHITE);
 		mnReportesGenerales.add(mntmNewMenuItem_8_4_1);
@@ -537,15 +582,79 @@ public class menu_principal extends JFrame{
 		mnExportar.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		menuBar.add(mnExportar);
 		
-		JMenuItem mntmNewMenuItem_5_1_1_1 = new JMenuItem("Respaldo en archivo PDF\r\n");
+		JMenuItem mntmNewMenuItem_5_1_1_1 = new JMenuItem("Respaldo en archivo PDF");
+		mntmNewMenuItem_5_1_1_1.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        // Confirmar antes de generar el respaldo
+		        int confirmacion = JOptionPane.showConfirmDialog(
+		            null,
+		            "¿Desea generar un respaldo completo en formato PDF?\n\n" +
+		            "El archivo incluirá:\n" +
+		            "• Todas las tablas del sistema\n" +
+		            "• Todos los registros actuales\n" +
+		            "• Formato visual organizado por secciones\n\n" +
+		            "Nota: El proceso puede tomar algunos minutos.",
+		            "Confirmar Respaldo PDF",
+		            JOptionPane.YES_NO_OPTION,
+		            JOptionPane.QUESTION_MESSAGE
+		        );
+		        
+		        if (confirmacion == JOptionPane.YES_OPTION) {
+		            try {
+		                // Mostrar mensaje de procesamiento
+		                JOptionPane.showMessageDialog(
+		                    null,
+		                    "Generando respaldo en PDF...\n" +
+		                    "Por favor espere, esto puede tomar unos minutos.",
+		                    "Procesando",
+		                    JOptionPane.INFORMATION_MESSAGE
+		                );
+		                
+		                respaldo_pdf respaldoPDF = new respaldo_pdf();
+		                respaldoPDF.generarReporteCompleto();
+		                
+		            } catch (Exception ex) {
+		                ex.printStackTrace();
+		                JOptionPane.showMessageDialog(
+		                    null,
+		                    "✗ Error al generar el respaldo en PDF:\n\n" + ex.getMessage(),
+		                    "Error",
+		                    JOptionPane.ERROR_MESSAGE
+		                );
+		            }
+		        }
+		    }
+		});
 		mntmNewMenuItem_5_1_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmNewMenuItem_5_1_1_1.setBackground(Color.WHITE);
 		mnExportar.add(mntmNewMenuItem_5_1_1_1);
 		
-		JMenuItem mntmNewMenuItem_5_1_2 = new JMenuItem("Respaldo en script MySQL\r\n");
+		
+		JMenuItem mntmNewMenuItem_5_1_2 = new JMenuItem("Respaldo en script MySQL");
+		mntmNewMenuItem_5_1_2.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        try {
+		            // Crear instancia de la clase de respaldo
+		            respaldo_sql respaldo = new respaldo_sql();
+		            
+		            // Generar el respaldo automáticamente
+		            respaldo.generarRespaldoAutomatico();
+		            
+		        } catch (Exception ex) {
+		            ex.printStackTrace();
+		            JOptionPane.showMessageDialog(
+		                null,
+		                "Error al generar el respaldo:\n\n" + ex.getMessage(),
+		                "Error",
+		                JOptionPane.ERROR_MESSAGE
+		            );
+		        }
+		    }
+		});
 		mntmNewMenuItem_5_1_2.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmNewMenuItem_5_1_2.setBackground(Color.WHITE);
 		mnExportar.add(mntmNewMenuItem_5_1_2);
+
 		
 		menu_salir = new JMenu("Salir");
 		menu_salir.setFont(new Font("Segoe UI", Font.PLAIN, 16));

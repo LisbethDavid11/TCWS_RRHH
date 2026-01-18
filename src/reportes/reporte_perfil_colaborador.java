@@ -186,8 +186,7 @@ public class reporte_perfil_colaborador {
                 ResultSetMetaData md = rs.getMetaData();
                 int columnas = md.getColumnCount();
 
-                // Array de anchos: 10% para No., 15% para Fecha Registro, el resto se reparte
-                float[] anchos = new float[columnas + 2]; // +2 para No. y Fecha Registro
+                float[] anchos = new float[columnas + 2]; 
                 anchos[0] = 5f; // No.
                 anchos[1] = 15f; // Fecha Registro
                 float restante = 100f - 25f; // resto para columnas restantes
